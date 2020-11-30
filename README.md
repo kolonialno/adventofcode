@@ -10,7 +10,7 @@ Twitter or Reddit account.
 
 The adventofcode website also supports private leaderboards. We made one so you can all brag
 about your awesomeness if you want to. Go
-[here](http://adventofcode.com/2019/leaderboard/private) and use the code `139757-81917909` to
+[here](http://adventofcode.com/2020/leaderboard/private) and use the code `139757-81917909` to
 join it.
 
 ## Access to this repo
