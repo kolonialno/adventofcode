@@ -11,6 +11,8 @@ struct Opt {
 enum Command {
     /// Day 1: Report Repair
     Day01a,
+    /// Day 1: Report Repair, part two
+    Day01b,
 }
 
 fn main() {
@@ -21,6 +23,11 @@ fn main() {
         Command::Day01a => {
             if let Ok(numbers) = aoc::read_numbers("input/day1a.txt") {
                 println!("Answer: {}", aoc::day01a::solve(&numbers).unwrap());
+            }
+        }
+        Command::Day01b => {
+            if let Ok(numbers) = aoc::read_numbers("input/day1a.txt") {
+                println!("Answer: {}", aoc::day01b::solve(&numbers).unwrap());
             }
         }
     }
