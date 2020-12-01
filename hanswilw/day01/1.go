@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"log"
 	"io/ioutil"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 )
 
-func import_input() []int {
+func importInput() []int {
 	file, err := os.Open("1.txt")
 
 	if err != nil {
@@ -19,26 +19,25 @@ func import_input() []int {
 	b, err := ioutil.ReadAll(file)
 
 	s := strings.Split(string(b), "\n")
-	input_list := make([]int, 0, len(s))
+	inputList := make([]int, 0, len(s))
 
 	for _, i := range s {
 		j, err := strconv.Atoi(i)
 		if err != nil {
 			log.Fatal(err)
 		}
-		input_list = append(input_list, j)
+		inputList = append(inputList, j)
 	}
-	return input_list
+	return inputList
 }
-
 
 func twoproduct(entries []int) int {
 	target := 2020
-	seen := make(map[int] bool)
+	seen := make(map[int]bool)
 
 	for _, entry := range entries {
-		if seen[target - entry] {
-			fmt.Println("Two product:", entry, target - entry)
+		if seen[target-entry] {
+			fmt.Println("Two product:", entry, target-entry)
 			return entry * (target - entry)
 		}
 		seen[entry] = true
@@ -50,18 +49,16 @@ func twoproduct(entries []int) int {
 func threeproduct(entries []int) int {
 	target := 2020
 
-	for i, i_val := range entries {
-		j := i + 1
-		seen := make(map[int] bool)
-		for j < len(entries) {
-			j_val := entries[j]
+	for i, iVal := range entries {
+		seen := make(map[int]bool)
+		for j := i + 1; j < len(entries); j++ {
+			jVal := entries[j]
 
-			if seen[target - i_val - j_val] {
-				fmt.Println("Three product:", i_val, j_val, (target - j_val - i_val))
-				return i_val * j_val * (target - j_val - i_val)
+			if seen[target-iVal-jVal] {
+				fmt.Println("Three product:", iVal, jVal, (target - jVal - iVal))
+				return iVal * jVal * (target - jVal - iVal)
 			}
-			seen[j_val] = true
-			j++
+			seen[jVal] = true
 		}
 	}
 
@@ -69,7 +66,7 @@ func threeproduct(entries []int) int {
 }
 
 func main() {
-	input := import_input()
+	input := importInput()
 	result := twoproduct(input)
 	fmt.Println(result)
 	result2 := threeproduct(input)
