@@ -1,3 +1,6 @@
+from sys import exit
+
+
 def value_in_array(array, low, high, value):
     """
     Binary search for the value.
@@ -28,13 +31,13 @@ def main():
     """
 
     with open('input.txt', 'r+') as file:
-        array = sorted([int(line) for line in file.readlines()])
+        array = sorted(int(line) for line in file.readlines())
 
 
     for number in array:
         if value_in_array(array, 0, len(array)-1, 2020-number):
             print("a:", number, "b:", 2020-number, "a*b:",number*(2020-number))
-            break
+            exit()
 
     
 
