@@ -1,0 +1,8 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+authors = ["Stein Magnus Jodal"]
+edition = "2018"
+
+[dependencies]
+structopt = "0.3"
