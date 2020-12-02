@@ -1,0 +1,4 @@
+name = "Day01"
+uuid = "ae8f49b1-3a6b-4170-9a27-3d2778e7e582"
+authors = ["Erik Haugan <209444+nnerik@users.noreply.github.com>"]
+version = "0.1.0"
