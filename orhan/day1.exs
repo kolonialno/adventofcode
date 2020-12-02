@@ -23,7 +23,7 @@ end
 
 defmodule Day1b do
     def solve(input) do
-        for i <- input, j <- input, k <- input, i+j+k == 2020, do: i*j*k
+        for i <- input, j <- input, k <- input, i+j+k == 2020, uniq: true, do: i*j*k
     end
 end
 
