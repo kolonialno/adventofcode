@@ -21,12 +21,12 @@ fn main() {
 
     match command {
         Command::Day01a => {
-            if let Ok(numbers) = aoc::read_numbers("input/day1a.txt") {
+            if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
                 println!("Answer: {}", aoc::day01a::solve(&numbers).unwrap());
             }
         }
         Command::Day01b => {
-            if let Ok(numbers) = aoc::read_numbers("input/day1a.txt") {
+            if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
                 println!("Answer: {}", aoc::day01b::solve(&numbers).unwrap());
             }
         }
