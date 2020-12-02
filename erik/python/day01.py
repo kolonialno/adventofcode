@@ -1,4 +1,4 @@
-with open("../input/input01a.txt", "r") as input:
+with open("../input/input01.txt", "r") as input:
     numbers = [int(line) for line in input.readlines()]
 
 total = 2020

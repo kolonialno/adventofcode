@@ -1,4 +1,3 @@
-# Erik
+# My adventures in Julia!
 
-* Day 1: Starting safe with Python
-* Day 2: ?
+I'm gonna do all puzzles in Julia. That's the plan!
