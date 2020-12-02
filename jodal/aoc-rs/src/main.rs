@@ -15,6 +15,8 @@ enum Command {
     Day01b,
     /// Day 2: Password Philosophy
     Day02a,
+    /// Day 2: Password Philosophy, part two
+    Day02b,
 }
 
 fn main() {
@@ -36,6 +38,12 @@ fn main() {
             let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
             let entries = aoc::day02a::parse(lines);
             let answer = aoc::day02a::solve(entries);
+            println!("Answer: {}", answer);
+        }
+        Command::Day02b => {
+            let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
+            let entries = aoc::day02b::parse(lines);
+            let answer = aoc::day02b::solve(entries);
             println!("Answer: {}", answer);
         }
     }
