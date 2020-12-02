@@ -2,7 +2,7 @@ import itertools
 from math import prod
 
 
-def parse_entries() -> None:
+def parse_entries() -> list:
     with open("inputs/01.txt") as in_file:
         rows = in_file.readlines()
     return {int(row) for row in rows}
