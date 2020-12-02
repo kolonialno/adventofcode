@@ -1,4 +1,4 @@
 # jodal
 
-- [Day 1, part one](aoc-rs/src/day01a.rs) (Rust)
-- [Day 1, part two](aoc-rs/src/day01b.rs) (Rust)
+- [Day 1](aoc-rs/src/day01.rs) (Rust)
+- [Day 2](aoc-rs/src/day02.rs) (Rust)

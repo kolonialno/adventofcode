@@ -8,19 +8,29 @@ pub struct PasswordEntry {
 
 #[derive(Debug)]
 pub struct PasswordPolicy {
+    num1: usize,
+    num2: usize,
     chr: char,
-    pos1: usize,
-    pos2: usize,
 }
 
 impl PasswordEntry {
-    fn is_valid(&self) -> bool {
+    fn is_valid_a(&self) -> bool {
+        let num_chars = self
+            .password
+            .chars()
+            .filter(|&chr| chr == self.policy.chr)
+            .count();
+        let range = self.policy.num1..(self.policy.num2 + 1);
+        range.contains(&num_chars)
+    }
+
+    fn is_valid_b(&self) -> bool {
         let num_matching_chars = self
             .password
             .chars()
             .enumerate()
             .filter_map(|(index, chr)| {
-                if (index + 1 == self.policy.pos1) || (index + 1 == self.policy.pos2) {
+                if (index + 1 == self.policy.num1) || (index + 1 == self.policy.num2) {
                     Some(chr)
                 } else {
                     None
@@ -40,8 +50,8 @@ pub fn parse(lines: Vec<String>) -> Vec<PasswordEntry> {
         let caps = re.captures(&line).expect("Line did not match regex");
         result.push(PasswordEntry {
             policy: PasswordPolicy {
-                pos1: caps[1].parse().unwrap(),
-                pos2: caps[2].parse().unwrap(),
+                num1: caps[1].parse().unwrap(),
+                num2: caps[2].parse().unwrap(),
                 chr: caps[3].chars().next().unwrap(),
             },
             password: caps[4].to_string(),
@@ -51,21 +61,37 @@ pub fn parse(lines: Vec<String>) -> Vec<PasswordEntry> {
     result
 }
 
-pub fn solve(entries: Vec<PasswordEntry>) -> usize {
-    entries.into_iter().filter(|e| e.is_valid()).count()
+pub fn solve_a(entries: Vec<PasswordEntry>) -> usize {
+    entries.into_iter().filter(|e| e.is_valid_a()).count()
+}
+
+pub fn solve_b(entries: Vec<PasswordEntry>) -> usize {
+    entries.into_iter().filter(|e| e.is_valid_b()).count()
 }
 
 #[cfg(test)]
 mod tests {
     #[test]
-    fn example() {
+    fn example_a() {
+        let lines = vec![
+            "1-3 a: abcde".to_string(),     // Valid
+            "1-3 b: cdefg".to_string(),     // Invalid
+            "2-9 c: ccccccccc".to_string(), // Valid
+        ];
+        let entries = super::parse(lines);
+        let result = super::solve_a(entries);
+        assert_eq!(result, 2);
+    }
+
+    #[test]
+    fn example_b() {
         let lines = vec![
             "1-3 a: abcde".to_string(),     // Valid
             "1-3 b: cdefg".to_string(),     // Invalid
             "2-9 c: ccccccccc".to_string(), // Invalid
         ];
         let entries = super::parse(lines);
-        let result = super::solve(entries);
+        let result = super::solve_b(entries);
         assert_eq!(result, 1);
     }
 }

@@ -26,24 +26,24 @@ fn main() {
     match command {
         Command::Day01a => {
             if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
-                println!("Answer: {}", aoc::day01a::solve(&numbers).unwrap());
+                println!("Answer: {}", aoc::day01::solve_a(&numbers).unwrap());
             }
         }
         Command::Day01b => {
             if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
-                println!("Answer: {}", aoc::day01b::solve(&numbers).unwrap());
+                println!("Answer: {}", aoc::day01::solve_b(&numbers).unwrap());
             }
         }
         Command::Day02a => {
             let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
-            let entries = aoc::day02a::parse(lines);
-            let answer = aoc::day02a::solve(entries);
+            let entries = aoc::day02::parse(lines);
+            let answer = aoc::day02::solve_a(entries);
             println!("Answer: {}", answer);
         }
         Command::Day02b => {
             let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
-            let entries = aoc::day02b::parse(lines);
-            let answer = aoc::day02b::solve(entries);
+            let entries = aoc::day02::parse(lines);
+            let answer = aoc::day02::solve_b(entries);
             println!("Answer: {}", answer);
         }
     }
