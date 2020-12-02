@@ -1,0 +1,55 @@
+UNIT AOCUtils;
+
+interface
+
+type
+  StringArray = array of String;
+
+FUNCTION readFileAsStrings(sFileName : String) : StringArray;
+FUNCTION test() : String;
+
+implementation
+
+USES Sysutils;
+
+FUNCTION readFileAsStrings(sFileName : String) : StringArray;
+VAR
+    fIn : Text;
+    sLine : String;
+    entries : Array OF String;
+    iIndex : Integer;
+
+BEGIN
+    iIndex := 0;
+    writeln('Calculating file length..');
+    assign(fIn, sFileName);
+    reset(fIn);
+
+    REPEAT
+        readln(fIn, sLine);
+        inc(iIndex);
+    UNTIL eof(fIn);
+    write(iIndex);
+    writeln(' lines.');
+
+    reset(fIn);
+    SetLength(entries, iIndex);
+    iIndex := 0;
+
+    REPEAT
+        readln(fIn, sLine);
+        entries[iIndex] := sLine;
+        inc(iIndex);
+    UNTIL eof(fIn);
+
+    write(iIndex);
+    writeln(' lines read.');
+
+    readFileAsStrings := entries;
+END;
+
+FUNCTION test() : String;
+BEGIN
+    test := 'HEI';
+END;
+END.
