@@ -13,6 +13,8 @@ enum Command {
     Day01a,
     /// Day 1: Report Repair, part two
     Day01b,
+    /// Day 2: Password Philosophy
+    Day02a,
 }
 
 fn main() {
@@ -29,6 +31,12 @@ fn main() {
             if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
                 println!("Answer: {}", aoc::day01b::solve(&numbers).unwrap());
             }
+        }
+        Command::Day02a => {
+            let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
+            let entries = aoc::day02a::parse(lines);
+            let answer = aoc::day02a::solve(entries);
+            println!("Answer: {}", answer);
         }
     }
 }

@@ -5,4 +5,5 @@ authors = ["Stein Magnus Jodal"]
 edition = "2018"
 
 [dependencies]
+regex = "1"
 structopt = "0.3"
