@@ -4,7 +4,7 @@ let
   inherit (pkgs) haskellPackages;
 
   haskellDeps = ps: with ps; [
-    exact-combinatorics
+    split
   ];
 
   ghc = haskellPackages.ghcWithPackages haskellDeps;
