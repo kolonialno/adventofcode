@@ -1,46 +1,67 @@
 package libs
 
 import (
-    "bufio"
-    "os"
-    "strconv"
+	"bufio"
+	"os"
+	"strconv"
 )
 
 func readLines(path string) ([]string, error) {
-    file, err := os.Open(path)
-    if err != nil {
-        return nil, err
-    }
-    defer file.Close()
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
 
-    var lines []string
-    scanner := bufio.NewScanner(file)
-    for scanner.Scan() {
-        lines = append(lines, scanner.Text())
-    }
-    return lines, scanner.Err()
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
 }
 
 func ReadLinesStrings(path string) ([]string, error) {
-    return readLines(path)
+	return readLines(path)
 }
 
 func ReadLinesNumbers(path string) ([]int, error) {
-    lines, err := readLines(path)
+	lines, err := readLines(path)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    var numbers = []int{}
+	var numbers = []int{}
 
-    for _, i := range lines {
-        j, err := strconv.Atoi(i)
-        if err != nil {
-            return nil, err
-        }
-        numbers = append(numbers, j)
-    }
+	for _, i := range lines {
+		j, err := strconv.Atoi(i)
+		if err != nil {
+			return nil, err
+		}
+		numbers = append(numbers, j)
+	}
 
-    return numbers, nil
+	return numbers, nil
+}
+
+func ReadRuneMatrix(path string) ([][]rune, error) {
+
+	lines, err := ReadLinesStrings(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	array := make([][]rune, 0)
+
+	for _, line := range lines {
+		row := make([]rune, 0)
+		for _, char := range []rune(line) {
+			row = append(row, char)
+		}
+		array = append(array, row)
+	}
+
+	return array, nil
 }
