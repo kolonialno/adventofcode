@@ -1,3 +1,6 @@
+use std::convert::TryFrom;
+use std::convert::TryInto;
+
 #[derive(Debug)]
 pub struct Map {
     rows: Vec<Vec<Feature>>,
@@ -9,6 +12,18 @@ pub enum Feature {
     Tree,
 }
 
+impl TryFrom<char> for Feature {
+    type Error = char;
+
+    fn try_from(c: char) -> Result<Self, Self::Error> {
+        match c {
+            '.' => Ok(Feature::Open),
+            '#' => Ok(Feature::Tree),
+            _ => Err(c),
+        }
+    }
+}
+
 impl Map {
     pub fn from_lines(lines: Vec<String>) -> Map {
         Map {
@@ -17,10 +32,9 @@ impl Map {
                 .filter(|&l| l.len() > 0)
                 .map(|l| {
                     l.chars()
-                        .map(|c| match c {
-                            '.' => Feature::Open,
-                            '#' => Feature::Tree,
-                            _ => panic!("Unknown feature"),
+                        .map(|c| match c.try_into() {
+                            Ok(feature) => feature,
+                            Err(chr) => panic!("Unknown feature: {}", chr),
                         })
                         .collect()
                 })
