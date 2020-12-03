@@ -4,17 +4,17 @@ function readdata(path)
     open(path) do file
         data = []
         for line in eachline(file)
-            push!(data, [x == '#' ? 1 : 0 for x in line])
+            push!(data, [Dict('.' => 0, '#' => 1)[c] for c in line])
         end
         data
     end
 end
 
-function counttrees(data, x, y)
-    patterwidth = length(data[1])
-    mapreduce(((i, row),) -> row[mod((i - 1) * x, patterwidth) + 1],
+function counttrees(forest, right, down)
+    patterwidth = length(forest[1])
+    mapreduce(((i, row),) -> row[mod1(i*right - right + 1, patterwidth)],
               +,
-              enumerate(data[1:y:end]))
+              enumerate(data[1:down:end]))
 end
 
 function part1(data)
@@ -22,7 +22,9 @@ function part1(data)
 end
 
 function part2(data)
-    reduce(*, map((x, y) -> counttrees(data, x, y), [1, 3, 5, 7, 1], [1, 1, 1, 1, 2]))
+    mapreduce(((right, down),) -> counttrees(data, right, down),
+              *,
+              [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)])
 end
 
 function main()
@@ -32,5 +34,3 @@ function main()
 end
 
 end # module
-
-main()
