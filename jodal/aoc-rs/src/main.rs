@@ -19,6 +19,8 @@ enum Command {
     Day02b,
     /// Day 3: Toboggan Trajectory
     Day03a,
+    /// Day 3: Toboggan Trajectory, part two
+    Day03b,
 }
 
 fn main() {
@@ -52,6 +54,12 @@ fn main() {
             let lines = aoc::read_lines("input/day03.txt").expect("Failed reading file");
             let map = aoc::day03::Map::from_lines(lines);
             let answer = aoc::day03::solve_a(map);
+            println!("Answer: {}", answer);
+        }
+        Command::Day03b => {
+            let lines = aoc::read_lines("input/day03.txt").expect("Failed reading file");
+            let map = aoc::day03::Map::from_lines(lines);
+            let answer = aoc::day03::solve_b(map);
             println!("Answer: {}", answer);
         }
     }
