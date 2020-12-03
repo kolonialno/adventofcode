@@ -16,10 +16,11 @@ defmodule Day2 do
   def is_valid?({rule, password}, :old) do
     {from, to, letter} = parse_rule(rule)
 
-    length = password
-      |> String.codepoints
-      |> Enum.filter(&(letter==&1))
-      |> Enum.count
+    length =
+      password
+      |> String.codepoints()
+      |> Enum.filter(&(letter == &1))
+      |> Enum.count()
 
     from <= length and length <= to
   end
@@ -30,23 +31,22 @@ defmodule Day2 do
     codepoints = String.codepoints(password)
 
     (Enum.at(codepoints, from - 1) == letter and Enum.at(codepoints, to - 1) != letter) or
-    (Enum.at(codepoints, from - 1) != letter and Enum.at(codepoints, to - 1) == letter)
-
+      (Enum.at(codepoints, from - 1) != letter and Enum.at(codepoints, to - 1) == letter)
   end
 end
 
 file
-  |> String.split("\n")
-  |> Enum.map(&String.split(&1, ": "))
-  |> Enum.map(&List.to_tuple/1)
-  |> Enum.filter(&Day2.is_valid?(&1, :old))
-  |> Enum.count
-  |> IO.inspect
+|> String.split("\n")
+|> Enum.map(&String.split(&1, ": "))
+|> Enum.map(&List.to_tuple/1)
+|> Enum.filter(&Day2.is_valid?(&1, :old))
+|> Enum.count()
+|> IO.inspect()
 
 file
-  |> String.split("\n")
-  |> Enum.map(&String.split(&1, ": "))
-  |> Enum.map(&List.to_tuple/1)
-  |> Enum.filter(&Day2.is_valid?(&1, :new))
-  |> Enum.count
-  |> IO.inspect
+|> String.split("\n")
+|> Enum.map(&String.split(&1, ": "))
+|> Enum.map(&List.to_tuple/1)
+|> Enum.filter(&Day2.is_valid?(&1, :new))
+|> Enum.count()
+|> IO.inspect()
