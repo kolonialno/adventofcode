@@ -23,6 +23,8 @@ enum Command {
     Day03b,
     /// Day 4: Passport Processing
     Day04a,
+    /// Day 4: Passport Processing, part two
+    Day04b,
 }
 
 fn main() {
@@ -68,6 +70,12 @@ fn main() {
             let lines = aoc::read_lines("input/day04.txt").expect("Failed reading file");
             let passports = aoc::day04::Passport::from_lines(lines);
             let answer = aoc::day04::solve_a(passports);
+            println!("Answer: {}", answer);
+        }
+        Command::Day04b => {
+            let lines = aoc::read_lines("input/day04.txt").expect("Failed reading file");
+            let passports = aoc::day04::Passport::from_lines(lines);
+            let answer = aoc::day04::solve_b(passports);
             println!("Answer: {}", answer);
         }
     }
