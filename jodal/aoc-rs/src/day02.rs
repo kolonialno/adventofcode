@@ -1,4 +1,13 @@
 use regex::Regex;
+use std::str::Lines;
+
+pub fn solve_a(entries: &Vec<PasswordEntry>) -> usize {
+    entries.into_iter().filter(|e| e.is_valid_a()).count()
+}
+
+pub fn solve_b(entries: &Vec<PasswordEntry>) -> usize {
+    entries.into_iter().filter(|e| e.is_valid_b()).count()
+}
 
 #[derive(Debug)]
 pub struct PasswordEntry {
@@ -14,6 +23,25 @@ pub struct PasswordPolicy {
 }
 
 impl PasswordEntry {
+    pub fn from_lines(lines: Lines) -> Vec<PasswordEntry> {
+        let re = Regex::new(r"^(\d+)-(\d+) (\w): (\w+)$").unwrap();
+        let mut result = Vec::new();
+
+        for line in lines {
+            let caps = re.captures(&line).expect("Line did not match regex");
+            result.push(PasswordEntry {
+                policy: PasswordPolicy {
+                    num1: caps[1].parse().unwrap(),
+                    num2: caps[2].parse().unwrap(),
+                    chr: caps[3].chars().next().unwrap(),
+                },
+                password: caps[4].to_string(),
+            })
+        }
+
+        result
+    }
+
     fn is_valid_a(&self) -> bool {
         let num_chars = self
             .password
@@ -42,56 +70,31 @@ impl PasswordEntry {
     }
 }
 
-pub fn parse(lines: Vec<String>) -> Vec<PasswordEntry> {
-    let re = Regex::new(r"^(\d+)-(\d+) (\w): (\w+)$").unwrap();
-    let mut result = Vec::new();
-
-    for line in lines {
-        let caps = re.captures(&line).expect("Line did not match regex");
-        result.push(PasswordEntry {
-            policy: PasswordPolicy {
-                num1: caps[1].parse().unwrap(),
-                num2: caps[2].parse().unwrap(),
-                chr: caps[3].chars().next().unwrap(),
-            },
-            password: caps[4].to_string(),
-        })
-    }
-
-    result
-}
-
-pub fn solve_a(entries: Vec<PasswordEntry>) -> usize {
-    entries.into_iter().filter(|e| e.is_valid_a()).count()
-}
-
-pub fn solve_b(entries: Vec<PasswordEntry>) -> usize {
-    entries.into_iter().filter(|e| e.is_valid_b()).count()
-}
-
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
     fn example_a() {
-        let lines = vec![
-            "1-3 a: abcde".to_string(),     // Valid
-            "1-3 b: cdefg".to_string(),     // Invalid
-            "2-9 c: ccccccccc".to_string(), // Valid
-        ];
-        let entries = super::parse(lines);
-        let result = super::solve_a(entries);
+        let input = String::from(
+            "1-3 a: abcde
+1-3 b: cdefg
+2-9 c: ccccccccc",
+        );
+        let entries = PasswordEntry::from_lines(input.lines());
+        let result = solve_a(&entries);
         assert_eq!(result, 2);
     }
 
     #[test]
     fn example_b() {
-        let lines = vec![
-            "1-3 a: abcde".to_string(),     // Valid
-            "1-3 b: cdefg".to_string(),     // Invalid
-            "2-9 c: ccccccccc".to_string(), // Invalid
-        ];
-        let entries = super::parse(lines);
-        let result = super::solve_b(entries);
+        let input = String::from(
+            "1-3 a: abcde
+1-3 b: cdefg
+2-9 c: ccccccccc",
+        );
+        let entries = PasswordEntry::from_lines(input.lines());
+        let result = solve_b(&entries);
         assert_eq!(result, 1);
     }
 }

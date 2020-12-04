@@ -1,3 +1,9 @@
+use std::str::Lines;
+
+pub fn parse_numbers(lines: Lines) -> Vec<i32> {
+    lines.map(|line| line.parse().unwrap()).collect()
+}
+
 pub fn solve_a(input: &[i32]) -> Option<i32> {
     for i in input {
         for j in input {

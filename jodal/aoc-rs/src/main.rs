@@ -1,3 +1,4 @@
+use std::fs::read_to_string;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -10,73 +11,45 @@ struct Opt {
 #[derive(Debug, StructOpt)]
 enum Command {
     /// Day 1: Report Repair
-    Day01a,
-    /// Day 1: Report Repair, part two
-    Day01b,
+    Day01,
     /// Day 2: Password Philosophy
-    Day02a,
-    /// Day 2: Password Philosophy, part two
-    Day02b,
+    Day02,
     /// Day 3: Toboggan Trajectory
-    Day03a,
-    /// Day 3: Toboggan Trajectory, part two
-    Day03b,
+    Day03,
     /// Day 4: Passport Processing
-    Day04a,
-    /// Day 4: Passport Processing, part two
-    Day04b,
+    Day04,
 }
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     let _opt = Opt::from_args();
     let command = Command::from_args();
 
     match command {
-        Command::Day01a => {
-            if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
-                println!("Answer: {}", aoc::day01::solve_a(&numbers).unwrap());
-            }
+        Command::Day01 => {
+            let input = read_to_string("input/day01.txt")?;
+            let numbers = aoc::day01::parse_numbers(input.lines());
+            println!("Part one: {}", aoc::day01::solve_a(&numbers).unwrap());
+            println!("Part two: {}", aoc::day01::solve_b(&numbers).unwrap());
         }
-        Command::Day01b => {
-            if let Ok(numbers) = aoc::read_numbers("input/day01.txt") {
-                println!("Answer: {}", aoc::day01::solve_b(&numbers).unwrap());
-            }
+        Command::Day02 => {
+            let input = read_to_string("input/day02.txt")?;
+            let entries = aoc::day02::PasswordEntry::from_lines(input.lines());
+            println!("Part one: {}", aoc::day02::solve_a(&entries));
+            println!("Part two: {}", aoc::day02::solve_b(&entries));
         }
-        Command::Day02a => {
-            let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
-            let entries = aoc::day02::parse(lines);
-            let answer = aoc::day02::solve_a(entries);
-            println!("Answer: {}", answer);
+        Command::Day03 => {
+            let input = read_to_string("input/day03.txt")?;
+            let map = aoc::day03::Map::from_lines(input.lines());
+            println!("Part one: {}", aoc::day03::solve_a(&map));
+            println!("Part two: {}", aoc::day03::solve_b(&map));
         }
-        Command::Day02b => {
-            let lines = aoc::read_lines("input/day02.txt").expect("Failed reading file");
-            let entries = aoc::day02::parse(lines);
-            let answer = aoc::day02::solve_b(entries);
-            println!("Answer: {}", answer);
-        }
-        Command::Day03a => {
-            let lines = aoc::read_lines("input/day03.txt").expect("Failed reading file");
-            let map = aoc::day03::Map::from_lines(lines);
-            let answer = aoc::day03::solve_a(map);
-            println!("Answer: {}", answer);
-        }
-        Command::Day03b => {
-            let lines = aoc::read_lines("input/day03.txt").expect("Failed reading file");
-            let map = aoc::day03::Map::from_lines(lines);
-            let answer = aoc::day03::solve_b(map);
-            println!("Answer: {}", answer);
-        }
-        Command::Day04a => {
-            let lines = aoc::read_lines("input/day04.txt").expect("Failed reading file");
-            let passports = aoc::day04::Passport::from_lines(lines);
-            let answer = aoc::day04::solve_a(passports);
-            println!("Answer: {}", answer);
-        }
-        Command::Day04b => {
-            let lines = aoc::read_lines("input/day04.txt").expect("Failed reading file");
-            let passports = aoc::day04::Passport::from_lines(lines);
-            let answer = aoc::day04::solve_b(passports);
-            println!("Answer: {}", answer);
+        Command::Day04 => {
+            let input = read_to_string("input/day04.txt")?;
+            let passports = aoc::day04::Passport::from_lines(input.lines());
+            println!("Part one: {}", aoc::day04::solve_a(&passports));
+            println!("Part two: {}", aoc::day04::solve_b(&passports));
         }
     }
+
+    Ok(())
 }
