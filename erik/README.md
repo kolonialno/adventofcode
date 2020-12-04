@@ -11,6 +11,8 @@
 
 I'm gonna do all puzzles in [Julia](https://julialang.org/). That's the plan!
 
-* [Day 01](Day01/src/Day01.jl)
-* [Day 02](Day02/src/Day02.jl)
-* [Day 03](Day03/src/Day03.jl)
+All puzzles, rated by how fun they are to solve.
+* [Day 01](Day01/src/Day01.jl) ★★★★☆ Report Repair
+* [Day 02](Day02/src/Day02.jl) ★★☆☆☆ Password Philosophy
+* [Day 03](Day03/src/Day03.jl) ★★★☆☆ Toboggan Trajectory
+* [Day 04](Day04/src/Day04.jl) ★☆☆☆☆ Passport Processing
