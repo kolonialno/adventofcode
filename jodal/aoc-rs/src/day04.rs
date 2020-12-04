@@ -5,6 +5,14 @@ use std::collections::HashMap;
 use std::str::Lines;
 use validator::{Validate, ValidationError};
 
+pub fn solve_a(passports: &Vec<Passport>) -> usize {
+    passports.into_iter().filter(|p| p.is_valid_a()).count()
+}
+
+pub fn solve_b(passports: &Vec<Passport>) -> usize {
+    passports.into_iter().filter(|p| p.is_valid_b()).count()
+}
+
 lazy_static! {
     static ref HEIGHT: Regex = Regex::new(r"^(\d{3}cm|\d{2}in)$").unwrap();
     static ref HAIR_COLOR: Regex = Regex::new(r"^#[0-9a-f]{6}$").unwrap();
@@ -93,7 +101,7 @@ impl Passport {
         }
     }
 
-    pub fn is_valid_a(&self) -> bool {
+    fn is_valid_a(&self) -> bool {
         self.byr.is_some()
             && self.iyr.is_some()
             && self.eyr.is_some()
@@ -103,17 +111,9 @@ impl Passport {
             && self.pid.is_some()
     }
 
-    pub fn is_valid_b(&self) -> bool {
+    fn is_valid_b(&self) -> bool {
         self.is_valid_a() && self.validate().is_ok()
     }
-}
-
-pub fn solve_a(passports: &Vec<Passport>) -> usize {
-    passports.into_iter().filter(|p| p.is_valid_a()).count()
-}
-
-pub fn solve_b(passports: &Vec<Passport>) -> usize {
-    passports.into_iter().filter(|p| p.is_valid_b()).count()
 }
 
 #[cfg(test)]

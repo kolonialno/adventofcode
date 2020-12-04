@@ -2,6 +2,18 @@ use std::convert::TryFrom;
 use std::convert::TryInto;
 use std::str::Lines;
 
+pub fn solve_a(map: &Map) -> u32 {
+    map.traverse((3, 1))
+}
+
+pub fn solve_b(map: &Map) -> u32 {
+    map.traverse((1, 1))
+        * map.traverse((3, 1))
+        * map.traverse((5, 1))
+        * map.traverse((7, 1))
+        * map.traverse((1, 2))
+}
+
 #[derive(Debug)]
 pub struct Map {
     rows: Vec<Vec<Feature>>,
@@ -65,18 +77,6 @@ impl Map {
 
         num_trees
     }
-}
-
-pub fn solve_a(map: &Map) -> u32 {
-    map.traverse((3, 1))
-}
-
-pub fn solve_b(map: &Map) -> u32 {
-    map.traverse((1, 1))
-        * map.traverse((3, 1))
-        * map.traverse((5, 1))
-        * map.traverse((7, 1))
-        * map.traverse((1, 2))
 }
 
 #[cfg(test)]
