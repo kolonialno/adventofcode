@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
@@ -71,10 +72,10 @@ fn validate_height(height: &str) -> Result<(), ValidationError> {
 
 impl Passport {
     pub fn from_lines(lines: Lines) -> Vec<Passport> {
-        lines
-            .collect::<Vec<&str>>()
-            .split(|line| line.is_empty())
-            .map(|passport_lines| passport_lines.join(" "))
+        let line_groups = lines.group_by(|line| !line.is_empty());
+        line_groups
+            .into_iter()
+            .map(|(_, mut group)| group.join(" "))
             .map(|passport_line| Passport::from_line(&passport_line))
             .collect()
     }
