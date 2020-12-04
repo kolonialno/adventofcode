@@ -23,12 +23,7 @@ func importInput() []string {
 	b, err := ioutil.ReadAll(file)
 
 	s := strings.Split(string(b), "\n")
-	inputList := make([]string, 0, len(s))
-
-	for _, val := range s {
-		inputList = append(inputList, val)
-	}
-	return inputList
+	return s
 }
 
 func followPath(grid []string, step Step) int {
