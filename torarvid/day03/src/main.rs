@@ -14,11 +14,11 @@ fn solve(input: Lines, x_displacement: usize, y_displacement: usize) -> i32 {
     let mut pos_x = 0;
     let mut trees = 0;
     for (line_num, line) in input.enumerate().step_by(y_displacement) {
-        let char_count = line.chars().count();
-        if line_num > 0 && line.chars().nth(pos_x % char_count).unwrap() == '#' {
+        let chars: Vec<char> = line.chars().collect();
+        if line_num > 0 && chars[pos_x % chars.len()] == '#' {
             trees += 1;
         }
-        pos_x += x_displacement % char_count;
+        pos_x += x_displacement % chars.len();
     }
     trees
 }
