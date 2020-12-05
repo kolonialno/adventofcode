@@ -30,3 +30,7 @@ for boarding_pass in problem.split("\n"):
     seat_ids.append(seat_id)
 
 print(max(seat_ids))
+
+missing = set(range(min(seat_ids), max(seat_ids) + 1)) - set(seat_ids)
+assert len(missing) == 1
+print(missing.pop())
