@@ -1,26 +1,12 @@
-import math
+def parse(ranges, code):
+    for half in code:
+        ranges[half] = ranges[0] + (ranges[1] - ranges[0]) // 2
+    return ranges[0]
 
 with open("passes.txt", "r") as fh:
-    seat_ids = []
-    for line in fh:
-        row, column = None, None
-        rows = (0, 127)
-        columns = (0, 7)
-        for char in line.strip():
-            if char == "F":
-                rows = (rows[0], rows[0] + (rows[1] - rows[0])//2)
-            elif char == "B":
-                rows = (rows[0] + math.ceil((rows[1] - rows[0])/2), rows[1])
-            elif char == "R":
-                columns = (columns[0] + math.ceil((columns[1] - columns[0])/2), columns[1])
-            elif char == "L":
-                columns = (columns[0], columns[0] + (columns[1] - columns[0])//2)
-
-            if rows[0] == rows[1]:
-                row = rows[0]
-            if columns[0] == columns[1]:
-                column = columns[0]
-
+    for line in fh.readlines():
+        row = parse([0, 128], (1 if c == "F" else 0 for c in line[:7]))
+        column = parse([0, 8], (1 if c == "L" else 0 for c in line[7:]))
         seat_ids.append((row * 8) + column)
 
     seat_ids = sorted(seat_ids)
