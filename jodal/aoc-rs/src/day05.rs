@@ -4,7 +4,21 @@ pub fn solve_a(boarding_passes: &Vec<BoardingPass>) -> u32 {
     boarding_passes.iter().map(|bp| bp.seat_id()).max().unwrap()
 }
 
-pub fn solve_b(_boarding_passes: &Vec<BoardingPass>) -> u32 {
+pub fn solve_b(boarding_passes: &Vec<BoardingPass>) -> u32 {
+    let seat_ids = boarding_passes
+        .iter()
+        .map(|bp| bp.seat_id().to_owned())
+        .collect::<Vec<u32>>();
+    let min = seat_ids.iter().min().unwrap().to_owned();
+    let max = seat_ids.iter().max().unwrap().to_owned();
+    for seat_id in min..=max {
+        if seat_ids.iter().any(|&s| s == seat_id - 1)
+            && !seat_ids.iter().any(|&s| s == seat_id)
+            && seat_ids.iter().any(|&s| s == seat_id + 1)
+        {
+            return seat_id;
+        }
+    }
     0
 }
 
