@@ -51,13 +51,13 @@ end
 
 function validatefields(passport)
     (validate(passport)
-    && validateyear(passport, "byr", 1920, 2002)
-    && validateyear(passport, "iyr", 2010, 2020)
-    && validateyear(passport, "eyr", 2020, 2030)
-    && validatehgt(passport)
-    && validatehcl(passport)
-    && validateecl(passport)
-    && validatepid(passport))
+     && validateyear(passport, "byr", 1920, 2002)
+     && validateyear(passport, "iyr", 2010, 2020)
+     && validateyear(passport, "eyr", 2020, 2030)
+     && validatehgt(passport)
+     && validatehcl(passport)
+     && validateecl(passport)
+     && validatepid(passport))
 end
 
 function part1(data)
