@@ -62,8 +62,6 @@ According to the above rules, your improved system would report `2` valid passpo
 Count the number of valid passports - those that have all required fields. Treat `cid` as
 optional. In your batch file, how many passports are valid?
 
-The first half of this puzzle is complete! It provides one gold star: \*
-
 --- Part Two ---
 
 The line is moving more quickly now, but you overhear airport security talking about how
