@@ -17,3 +17,4 @@ All puzzles, rated by how fun they are to solve.
 * [Day 03](Day03/src/Day03.jl) ★★★☆☆ Toboggan Trajectory
 * [Day 04](Day04/src/Day04.jl) ★☆☆☆☆ Passport Processing
 * [Day 05](Day05/src/Day05.jl) ★★★☆☆ Binary Boarding
+* [Day 06](Day06/src/Day06.jl) ★★★★☆ Custom Customs
