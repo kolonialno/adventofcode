@@ -20,6 +20,8 @@ enum Command {
     Day04,
     /// Day 5: Binary Boarding
     Day05,
+    /// Day 6: Custom Customs
+    Day06,
 }
 
 fn main() -> Result<(), std::io::Error> {
@@ -56,6 +58,12 @@ fn main() -> Result<(), std::io::Error> {
             let boarding_passes = aoc::day05::BoardingPass::from_lines(input.lines());
             println!("Part one: {}", aoc::day05::solve_a(&boarding_passes));
             println!("Part two: {}", aoc::day05::solve_b(&boarding_passes));
+        }
+        Command::Day06 => {
+            let input = read_to_string("input/day06.txt")?;
+            let group_answers = aoc::day06::GroupAnswer::from_lines(input.lines());
+            println!("Part one: {}", aoc::day06::solve_a(&group_answers));
+            println!("Part two: {}", aoc::day06::solve_b(&group_answers));
         }
     }
 
