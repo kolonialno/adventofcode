@@ -18,8 +18,10 @@ pub fn solve_a(bag_rules: &BagRules) -> usize {
         .count()
 }
 
-pub fn solve_b(_bag_rules: &BagRules) -> usize {
-    0
+pub fn solve_b(bag_rules: &BagRules) -> u32 {
+    let bag_color = BagColor("shiny gold".to_owned());
+    let node_index = bag_rules.nodes.get(&bag_color).expect("Unknown bag color");
+    bag_rules.num_within(*node_index)
 }
 
 #[derive(Clone, Hash, Eq, PartialEq, Debug)]
@@ -95,6 +97,13 @@ impl BagRules {
         }
         result
     }
+
+    fn num_within(&self, node_index: NodeIndex) -> u32 {
+        self.get_children(node_index)
+            .iter()
+            .map(|(e, n)| self.dag.edge_weight(*e).unwrap() * (1 + self.num_within(*n)))
+            .sum()
+    }
 }
 
 #[cfg(test)]
@@ -120,8 +129,16 @@ dotted black bags contain no other bags.",
 
     #[test]
     fn example_b() {
-        let input = String::from(r"");
+        let input = String::from(
+            r"shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.",
+        );
         let bag_rules = BagRules::from_lines(input.lines());
-        assert_eq!(solve_b(&bag_rules), 0);
+        assert_eq!(solve_b(&bag_rules), 126);
     }
 }
