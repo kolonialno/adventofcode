@@ -19,3 +19,4 @@ All puzzles, rated by how fun they are to solve.
 * [Day 05](Day05/src/Day05.jl) ★★★☆☆ Binary Boarding
 * [Day 06](Day06/src/Day06.jl) ★★★★☆ Custom Customs
 * [Day 07](Day07/src/Day07.jl) ★★★★☆ Handy Haversacks
+* [Day 08](Day08/src/Day08.jl) ★★★★★ Handheld Halting

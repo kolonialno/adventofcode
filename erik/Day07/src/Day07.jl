@@ -10,8 +10,8 @@ function readdata(path)
     open(path) do file
         data = Dict()   
         for line in eachline(file)
-            m = match(r"^(.*?) bags contain(.*)", line)
-            push!(data, m[1] => Dict(filter(!isnothing, map(parsebag, split(m[2], ",")))))
+            s = split(line, " bags contain ")
+            push!(data, s[1] => Dict(filter(!isnothing, map(parsebag, split(s[2], ", ")))))
         end
         data
     end
@@ -25,7 +25,7 @@ end
 
 function numchildren(parent, data)
     if isempty(data[parent]) return 0 end
-    reduce(+, map(((k, v),) -> v + v * numchildren(k, data), collect(data[parent])))
+    mapreduce(((k, v),) -> v + v * numchildren(k, data), +, collect(data[parent]))
 end
 
 function part1(data)
