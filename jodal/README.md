@@ -7,4 +7,4 @@
 - [Day 5](aoc-rs/src/day05.rs) (Rust)
 - [Day 6](aoc-rs/src/day06.rs) (Rust)
 - [Day 7](aoc-rs/src/day07.rs) (Rust)
-- [Day 7](aoc-rs/src/day08.rs) (Rust)
+- [Day 8](aoc-rs/src/day08.rs) (Rust)
