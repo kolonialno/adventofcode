@@ -24,6 +24,8 @@ enum Command {
     Day06,
     /// Day 7: Handy Haversacks
     Day07,
+    /// Day 8: Handheld Halting
+    Day08,
 }
 
 fn main() -> Result<(), std::io::Error> {
@@ -72,6 +74,12 @@ fn main() -> Result<(), std::io::Error> {
             let bag_rules = aoc::day07::BagRules::from_lines(input.lines());
             println!("Part one: {}", aoc::day07::solve_a(&bag_rules));
             println!("Part two: {}", aoc::day07::solve_b(&bag_rules));
+        }
+        Command::Day08 => {
+            let input = read_to_string("input/day08.txt")?;
+            let program = aoc::day08::Op::from_lines(input.lines());
+            println!("Part one: {}", aoc::day08::solve_a(&program));
+            println!("Part two: {}", aoc::day08::solve_b(&program));
         }
     }
 
