@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Lines;
 
 pub fn solve_a(program: &Vec<Op>) -> i32 {
-    let mut machine = Machine::load(&program);
+    let mut machine = Machine::load(program.clone());
     let exit_status = machine.run();
     assert_eq!(exit_status, ExitStatus::InfiniteLoop);
     machine.acc
@@ -18,7 +18,7 @@ pub fn solve_b(program: &Vec<Op>) -> i32 {
             Op::Jmp(arg) => Op::Nop(arg),
             Op::Nop(arg) => Op::Jmp(arg),
         };
-        let mut machine = Machine::load(&patched_program);
+        let mut machine = Machine::load(patched_program);
         match machine.run() {
             ExitStatus::Success => return machine.acc,
             ExitStatus::InfiniteLoop => {}
@@ -60,11 +60,11 @@ struct Machine {
 }
 
 impl Machine {
-    pub fn load(program: &Vec<Op>) -> Machine {
+    pub fn load(program: Vec<Op>) -> Machine {
         Machine {
             acc: 0,
             pc: 0,
-            program: program.clone(),
+            program: program,
             executed: HashMap::new(),
         }
     }
