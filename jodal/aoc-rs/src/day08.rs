@@ -77,23 +77,22 @@ impl Machine {
                 }
                 Entry::Occupied(_) => return ExitStatus::InfiniteLoop,
             }
-            match self.program.get(self.pc as usize) {
-                Some(&op) => {
-                    // println!("pc={:?} acc={:?} op={:?}", self.pc, self.acc, op);
-                    match op {
-                        Op::Acc(arg) => {
-                            self.acc += arg;
-                            self.pc += 1;
-                        }
-                        Op::Jmp(arg) => {
-                            self.pc += arg;
-                        }
-                        Op::Nop(_) => {
-                            self.pc += 1;
-                        }
-                    }
+            let &op = self
+                .program
+                .get(self.pc as usize)
+                .expect("Instruction not found");
+            // println!("pc={:?} acc={:?} op={:?}", self.pc, self.acc, op);
+            match op {
+                Op::Acc(arg) => {
+                    self.acc += arg;
+                    self.pc += 1;
                 }
-                None => panic!("Instruction not found"),
+                Op::Jmp(arg) => {
+                    self.pc += arg;
+                }
+                Op::Nop(_) => {
+                    self.pc += 1;
+                }
             }
             if self.pc == self.program.len() as isize {
                 return ExitStatus::Success;
