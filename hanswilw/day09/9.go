@@ -91,10 +91,10 @@ func sumMinMax(slice []int) int {
 	min := slice[0]
 	max := slice[0]
 	for _, val := range slice {
-		if val == 0 || val < min {
+		if val < min {
 			min = val
 		}
-		if val == 0 || val > max {
+		if val > max {
 			max = val
 		}
 	}
