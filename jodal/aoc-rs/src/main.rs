@@ -87,7 +87,7 @@ fn main() -> Result<(), std::io::Error> {
             let input = read_to_string("input/day09.txt")?;
             let numbers = aoc::day09::from_lines(input.lines());
             println!("Part one: {}", aoc::day09::solve_a(&numbers, 25));
-            println!("Part two: {}", aoc::day09::solve_b(&numbers));
+            println!("Part two: {}", aoc::day09::solve_b(&numbers, 25));
         }
     }
 
