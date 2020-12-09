@@ -23,25 +23,22 @@ function part1(data)
     end
 end
 
+function findrange(a, b, acc, target, data)
+    acc == target && return minimum(data[a:b]) + maximum(data[a:b])
+    acc < target ?
+        findrange(a, b+1, acc+data[b+1], target, data) :
+        findrange(a+1, b, acc-data[a], target, data)
+end
+
 function part2(data)
-    total = part1(data)
-    for m in 1:length(data)
-        for n in m+1:length(data)
-            partial = sum(data[m:n])
-            if partial > total
-                continue
-            end
-            if partial == total
-                return minimum(data[m:n]) + maximum(data[m:n])
-            end
-        end
-    end
+    findrange(1, 2, data[1] + data[2], part1(data), data)
 end
 
 function main()
     data = readdata("input/input09.txt")
     println("> Part one: ", part1(data))
-    println("> Part two: ", part2(data))
+    println("> Part two: ", part2b(data))
 end
+
 
 end # module
