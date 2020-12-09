@@ -26,6 +26,8 @@ enum Command {
     Day07,
     /// Day 8: Handheld Halting
     Day08,
+    /// Day 9: Encoding Error
+    Day09,
 }
 
 fn main() -> Result<(), std::io::Error> {
@@ -80,6 +82,12 @@ fn main() -> Result<(), std::io::Error> {
             let program = aoc::day08::Op::from_lines(input.lines());
             println!("Part one: {}", aoc::day08::solve_a(&program));
             println!("Part two: {}", aoc::day08::solve_b(&program));
+        }
+        Command::Day09 => {
+            let input = read_to_string("input/day09.txt")?;
+            let numbers = aoc::day09::from_lines(input.lines());
+            println!("Part one: {}", aoc::day09::solve_a(&numbers, 25));
+            println!("Part two: {}", aoc::day09::solve_b(&numbers));
         }
     }
 
