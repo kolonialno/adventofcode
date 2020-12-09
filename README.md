@@ -8,18 +8,11 @@ puzzle is posted each day during December 1-25. All puzzles have some input that
 personalized for each user, so you'll have to log in there using your public Github, Google,
 Twitter or Reddit account.
 
-The adventofcode website also supports private leaderboards. We made one so you can all brag
-about your awesomeness if you want to. Go
-[here](http://adventofcode.com/2020/leaderboard/private) and use the code `139757-81917909` to
-join it.
-
 ## Access to this repo
 
 - If you don't have write access to this repo already, then go
   [here](https://github.com/orgs/kolonialno/teams/adventofcodeteam) and request access to the
   adventofcode team
-- If you see a 404, please ask on the slack channel (mentioned below), and we'll try to get
-  things sorted out.
 
 ## Setup
 
@@ -46,7 +39,7 @@ join it.
 ## Community, help, discussions, questions, etc
 
 - Use github issues and tag them with the day they are for and/or
-- Join slack channel [**#adventofcode**](https://kolonialno.slack.com/archives/C01GGT5M6MN)
+- Join slack channel **#adventofcode**
 
 ## Suggestion
 
