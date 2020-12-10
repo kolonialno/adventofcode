@@ -28,6 +28,8 @@ enum Command {
     Day08,
     /// Day 9: Encoding Error
     Day09,
+    /// Day 10: Adapter Array
+    Day10,
 }
 
 fn main() -> Result<(), std::io::Error> {
@@ -88,6 +90,12 @@ fn main() -> Result<(), std::io::Error> {
             let numbers = aoc::day09::from_lines(input.lines());
             println!("Part one: {}", aoc::day09::solve_a(&numbers, 25));
             println!("Part two: {}", aoc::day09::solve_b(&numbers, 25));
+        }
+        Command::Day10 => {
+            let input = read_to_string("input/day10.txt")?;
+            let numbers = aoc::day10::from_lines(input.lines());
+            println!("Part one: {}", aoc::day10::solve_a(&numbers));
+            // println!("Part two: {}", aoc::day10::solve_b(&numbers));
         }
     }
 
