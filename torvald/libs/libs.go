@@ -45,6 +45,27 @@ func ReadLinesNumbers(path string) ([]int, error) {
 	return numbers, nil
 }
 
+func ReadLinesNumbersMap(path string) (map[int]bool, int, int, error) {
+
+    numbersSlice, err := ReadLinesNumbers(path)
+
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	numbers := make(map[int]bool)
+
+    min, max := 0, 0
+
+	for _, number := range numbersSlice {
+        numbers[number] = true
+        if number > max { max = number }
+        if number < min { min = number }
+    }
+
+    return numbers, min, max, err
+}
+
 func ReadRuneMatrix(path string) ([][]rune, error) {
 
 	lines, err := ReadLinesStrings(path)
