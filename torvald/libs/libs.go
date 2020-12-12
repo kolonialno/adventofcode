@@ -86,3 +86,25 @@ func ReadRuneMatrix(path string) ([][]rune, error) {
 
 	return array, nil
 }
+
+/*
+ModLikePython does modulu like python does, which makes it possible to use it
+for wrapping slices with negative indexes.
+*/
+func ModLikePython(d, m int) int {
+	var res int = d % m
+	if (res < 0 && m > 0) || (res > 0 && m < 0) {
+		return res + m
+	}
+	return res
+}
+
+/*
+IntAbs is Abs for int, the build in is for float64.
+*/
+func IntAbs(x int) int {
+    if x < 0 {
+    	return -x
+    }
+    return x
+}
