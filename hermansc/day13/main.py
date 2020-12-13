@@ -1,9 +1,9 @@
 lines = open("schedule.txt").read().strip()
 
 # Part 1
-# earliest, departures = (int(lines.split("\n")[0]), [int(bid) for bid in lines.split("\n")[1].split(",") if bid != "x"])
-# nd = min([(bid - (earliest % bid), bid) for bid in departures])
-# print(nd[1] * nd[0])
+earliest, departures = (int(lines.split("\n")[0]), [int(bid) for bid in lines.split("\n")[1].split(",") if bid != "x"])
+nd = min([(bid - (earliest % bid), bid) for bid in departures])
+print(nd[1] * nd[0])
 
 # Part 2 (First naive attempt - never finishes)
 # departures = [int(bid) if bid != "x" else None for bid in lines.split("\n")[1].split(",")]
