@@ -21,3 +21,4 @@ All puzzles, rated by how fun they are to solve.
 * [Day 07](Day07/src/Day07.jl) ★★★★☆ Handy Haversacks
 * [Day 08](Day08/src/Day08.jl) ★★★★★ Handheld Halting
 * [Day 09](Day09/src/Day09.jl) ★★★★☆ Encoding Error
+* [Day 15](Day15/src/Day15.jl) ★★★★☆ Rambunctious Recitation
