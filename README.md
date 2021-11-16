@@ -39,7 +39,7 @@ Twitter or Reddit account.
 ## Community, help, discussions, questions, etc
 
 - Use github issues and tag them with the day they are for and/or
-- Join slack channel **#adventofcode**
+- Join slack channel [**#adventofcode**](https://kolonialno.slack.com/archives/C01GGT5M6MN)
 
 ## Suggestion
 
