@@ -34,32 +34,16 @@ fn main() -> Result<(), Error>{
     let depths = read_input("input.txt")?;
     print_type_of(&depths);
 
-    // Task 1
-    let mut index = 1;
-    let mut increasing_depths = 0;
-
-    while index < depths.len() {
-        if depths[index - 1] < depths[index]{
-            increasing_depths = increasing_depths + 1;
-        }
-        index = index + 1;
-    }
+    // Problem 1
+    // Create windows [A, B] and check A < B
+    let mut increasing_depths = depths.windows(2).filter(|w| w[0] < w[1]).count();
     println!("Number of increasing depths is: {}", increasing_depths);
 
-    // Task 2
-    index = 0;
-    increasing_depths = 0;
-    let mut window_a: i64;
-    let mut window_b: i64 = depths[0] + depths[1] + depths[2];
-
-    while index < depths.len() - 3 {
-        window_a = window_b;
-        window_b = depths[index+1] + depths[index+2] + depths[index+3];
-        if window_a < window_b{
-            increasing_depths = increasing_depths + 1;
-        }
-        index = index + 1;
-    }
+    // Problem 2
+    // (A + B + C) - (B + C + D) = D - A so we only need to check if the last in the window is
+    // larger then the first.
+    // Create windows [A, B, C, D] and check A < D
+    increasing_depths = depths.windows(4).filter(|w| w[0] < w[3]).count();
     println!("Number of increasing windowed depths is: {}", increasing_depths);
 
     Ok(())
