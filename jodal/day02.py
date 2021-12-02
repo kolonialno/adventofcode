@@ -17,26 +17,26 @@ def commands(filename):
 
 def engine_v1(state, command):
     (pos, depth) = state
-    (op, val) = command
-    if op == "forward":
-        pos += val
-    elif op == "down":
-        depth += val
-    elif op == "up":
-        depth -= val
+    match command:
+        case ("forward", val):
+            pos += val
+        case ("down", val):
+            depth += val
+        case ("up", val):
+            depth -= val
     return (pos, depth)
 
 
 def engine_v2(state, command):
     (pos, depth, aim) = state
-    (op, val) = command
-    if op == "forward":
-        pos += val
-        depth += aim * val
-    elif op == "down":
-        aim += val
-    elif op == "up":
-        aim -= val
+    match command:
+        case ("forward", val):
+            pos += val
+            depth += aim * val
+        case ("down", val):
+            aim += val
+        case ("up", val):
+            aim -= val
     return (pos, depth, aim)
 
 
