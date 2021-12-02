@@ -10,8 +10,8 @@ def read_input(filename):
 
 def part1(input):
     steps = [(x * d, z * d) for (x, z), d in input]
-    total = reduce(lambda p1, p2: (p1[0] + p2[0], p1[1] + p2[1]), steps)
-    return total[0] * total[1]
+    x, z = reduce(lambda p1, p2: (p1[0] + p2[0], p1[1] + p2[1]), steps)
+    return x * z
 
 
 def part2(input):
