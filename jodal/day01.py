@@ -8,12 +8,12 @@ def one(a):
     return sum(starmap(lt, pairwise(map(int, open(a)))))
 
 
-def test_one():
-    assert one("test01.txt") == 7
-
-
 def two(a):
     return sum(starmap(lt, pairwise(map(sum, triplewise(map(int, open(a)))))))
+
+
+def test_one():
+    assert one("test01.txt") == 7
 
 
 def test_two():
