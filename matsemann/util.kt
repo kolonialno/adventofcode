@@ -1,5 +1,7 @@
 package com.matsemann.adventofcode2021
 
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -11,10 +13,16 @@ fun run(runName: String? = null, fileName: String, func: (List<String>) -> Any) 
     val lines = getFileLines(fileName)
     val result = measure { func(lines) }
 
-    println("Result for ${runName ?: fileName}:\t${result}\n")
+    println("Result for ${runName ?: fileName}:\t${result}")
+    try {
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(result.toString()), null)
+        println("Copied to clipboard!\n")
+    } catch (_: Exception) {
+
+    }
 }
 
-fun <T> measure(func: () -> T) : T {
+fun <T> measure(func: () -> T): T {
     val start = System.currentTimeMillis()
 
     return func().also {
