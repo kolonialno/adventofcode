@@ -1,29 +1,25 @@
+# Use the [Choice] comment to indicate option arguments that should appear in VS Code UX
+#
+# [Choice] Haskell version: 9, 8
+ARG VARIANT=8
+FROM haskell:${VARIANT}
 
-FROM haskell:buster
+# Use the [Option] comment to specify true/false arguments that should appear in VS Code UX
+#
+# [Option] Install zsh
+ARG INSTALL_ZSH="true"
+# [Option] Upgrade OS packages to their latest versions
+ARG UPGRADE_PACKAGES="true"
 
-RUN apt update && apt install -y wget fontconfig unzip zsh vim python3
-# install specific go version
-RUN wget -c https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
-RUN export PATH=$PATH:/usr/local/go/bin
+# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+COPY library-scripts/*.sh /tmp/library-scripts/
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" "true" "true"\
+    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
-# install my preferred font for development
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/install_manual.sh)"
-
-# create user for VSC so that we are not running as root
-RUN useradd -ms /bin/zsh vscodeuser
-USER vscodeuser
-WORKDIR /home/vscodeuser
-
-# install oh-my-zsh
-RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# configure necessary Go directories and binaries to be found in the PATH
-RUN export GOPATH=/home/vscodeuser/go
-RUN echo 'PATH=$PATH:/usr/local/go/bin' >> ~/.zshrc
-
-# configure oh-my-zsh theme
-RUN sed -i 's/ZSH_THEME.*/ZSH_THEME="Soliah"/' ~/.zshrc
-RUN mkdir ~/.ghc/ && touch ~/.ghc/ghci.conf
-
-# Configure increased level of warnings for Haskell compiler
-RUN echo ':set -Wall' >> ~/.ghc/ghci.conf
+# [Optional] Uncomment this section to install additional OS packages.
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>
