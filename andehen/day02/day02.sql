@@ -4,7 +4,11 @@ create table cmds (
     "id" int primary key,
     "cmd" string
 );
-insert into cmds(id, cmd) select nextval('id'), * from read_csv_auto('input.txt');
+insert into cmds(
+    id, cmd
+) select
+    nextval('id'),
+    * from read_csv_auto('input.txt');
 
 create view parsed_cmds as (
     select
@@ -14,7 +18,11 @@ create view parsed_cmds as (
     from cmds
 );
 
-select sum(value) filter (where cmd = 'forward') * ( sum(value) filter (where cmd = 'down') - sum(value) filter (where cmd = 'up')) as part_1
+select sum(value) filter (where cmd = 'forward')
+    * (
+        sum(value) filter (where cmd = 'down')
+        - sum(value) filter (where cmd = 'up')
+    ) as part_1
 from parsed_cmds;
 
 with cmds_aim as (
@@ -22,11 +30,17 @@ with cmds_aim as (
         id,
         value,
         cmd,
-        sum(case when cmd = 'down' then value when cmd = 'up' then -value else 0 end) over (order by id) as aim
+        sum(
+            case
+                when cmd = 'down' then value
+                when cmd = 'up' then -value else 0
+            end
+        ) over (order by id) as aim
     from parsed_cmds
 ),
+
 x_y_diffs as (
-    select 
+    select
         case when cmd = 'forward' then value else 0 end as x_diff,
         case when cmd = 'forward' then aim * value else 0 end as y_diff
     from cmds_aim
