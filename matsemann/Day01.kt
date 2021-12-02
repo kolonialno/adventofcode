@@ -1,13 +1,13 @@
 package com.matsemann.adventofcode2021
 
 fun main() {
-    run("1", fileName = "day01_1") { lines ->
+    run("1", fileName = "day01_1.txt") { lines ->
         lines
             .map { it.toInt() }
             .zipWithNext { a, b -> a < b }
             .count { it }
     }
-    run("2", fileName = "day01_1") { lines ->
+    run("2", fileName = "day01_1.txt") { lines ->
         lines
             .map { it.toInt() }
             .windowed(3) { it.sum() }
