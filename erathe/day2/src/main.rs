@@ -7,34 +7,34 @@ fn main() {
     println!("{}", part2(input));
 }
 
-fn part1(input: &str) -> i32 {
-    let mut coords = (0, 0);
+fn part2(input: &str) -> i32 {
+    let mut sub = Sub::default();
     for c in input.lines().map(|l| l.parse::<Command>().unwrap()) {
-        match c.dir.as_str() {
-            "forward" => coords.0 += c.len,
-            "down" => coords.1 += c.len,
-            "up" => coords.1 -= c.len,
-            _ => (),
+        match c.dir {
+            b'f' => sub.adjust_pos(c.len),
+            b'd' => sub.adjust_aim(c.len),
+            b'u' => sub.adjust_aim(-c.len),
+            _ => unreachable!(),
         }
     }
-    coords.0 * coords.1
+    sub.get_position()
 }
 
-fn part2(input: &str) -> i32 {
-    let mut sub_pos = SubPos::default();
-    for c in input.lines().map(|l| l.parse::<Command>().unwrap()) {
-        match c.dir.as_str() {
-            "forward" => sub_pos.adjust_pos(c.len),
-            "down" => sub_pos.adjust_aim(c.len),
-            "up" => sub_pos.adjust_aim(-c.len),
-            _ => (),
-        }
-    }
-    sub_pos.get_position()
+fn part1(input: &str) -> i32 {
+    let (x, y) = input.lines().map(|l| l.parse::<Command>().unwrap()).fold(
+        (0, 0),
+        |(x, y), Command { dir, len }| match dir {
+            b'f' => (x + len, y),
+            b'd' => (x, y + len),
+            b'u' => (x, y - len),
+            _ => unreachable!(),
+        },
+    );
+    x * y
 }
 
 struct Command {
-    dir: String,
+    dir: u8,
     len: i32,
 }
 
@@ -42,21 +42,21 @@ impl FromStr for Command {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let split: Vec<&str> = s.split(" ").collect();
+        let split: Vec<&str> = s.split_whitespace().collect();
         Ok(Self {
-            dir: split[0].to_string(),
+            dir: split[0].as_bytes()[0],
             len: split[1].parse().unwrap(),
         })
     }
 }
 
 #[derive(Default, Debug)]
-struct SubPos {
+struct Sub {
     aim: i32,
     pos: (i32, i32),
 }
 
-impl SubPos {
+impl Sub {
     fn get_position(&self) -> i32 {
         self.pos.0 * self.pos.1
     }
