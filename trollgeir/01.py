@@ -1,6 +1,6 @@
 import pandas as pd
 
-data = pd.read_csv("input.txt", header=None)[0]
+data = pd.read_csv("inputs/01.txt", header=None)[0]
 
 # Puzzle 1
 answer1 = (data.shift(-1) > data).sum()
