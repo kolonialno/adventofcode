@@ -2,3 +2,14 @@
 [Matsemann](https://github.com/Matsemann)'s solutions to Advent of Code 2021.
 
 Kotlin all the way.
+
+
+Ranks
+
+```
+      -------Part 1--------   -------Part 2--------
+Day       Time  Rank  Score       Time  Rank  Score
+  3   00:08:51  2281      0   00:33:02  2927      0
+  2   00:03:38  1642      0   00:05:40  1259      0
+  1   00:48:12  9491      0   00:50:49  8122      0
+```
