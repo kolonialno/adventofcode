@@ -13,26 +13,21 @@ def read_input(filename):
 
 def board_scores(input):
     numbers, grids = input
-    boards = [
-        {
-            "numbers": reduce(lambda a, b: a.union(b), grid, set()),
-            "lines": list(map(set, grid)) + list(map(set, zip(*grid))),
-        }
-        for grid in grids
-    ]
+    board_lines = [list(map(set, grid)) + list(map(set, zip(*grid))) for grid in grids]
 
     def scores():
         for n in numbers:
-            for board in filter(lambda b: b, boards):
-                if n in board["numbers"]:
-                    board["numbers"].remove(n)
-                    for i, line in enumerate(board["lines"]):
-                        if n in line:
-                            line.remove(n)
-                            if not line:
-                                yield reduce(lambda a, b: a + b, board["numbers"]) * n
-                                board.clear()
-                                break
+            for board in filter(lambda b: b, board_lines):
+                for i, line in enumerate(board):
+                    if n in line:
+                        line.remove(n)
+                        if not line:
+                            yield reduce(
+                                lambda a, b: a + b,
+                                reduce(lambda a, b: a.union(b), board) - {n},
+                            ) * n
+                            board.clear()
+                            break
 
     return scores
 
