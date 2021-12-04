@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 
 # Input parsing
@@ -11,31 +12,27 @@ for entry in entries:
     columns = list(map(list, zip(*rows)))
     boards.append({"rows": rows, "columns": columns})
 
+# How to provide the answer for a given board
+# Assuming numbers to have been drawn to be removed from the list(s)
 def calculate_answer(board, draw):
     return draw * sum(sum(row) for row in board["rows"])
 
-found = False
 placement = 1
 for draw in draws:
     for board_number, board in enumerate(boards):
         if "placement" in board:
+            # We are already done with this board
             continue
-        for column in board['columns']:
-            if draw in column:
-                column.remove(draw)
-            if not column:
+
+        for line in itertools.chain(board["rows"], board["columns"]):
+            if draw in line:
+                line.remove(draw)
+            if not line:
+                # The column or row is now empty, and we have a winning board
                 boards[board_number]["placement"] = placement
-                placement += 1
                 boards[board_number]["answer"] = calculate_answer(board, draw)
-                break
-        for row in board['rows']:
-            if draw in row:
-                row.remove(draw)
-            if not row:
-                boards[board_number]["placement"] = placement
                 placement += 1
-                boards[board_number]["answer"] = calculate_answer(board, draw)
-                break
+
     if all(("placement" in board) for board in boards):
         break
 
