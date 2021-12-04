@@ -17,23 +17,21 @@ def board_scores(input):
         {
             "numbers": reduce(lambda a, b: a.union(b), grid, set()),
             "lines": list(map(set, grid)) + list(map(set, zip(*grid))),
-            "unmarked": [5 for _ in range(10)],
-            "live": True,
         }
         for grid in grids
     ]
 
     def scores():
         for n in numbers:
-            for board in filter(lambda b: b["live"], boards):
+            for board in filter(lambda b: b, boards):
                 if n in board["numbers"]:
                     board["numbers"].remove(n)
                     for i, line in enumerate(board["lines"]):
                         if n in line:
-                            board["unmarked"][i] -= 1
-                            if not board["unmarked"][i]:
+                            line.remove(n)
+                            if not line:
                                 yield reduce(lambda a, b: a + b, board["numbers"]) * n
-                                board["live"] = False
+                                board.clear()
                                 break
 
     return scores
