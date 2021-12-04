@@ -16,11 +16,8 @@ impl From<&[String]> for BingoBoard {
     fn from(lines: &[String]) -> Self {
         let mut entries = [[BingoEntry { number: 0, is_checked: false }; 5]; 5];
         for (i, line) in lines[1..].iter().enumerate() {
-            for (j, number) in line.split_whitespace().enumerate() {
-                entries[i][j] = BingoEntry {
-                    number: number.parse().unwrap(),
-                    is_checked: false,
-                };
+            for (j, number) in line.split_whitespace().map(|n| n.parse().unwrap()).enumerate() {
+                entries[i][j] = BingoEntry { number, is_checked: false };
             }
         }
         BingoBoard { entries }
@@ -28,31 +25,24 @@ impl From<&[String]> for BingoBoard {
 }
 
 impl BingoBoard {
-    fn find_row_number_with_bingo(&self) -> Option<usize> {
+    fn has_bingo(&self) -> bool {
         for i in 0..5 {
+            // First check rows
             if self.entries[i].iter().all(|e| e.is_checked) {
-                return Some(i);
+                return true;
             }
-        }
-        None
-    }
 
-    fn find_col_number_with_bingo(&self) -> Option<usize> {
-        for i in 0..5 {
+            // Then check columns
             if self.entries[0][i].is_checked
                 && self.entries[1][i].is_checked
                 && self.entries[2][i].is_checked
                 && self.entries[3][i].is_checked
                 && self.entries[4][i].is_checked
             {
-                return Some(i);
+                return true;
             }
         }
-        None
-    }
-
-    fn has_bingo(&self) -> bool {
-        self.find_row_number_with_bingo().is_some() || self.find_col_number_with_bingo().is_some()
+        return false;
     }
 
     fn mark_number(&mut self, number: u32) {
