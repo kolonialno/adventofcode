@@ -18,7 +18,7 @@ def board_scores(input):
     def scores():
         for n in numbers:
             for board in filter(lambda b: b, board_lines):
-                for i, line in enumerate(board):
+                for line in board:
                     if n in line:
                         line.remove(n)
                         if not line:
