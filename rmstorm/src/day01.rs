@@ -14,7 +14,7 @@ fn read<R: Read>(io: R) -> Result<Vec<i64>, Error> {
 }
 
 fn part1() {
-    let v = read(File::open("inputs/day1.txt").unwrap()).unwrap();
+    let v = read(File::open("inputs/day01.txt").unwrap()).unwrap();
     let mut increment_counter = 0;
     for (pos1, e1) in v.iter().enumerate() {
         if pos1 > 0  && (e1 - v[pos1-1]) > 0{
@@ -25,7 +25,7 @@ fn part1() {
 }
 
 fn part2() {
-    let v = read(File::open("inputs/day1.txt").unwrap()).unwrap();
+    let v = read(File::open("inputs/day01.txt").unwrap()).unwrap();
     let mut increment_counter = 0;
     let mut prev_sum: i64 = 1000000;
     for (pos1, _e1) in v.iter().enumerate() {
