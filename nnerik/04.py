@@ -13,17 +13,16 @@ def read_input(filename):
 
 def board_scores(input):
     numbers, grids = input
-    board_lines = [list(map(set, grid)) + list(map(set, zip(*grid))) for grid in grids]
+    boards = [list(map(set, grid)) + list(map(set, zip(*grid))) for grid in grids]
 
     def scores():
         for n in numbers:
-            for board in filter(lambda b: b, board_lines):
+            for board in filter(lambda b: b, boards):
                 for line in board:
                     if n in line:
                         line.remove(n)
                         if not line:
-                            yield reduce(
-                                lambda a, b: a + b,
+                            yield sum(
                                 reduce(lambda a, b: a.union(b), board) - {n},
                             ) * n
                             board.clear()
