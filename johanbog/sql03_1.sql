@@ -14,7 +14,7 @@ from input
 a as (
     {% for i in range(12) %}
     select
-        mode(coalesce(split(numbers::VARCHAR,'')[{{i}}]::INTEGER,0)) as mode_num
+        mode(split(numbers::VARCHAR,'')[{{i}}]::INTEGER) as mode_num
     from padded
     {%- if not loop.last %} union all {% endif -%}
     {% endfor %}
@@ -32,4 +32,3 @@ select
     sum(mode_num * (2 ** rn))
     * sum((1-mode_num) * (2 ** rn))
 from b
-
