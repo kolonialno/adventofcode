@@ -4,7 +4,7 @@ import re
 
 def read_input(filename):
     with open(filename) as f:
-        return [tuple(map(int, (re.findall("\d+", line)))) for line in f]
+        return [tuple(int(n) for n in (re.findall("\d+", line))) for line in f]
 
 
 def count_overlaps(lines):
