@@ -1,4 +1,5 @@
 #!/bin/python
+from collections import defaultdict
 with open('./04_input.txt') as f:
     data = f.read().split('\n')
 
@@ -26,9 +27,11 @@ def check_table(table, vals_):
         for i_cell, cell in enumerate(row):
             if cell in vals_:
                 found_mask[i_row][i_cell] = 1
+    # Check row
     for row in found_mask:
         if all(row):
             return True
+    # Check column
     for pos in range(5):
         found = []
         for row in table:
@@ -41,34 +44,33 @@ def check_table(table, vals_):
 def get_winning_table(get_first=True):
     vals_accumulated = []
     won_tables = []
-    for val in vals:
+    solved_by_tries = defaultdict(list)
+    for try_, val in enumerate(vals):
         vals_accumulated.append(val)
         for i, table in enumerate(tables):
             if i in won_tables:
                 continue
             if check_table(table, vals_accumulated):
                 won_tables.append(i)
+                solved_by_tries[try_].append(i)
                 ret = get_first or (len(won_tables) == len(tables))
                 if ret:
                     return table, val, vals_accumulated
 
 
-def get_unmarked_sum(winning, val, vals_accumumated):
+def get_unmarked_sum(winning_, vals_accumulated_):
     unmarked = []
-    for row in winning:
-        unmarked.extend([cell for cell in row if cell not in vals_accumulated])
+    for row in winning_:
+        unmarked.extend([cell for cell in row if cell not in vals_accumulated_])
     return sum(unmarked)
 
 
 winning, val, vals_accumulated = get_winning_table()
 winning_last, val_last, vals_accumulated_last = get_winning_table(get_first=False)
 
-unmarked_sum = get_unmarked_sum(winning, val, vals_accumulated)
-unmarked_sum_last = get_unmarked_sum(winning_last, val_last, vals_accumulated_last)
 
-# print(vals_accumulated_last)
-# for row in winning_last:
-#     print([f'{int(cell in vals_accumulated_last)}: {cell}' for cell in row])
+unmarked_sum = get_unmarked_sum(winning, vals_accumulated)
+unmarked_sum_last = get_unmarked_sum(winning_last, vals_accumulated_last)
 
 
 print(f'Unmarked sum: {unmarked_sum}, last val: {val}, answer: {unmarked_sum * val}')
