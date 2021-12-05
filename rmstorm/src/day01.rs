@@ -5,10 +5,12 @@ fn read<R: Read>(io: R) -> Result<Vec<i64>, Error> {
     let br = BufReader::new(io);
     let mut v = vec![];
     for line in br.lines() {
-        v.push(line?
-            .trim()
-            .parse()
-            .map_err(|e| Error::new(ErrorKind::InvalidData, e))?);
+        v.push(
+            line?
+                .trim()
+                .parse()
+                .map_err(|e| Error::new(ErrorKind::InvalidData, e))?,
+        );
     }
     Ok(v)
 }
@@ -17,7 +19,7 @@ fn part1() {
     let v = read(File::open("inputs/day01.txt").unwrap()).unwrap();
     let mut increment_counter = 0;
     for (pos1, e1) in v.iter().enumerate() {
-        if pos1 > 0  && (e1 - v[pos1-1]) > 0{
+        if pos1 > 0 && (e1 - v[pos1 - 1]) > 0 {
             increment_counter += 1;
         }
     }
@@ -30,7 +32,7 @@ fn part2() {
     let mut prev_sum: i64 = 1000000;
     for (pos1, _e1) in v.iter().enumerate() {
         if pos1 > 1 {
-            let cur_sum: i64 = (&v[pos1-2..pos1+1]).iter().sum();
+            let cur_sum: i64 = (&v[pos1 - 2..pos1 + 1]).iter().sum();
             if cur_sum > prev_sum {
                 increment_counter += 1;
             }
