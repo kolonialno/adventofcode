@@ -6,37 +6,42 @@ import pandas as pd
 
 # Input parsing
 p = Path("inputs/05.txt")
-entries = [entry.split(" -> ") for entry in p.read_text().strip().split("\n")]
 entries = [
-    [list(map(int, start.split(","))) + list(map(int, end.split(",")))][0]
-    for start, end
-    in entries
+    map(int, entry.split(","))
+    for entry
+    in p.read_text().strip().replace(" -> ", ",").split("\n")
 ]
-entries = pd.DataFrame(entries, columns=["start_x", "start_y", "end_x", "end_y"])
+entries = pd.DataFrame(
+    entries,
+    columns=["start_x", "start_y", "end_x", "end_y"],
+)
 
 # Matrix containing lines
 max_dim = entries.to_numpy().max()
-m = np.zeros((max_dim + 1, max_dim + 1), dtype=int)
+raster = np.zeros(
+    (max_dim + 1, max_dim + 1),
+    dtype=int,
+)
+
+for axis in ("x", "y"):
+    entries[f"min_{axis}"] = entries[[f"start_{axis}", f"end_{axis}"]].min(axis=1)
+    entries[f"max_{axis}"] = entries[[f"start_{axis}", f"end_{axis}"]].max(axis=1)
 
 # Task 1
-for _, row in entries.query("start_x == end_x").iterrows():
-    start_y, end_y = min(row.start_y, row.end_y), max(row.start_y, row.end_y)
-    m[start_y:end_y + 1, row.start_x] += 1
+for _, row in entries.query("start_x == end_x or start_y == end_y").iterrows():
+    raster[row.min_y:row.max_y + 1, row.min_x:row.max_x + 1] += 1
 
-for _, row in entries.query("start_y == end_y").iterrows():
-    start_x, end_x = min(row.start_x, row.end_x), max(row.start_x, row.end_x)
-    m[row.start_y, start_x:end_x + 1] += 1
-
-print((m >= 2).sum())
+print((raster >= 2).sum())
 
 # Task 2 
-for _, row in entries.query("start_y != end_y and start_x != end_x").iterrows():
-    x_delta = np.sign(row.end_x - row.start_x)
-    y_delta = np.sign(row.end_y - row.start_y)
-    x, y = row.start_x, row.start_y
-    while x != (row.end_x + x_delta) and y != (row.end_y + y_delta):
-        m[y, x] += 1
-        x += x_delta
-        y += y_delta
+for axis in ("x", "y"):
+    entries[f"{axis}_slope"] = np.sign(entries[f"end_{axis}"] - entries[f"start_{axis}"])
 
-print((m >= 2).sum())
+for _, row in entries.query("start_y != end_y and start_x != end_x").iterrows():
+    for x, y in zip(
+            np.arange(start=row.start_x, stop=row.end_x + row.x_slope, step=row.x_slope),
+            np.arange(start=row.start_y, stop=row.end_y + row.y_slope, step=row.y_slope),
+    ):
+        raster[y, x] += 1
+
+print((raster >= 2).sum())
