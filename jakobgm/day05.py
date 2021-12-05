@@ -38,10 +38,9 @@ for axis in ("x", "y"):
     entries[f"{axis}_slope"] = np.sign(entries[f"end_{axis}"] - entries[f"start_{axis}"])
 
 for _, row in entries.query("start_y != end_y and start_x != end_x").iterrows():
-    for x, y in zip(
-            np.arange(start=row.start_x, stop=row.end_x + row.x_slope, step=row.x_slope),
-            np.arange(start=row.start_y, stop=row.end_y + row.y_slope, step=row.y_slope),
-    ):
-        raster[y, x] += 1
+    raster[
+        np.arange(start=row.start_y, stop=row.end_y + row.y_slope, step=row.y_slope),
+        np.arange(start=row.start_x, stop=row.end_x + row.x_slope, step=row.x_slope),
+    ] += 1
 
 print((raster >= 2).sum())
