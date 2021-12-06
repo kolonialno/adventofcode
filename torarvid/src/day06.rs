@@ -18,12 +18,8 @@ fn solve(timings: &Vec<u64>, iterations: u64) -> u64 {
     }
 
     for _ in 0..iterations {
-        let mut new_arr: [u64; 9] = [0; 9];
-        for i in (0..9).rev() {
-            new_arr[i] = arr[(i + 1) % 9];
-        }
-        new_arr[6] += arr[0];
-        arr = new_arr;
+        arr.rotate_left(1);
+        arr[6] += arr[8];
     }
     arr.iter().sum()
 }
