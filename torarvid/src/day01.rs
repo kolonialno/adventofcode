@@ -12,4 +12,3 @@ pub fn run() {
     let part2 = grouped.windows(2).filter(|w| w[0] < w[1]).count();
     println!("Part 2: {}", part2);
 }
-

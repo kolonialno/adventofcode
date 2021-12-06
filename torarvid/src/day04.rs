@@ -1,5 +1,5 @@
-use std::slice::Chunks;
 use crate::util::file_by_lines;
+use std::slice::Chunks;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 struct BingoEntry {
@@ -14,10 +14,20 @@ struct BingoBoard {
 
 impl From<&[String]> for BingoBoard {
     fn from(lines: &[String]) -> Self {
-        let mut entries = [[BingoEntry { number: 0, is_checked: false }; 5]; 5];
+        let mut entries = [[BingoEntry {
+            number: 0,
+            is_checked: false,
+        }; 5]; 5];
         for (i, line) in lines[1..].iter().enumerate() {
-            for (j, number) in line.split_whitespace().map(|n| n.parse().unwrap()).enumerate() {
-                entries[i][j] = BingoEntry { number, is_checked: false };
+            for (j, number) in line
+                .split_whitespace()
+                .map(|n| n.parse().unwrap())
+                .enumerate()
+            {
+                entries[i][j] = BingoEntry {
+                    number,
+                    is_checked: false,
+                };
             }
         }
         BingoBoard { entries }
@@ -57,7 +67,11 @@ impl BingoBoard {
 
     fn calculate_score(&self, number: u32) -> u32 {
         let entries = self.entries.iter().flatten();
-        entries.filter(|e| !e.is_checked).map(|e| e.number).sum::<u32>() * number
+        entries
+            .filter(|e| !e.is_checked)
+            .map(|e| e.number)
+            .sum::<u32>()
+            * number
     }
 }
 
@@ -65,7 +79,9 @@ pub fn run() {
     let lines = file_by_lines("day04.txt");
 
     let num_parts = lines[0].split(",");
-    let numbers: Vec<_> = num_parts.map(|s| s.trim().parse::<u32>().unwrap()).collect();
+    let numbers: Vec<_> = num_parts
+        .map(|s| s.trim().parse::<u32>().unwrap())
+        .collect();
 
     println!("Part1: {}", part1(lines[1..].chunks(6), &numbers));
     println!("Part2: {}", part2(lines[1..].chunks(6), &numbers));

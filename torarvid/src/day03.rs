@@ -8,8 +8,8 @@ pub fn run() {
     let mut epsilon_str = "".to_owned();
     for i in 0..len {
         let (zeros, ones) = count_ones_and_zeros_at_digit(&numbers, i);
-        gamma_str.push_str(if ones > zeros {"1"} else {"0"});
-        epsilon_str.push_str(if ones > zeros {"0"} else {"1"});
+        gamma_str.push_str(if ones > zeros { "1" } else { "0" });
+        epsilon_str.push_str(if ones > zeros { "0" } else { "1" });
     }
 
     let gamma = u64::from_str_radix(&gamma_str, 2).unwrap();
@@ -38,7 +38,11 @@ fn count_ones_and_zeros_at_digit(numbers: &Vec<String>, digit: usize) -> (usize,
     let mut ones = 0;
     for line in numbers {
         let digit = line.chars().nth(digit).unwrap();
-        if digit == '0' { zeros += 1 } else { ones += 1 }
+        if digit == '0' {
+            zeros += 1
+        } else {
+            ones += 1
+        }
     }
     (zeros, ones)
 }

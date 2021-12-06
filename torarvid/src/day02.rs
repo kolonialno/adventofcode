@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use crate::util::file_by_lines;
+use std::str::FromStr;
 
 enum Instruction {
     Down(u64),
@@ -24,8 +24,10 @@ impl FromStr for Instruction {
 }
 
 pub fn run() {
-    let instructions: Vec<_> = file_by_lines("day02.txt").iter()
-        .map(|s| Instruction::from_str(s).unwrap()).collect();
+    let instructions: Vec<_> = file_by_lines("day02.txt")
+        .iter()
+        .map(|s| Instruction::from_str(s).unwrap())
+        .collect();
 
     let mut depth = 0;
     let mut forward = 0;
@@ -48,14 +50,14 @@ pub fn run() {
         match i {
             Instruction::Down(n) => {
                 aim += n;
-            },
+            }
             Instruction::Up(n) => {
                 aim -= n;
-            },
+            }
             Instruction::Forward(n) => {
                 pos += n;
                 depth += aim * n;
-            },
+            }
         }
     }
 

@@ -1,10 +1,10 @@
 use std::env;
-mod util;
 mod day01;
 mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod util;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
