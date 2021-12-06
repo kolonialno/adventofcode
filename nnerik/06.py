@@ -8,9 +8,8 @@ def read_input(filename):
 
 def solve(state, steps):
     for _ in range(steps):
-        new = state[0]
-        state = state[1:] + [new]
-        state[6] += new
+        state = state[1:] + [state[0]]
+        state[6] += state[-1]
     return sum(state)
 
 
