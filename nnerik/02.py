@@ -4,7 +4,7 @@ from functools import reduce
 def read_input(filename):
     key = {"forward": (1, 0), "down": (0, 1), "up": (0, -1)}
     with open(filename) as f:
-        lines = (line.split(" ") for line in f.readlines())
+        lines = (line.split() for line in f)
         return [(key[a], int(b)) for a, b in lines]
 
 
@@ -15,8 +15,7 @@ def part1(input):
 
 
 def part2(input):
-    aim = 0
-    x, z = 0, 0
+    aim, x, z = 0, 0, 0
     for (dx, dz), d in input:
         x += dx * d
         z += dx * d * aim
