@@ -38,9 +38,7 @@ fn part2(input: &HashMap<u32, u32>, min: u32, max: u32) -> u32 {
                 break;
             }
         }
-        if p_diff < diff {
-            diff = p_diff
-        }
+        diff = diff.min(p_diff);
     }
     diff
 }
@@ -55,9 +53,7 @@ fn part1(input: &HashMap<u32, u32>, min: u32, max: u32) -> u32 {
                 break;
             }
         }
-        if p_diff < diff {
-            diff = p_diff
-        }
+        diff = diff.min(p_diff);
     }
     diff
 }
