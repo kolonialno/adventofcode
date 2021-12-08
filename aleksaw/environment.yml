@@ -1,0 +1,14 @@
+---
+name: aleksaw
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - pip
+  - conda-build
+
+  - pip:
+      - numpy
+      - jupyter
