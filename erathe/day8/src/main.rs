@@ -49,24 +49,20 @@ fn part2(input: &str) -> i32 {
                     3 => solved[7] = i,
                     4 => solved[4] = i,
                     5 => {
-                        if solved[6].len() > 0 {
-                            if i.as_bytes()
-                                .iter()
-                                .all(|b| solved[6].as_bytes().contains(b))
-                            {
-                                solved[5] = i;
-                                continue;
-                            }
+                        if i.as_bytes()
+                            .iter()
+                            .all(|b| solved[6].as_bytes().contains(b))
+                        {
+                            solved[5] = i;
+                            continue;
                         }
-                        if solved[1].len() > 0 {
-                            if solved[1]
-                                .as_bytes()
-                                .iter()
-                                .all(|b| i.as_bytes().contains(b))
-                            {
-                                solved[3] = i;
-                                continue;
-                            }
+                        if solved[1]
+                            .as_bytes()
+                            .iter()
+                            .all(|b| i.as_bytes().contains(b))
+                        {
+                            solved[3] = i;
+                            continue;
                         }
                         if solved[5].len() > 0 && solved[3].len() > 0 {
                             solved[2] = i;
@@ -74,25 +70,21 @@ fn part2(input: &str) -> i32 {
                         }
                     }
                     6 => {
-                        if solved[4].len() > 0 {
-                            if solved[4]
-                                .as_bytes()
-                                .iter()
-                                .all(|b| i.as_bytes().contains(b))
-                            {
-                                solved[9] = i;
-                                continue;
-                            }
+                        if solved[4]
+                            .as_bytes()
+                            .iter()
+                            .all(|b| i.as_bytes().contains(b))
+                        {
+                            solved[9] = i;
+                            continue;
                         }
-                        if solved[9].len() > 0 && solved[1].len() > 0 {
-                            if solved[1]
-                                .as_bytes()
-                                .iter()
-                                .all(|b| i.as_bytes().contains(b))
-                            {
-                                solved[0] = i;
-                                continue;
-                            }
+                        if solved[1]
+                            .as_bytes()
+                            .iter()
+                            .all(|b| i.as_bytes().contains(b))
+                        {
+                            solved[0] = i;
+                            continue;
                         }
                         if solved[9].len() > 0 && solved[0].len() > 0 {
                             solved[6] = i;
