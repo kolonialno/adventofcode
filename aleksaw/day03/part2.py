@@ -29,7 +29,8 @@ def solve(input_file: str, debug: bool = False):
     if debug:
         print(sum(o_mask), sum(co_mask))
         print(inp[co_mask, :])
-        print(inp[o_mask, :])
+        print(inp[o_mask, :])gs
+        
 
     binaries = 2**(np.arange(inp.shape[1])[::-1])
     if debug:
