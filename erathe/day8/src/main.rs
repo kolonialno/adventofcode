@@ -1,10 +1,15 @@
 use itertools::Itertools;
-use std::{collections::HashMap, panic};
+use std::{panic, time::Instant};
 fn main() {
     let input = include_str!("../input.txt");
 
-    println!("{}", part1(&input));
-    println!("{}", part2(&input));
+    let dur_1 = Instant::now();
+    println!("part 1: {}", part1(&input));
+    println!("part 1 took: {:?}", dur_1.elapsed());
+
+    let dur_2 = Instant::now();
+    println!("part 2: {}", part2(&input));
+    println!("part 2 took: {:?}", dur_2.elapsed());
 }
 
 fn part1(input: &str) -> usize {
@@ -24,82 +29,89 @@ fn part2(input: &str) -> i32 {
         .lines()
         .map(|s| {
             s.split(" | ")
-                .map(|s| s.split(" ").collect::<Vec<_>>())
-                .collect::<Vec<Vec<_>>>()
+                .map(|s| {
+                    s.split(" ")
+                        .map(|s| s.chars().sorted().collect::<String>())
+                        .collect_vec()
+                })
+                .collect_vec()
         })
-        .collect::<Vec<Vec<Vec<_>>>>();
+        .collect_vec();
     let mut res = 0;
     for s in signals {
-        let mut solved = HashMap::<i32, String>::new();
+        let mut solved = [""; 10];
         let input = &s[0];
         let output = &s[1];
-        while solved.keys().len() < 10 {
+        while solved.contains(&"") {
             for i in input {
                 match i.len() {
-                    2 => {
-                        solved.entry(1).or_insert(i.to_string());
-                    }
-                    3 => {
-                        solved.entry(7).or_insert(i.to_string());
-                    }
-                    4 => {
-                        solved.entry(4).or_insert(i.to_string());
-                    }
+                    2 => solved[1] = i,
+                    3 => solved[7] = i,
+                    4 => solved[4] = i,
                     5 => {
-                        if let Some(v) = solved.get(&6) {
-                            if i.as_bytes().iter().all(|i_b| v.as_bytes().contains(i_b)) {
-                                solved.entry(5).or_insert(i.to_string());
+                        if solved[6].len() > 0 {
+                            if i.as_bytes()
+                                .iter()
+                                .all(|b| solved[6].as_bytes().contains(b))
+                            {
+                                solved[5] = i;
                                 continue;
                             }
                         }
-                        if let Some(v) = solved.get(&1) {
-                            if v.as_bytes().iter().all(|i_b| i.as_bytes().contains(i_b)) {
-                                solved.entry(3).or_insert(i.to_string());
+                        if solved[1].len() > 0 {
+                            if solved[1]
+                                .as_bytes()
+                                .iter()
+                                .all(|b| i.as_bytes().contains(b))
+                            {
+                                solved[3] = i;
                                 continue;
                             }
                         }
-                        if solved.keys().contains(&5) && solved.keys().contains(&3) {
-                            solved.entry(2).or_insert(i.to_string());
+                        if solved[5].len() > 0 && solved[3].len() > 0 {
+                            solved[2] = i;
                             continue;
                         }
                     }
                     6 => {
-                        if let Some(v) = solved.get(&4) {
-                            if v.as_bytes().iter().all(|i_b| i.as_bytes().contains(i_b)) {
-                                solved.entry(9).or_insert(i.to_string());
+                        if solved[4].len() > 0 {
+                            if solved[4]
+                                .as_bytes()
+                                .iter()
+                                .all(|b| i.as_bytes().contains(b))
+                            {
+                                solved[9] = i;
                                 continue;
                             }
                         }
-                        if solved.keys().contains(&9) {
-                            if let Some(v) = solved.get(&1) {
-                                if v.as_bytes().iter().all(|i_b| i.as_bytes().contains(i_b)) {
-                                    solved.entry(0).or_insert(i.to_string());
-                                    continue;
-                                }
+                        if solved[9].len() > 0 && solved[1].len() > 0 {
+                            if solved[1]
+                                .as_bytes()
+                                .iter()
+                                .all(|b| i.as_bytes().contains(b))
+                            {
+                                solved[0] = i;
+                                continue;
                             }
                         }
-                        if solved.keys().contains(&9) && solved.keys().contains(&0) {
-                            solved.entry(6).or_insert(i.to_string());
+                        if solved[9].len() > 0 && solved[0].len() > 0 {
+                            solved[6] = i;
                             continue;
                         }
                     }
-                    7 => {
-                        solved.entry(8).or_insert(i.to_string());
-                    }
-                    _ => panic!("something went wrong, tried to match {}", i.len()),
+                    7 => solved[8] = i,
+                    _ => panic!("something went wrong, tried to match {}", i),
                 }
             }
         }
 
         let mut p_res = String::new();
         for l in output {
-            for (key, val) in &solved {
-                if val.as_bytes().iter().sorted().collect::<Vec<_>>()
-                    == l.as_bytes().iter().sorted().collect::<Vec<_>>()
-                {
-                    p_res.push(char::from_digit(*key as u32, 10).unwrap());
-                    break;
-                }
+            if let Some((idx, _)) = solved
+                .iter()
+                .find_position(|&&s| s.as_bytes() == l.as_bytes())
+            {
+                p_res.push(char::from_digit(idx as u32, 10).unwrap());
             }
         }
         res += p_res.parse::<i32>().unwrap();
