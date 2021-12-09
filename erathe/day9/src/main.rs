@@ -46,15 +46,13 @@ fn main() {
 
     let mut basins = vec![];
     for (&x, &y) in lows_pos {
-        let mut basin = 0;
-        let mut seen = HashSet::from([(x, y)]);
+        let mut visited = HashSet::from([(x, y)]);
         let mut to_visit = VecDeque::from([(x, y)]);
         while let Some((x, y)) = to_visit.pop_front() {
-            basin += 1;
+            visited.insert((x, y));
             for (dx, dy) in DIRS {
-                if !seen.contains(&(x + dx, y + dy)) {
+                if !visited.contains(&(x + dx, y + dy)) {
                     if let Some(&h) = grid.get(&(x + dx, y + dy)) {
-                        seen.insert((x + dx, y + dy));
                         if h < 9 {
                             to_visit.push_back((x + dx, y + dy));
                         }
@@ -62,12 +60,12 @@ fn main() {
                 }
             }
         }
-        basins.push(basin);
+        basins.push(visited.len());
     }
 
     //part 2
     println!(
         "{:?}",
-        basins.iter().sorted().rev().take(3).product::<i32>()
+        basins.iter().sorted().rev().take(3).product::<usize>()
     );
 }
