@@ -1,17 +1,12 @@
-with open("input.txt") as f:
-    result = sum(
-        sum(len(digit) in {2, 3, 4, 7} for digit in output.split())
-        for output in (line.split("|")[1] for line in f)
-    )
-    print("Part 1:", result)
-
 digits = "abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg"
-code = lambda pattern, digit: "".join(
-    sorted(str({c: pattern.count(c) for c in "abcdefg"}[segment]) for segment in digit)
+fingerprint = lambda pattern, digit: sum(
+    sorted({c: pattern.count(c) for c in "abcdefg"}[segment] for segment in digit)
 )
-key = {code(digits, digit): str(n) for n, digit in enumerate(digits.split())}
-decode = lambda pattern, output: int(
-    "".join(key[code(pattern, digit)] for digit in output.split())
+key = {fingerprint(digits, digit): str(n) for n, digit in enumerate(digits.split())}
+decode = lambda pattern, output: "".join(
+    key[fingerprint(pattern, digit)] for digit in output.split()
 )
-with open("input.txt") as f:
-    print("Part 2:", sum(decode(*line.split("|")) for line in f))
+results = [decode(*line.split("|")) for line in open("input.txt").readlines()]
+
+print("Part 1:", sum(1 for output in results for d in output if d in "1478"))
+print("Part 2:", sum(int(n) for n in results))
