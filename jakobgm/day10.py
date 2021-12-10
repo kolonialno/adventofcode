@@ -1,19 +1,10 @@
 from pathlib import Path
 
-puzzle = [
-    list(line)
-    for line
-    in Path("inputs/10.txt").read_text().strip().split("\n")
-]
-
+puzzle = list(map(list, Path("inputs/10.txt").read_text().strip().split("\n")))
 openers = "([{<"
 closers = ")]}>"
-correct_opener = {closer: opener for closer, opener in zip(closers, openers)}
-syntax_error_scoring = {
-    closer: score
-    for closer, score
-    in zip(closers, (3, 57, 1197, 25137))
-}
+correct_opener = dict(zip(closers, openers))
+syntax_error_scoring = dict(zip(closers, (3, 57, 1197, 25137)))
 
 syntax_error_score = 0
 autocompletion_scores = []
