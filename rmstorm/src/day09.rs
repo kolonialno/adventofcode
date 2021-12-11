@@ -69,7 +69,13 @@ pub fn day09() {
         println!()
     }
     println!("answer 1: {:?}", ans1_sum);
-    let mut basin_sizes: Vec<usize> = low_points.iter().map(|c| find_basin_size(&height_map, *c)).collect();
+    let mut basin_sizes: Vec<usize> = low_points
+        .iter()
+        .map(|c| find_basin_size(&height_map, *c))
+        .collect();
     basin_sizes.sort_by(|a, b| b.cmp(a));
-    println!("answer 2: {:?}", basin_sizes[0] * basin_sizes[1] * basin_sizes[2]);
+    println!(
+        "answer 2: {:?}",
+        basin_sizes[0] * basin_sizes[1] * basin_sizes[2]
+    );
 }
