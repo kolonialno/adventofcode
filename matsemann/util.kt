@@ -137,3 +137,8 @@ data class IntVec(val x: Int, val y: Int) {
         fun String.toIntVec(delim: String = ",")  = fromStr(this, delim)
     }
 }
+
+operator fun <E> List<List<E>>.get(intVec: IntVec) = this[intVec.y][intVec.x]
+operator fun <E> List<MutableList<E>>.set(intVec: IntVec, value: E) {
+    this[intVec.y][intVec.x] = value
+}
