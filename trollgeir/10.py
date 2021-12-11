@@ -7,18 +7,15 @@ flip.update(dict([reversed(i) for i in flip.items()]))
 
 
 def autocomplete(data):
-    depth = 0
-    opening_bracket = {}  # keys for depth
+    stack = []
     for b in data:
         if b in "[{(<":
-            depth += 1
-            opening_bracket[depth] = b
+            stack.append(b)
         else:
-            if opening_bracket[depth] != flip[b]:
+            if stack[-1] != flip[b]:
                 raise SyntaxError(b)
-            depth -= 1
-    # collapse the depth
-    return "".join([flip[opening_bracket[i]] for i in range(depth, 0, -1)])
+            stack.pop()
+    return "".join([flip[i] for i in reversed(stack)])
 
 
 completion_score = {")": 1, "]": 2, "}": 3, ">": 4}
