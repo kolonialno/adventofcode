@@ -3,7 +3,6 @@ from collections import Counter, defaultdict
 connections = defaultdict(list)
 with open("inputs/12.txt") as f:
     for line in f.read().splitlines():
-        print(line)
         a, b = line.split("-")
         if b != "start":
             connections[a].append(b)
