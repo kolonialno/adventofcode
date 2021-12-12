@@ -1,16 +1,11 @@
 with open("input.txt", "r") as f:
     state = [int(n) for line in f for n in line.strip()]
     count = step = 0
-    while True:
-        if step == 100:
-            print("Part 1:", count)
-        if sum(state) == 0:
-            print("Part 2:", step)
-            break
+    while sum(state):
         step += 1
         state = [s + 1 for s in state]
         while flashes := sum(state[i] > 9 for i in range(100)):
-            count += flashes
+            count += flashes if step <= 100 else 0
             influx = [
                 sum(
                     state[i + dx + dy] > 9
@@ -21,3 +16,5 @@ with open("input.txt", "r") as f:
                 for i in range(100)
             ]
             state = [s + delta if 0 < s < 10 else 0 for s, delta in zip(state, influx)]
+    print("Part 1:", count)
+    print("Part 2:", step)
