@@ -2,11 +2,6 @@ from collections import defaultdict
 import re
 
 
-def read_input(filename):
-    with open(filename) as f:
-        return [tuple(int(n) for n in (re.findall("\d+", line))) for line in f]
-
-
 def count_overlaps(lines):
     seafloor = defaultdict(int)
     for x1, y1, x2, y2 in lines:
@@ -18,13 +13,8 @@ def count_overlaps(lines):
     return sum(1 for n in seafloor.values() if n > 1)
 
 
-if __name__ == "__main__":
-    input = read_input(__file__[:-3] + ".txt")
+with open("input.txt") as f:
+    input = [tuple(int(n) for n in (re.findall("\d+", line))) for line in f]
 
-    # Part 1
-    result = count_overlaps(l for l in input if l[0] == l[2] or l[1] == l[3])
-    print(f"Part 1: {result}")
-
-    # Part 2
-    result = count_overlaps(input)
-    print(f"Part 2: {result}")
+print("Part 1:", count_overlaps(l for l in input if l[0] == l[2] or l[1] == l[3]))
+print("Part 2:", count_overlaps(input))

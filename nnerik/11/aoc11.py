@@ -16,5 +16,6 @@ with open("input.txt", "r") as f:
                 for i in range(100)
             ]
             state = [s + delta if 0 < s < 10 else 0 for s, delta in zip(state, influx)]
-    print("Part 1:", count)
-    print("Part 2:", step)
+
+print("Part 1:", count)
+print("Part 2:", step)

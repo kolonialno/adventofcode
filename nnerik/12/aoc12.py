@@ -19,5 +19,6 @@ with open("input.txt") as f:
         a, b = line.strip().split("-")
         exits[a].append(b)
         exits[b].append(a)
-    print("Part 1:", explore(exits, "start", {"start"}, False))
-    print("Part 2:", explore(exits, "start", {"start"}, True))
+
+print("Part 1:", explore(exits, "start", {"start"}, False))
+print("Part 2:", explore(exits, "start", {"start"}, True))

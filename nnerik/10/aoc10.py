@@ -14,7 +14,9 @@ def chunk(input):
     return "", {")": 3, "]": 57, "}": 1197, ">": 25137}[rest[0]], 0
 
 
-scores = [chunk(line.strip())[1:] for line in open("input.txt")]
+with open("input.txt") as f:
+    scores = [chunk(line.strip())[1:] for line in f]
+
 print("Part 1:", sum(r for r, _ in scores))
 
 score2s = sorted(r for _, r in scores if r)
