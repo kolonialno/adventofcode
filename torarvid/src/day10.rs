@@ -48,17 +48,18 @@ impl Chunk {
         let mut stack = Vec::new();
         let is_bad_char = |stack_char, expected| match stack_char {
             None => panic!("empty stack"),
-            Some(ch) => ch != expected
+            Some(ch) => ch != expected,
         };
-        let corrupted = self.content.chars().any(|c| {
-            match c {
-                '{' | '(' | '[' | '<' => {stack.push(c); false},
-                '}' => is_bad_char(stack.pop(), '{'),
-                ')' => is_bad_char(stack.pop(), '('),
-                ']' => is_bad_char(stack.pop(), '['),
-                '>' => is_bad_char(stack.pop(), '<'),
-                _ => false
+        let corrupted = self.content.chars().any(|c| match c {
+            '{' | '(' | '[' | '<' => {
+                stack.push(c);
+                false
             }
+            '}' => is_bad_char(stack.pop(), '{'),
+            ')' => is_bad_char(stack.pop(), '('),
+            ']' => is_bad_char(stack.pop(), '['),
+            '>' => is_bad_char(stack.pop(), '<'),
+            _ => false,
         });
         if corrupted {
             return None;
@@ -66,13 +67,14 @@ impl Chunk {
 
         let mut score = 0;
         while stack.len() > 0 {
-            score = score * 5 + match stack.pop() {
-                Some('{') => points.get(&'}').unwrap(),
-                Some('(') => points.get(&')').unwrap(),
-                Some('[') => points.get(&']').unwrap(),
-                Some('<') => points.get(&'>').unwrap(),
-                _ => &0
-            }
+            score = score * 5
+                + match stack.pop() {
+                    Some('{') => points.get(&'}').unwrap(),
+                    Some('(') => points.get(&')').unwrap(),
+                    Some('[') => points.get(&']').unwrap(),
+                    Some('<') => points.get(&'>').unwrap(),
+                    _ => &0,
+                }
         }
         Some(score)
     }
