@@ -1,50 +1,34 @@
 package com.matsemann.adventofcode2021
 
 
-data class Node(val name:String, val neighbors: MutableList<Node> = mutableListOf())
+data class Node(val name: String, val neighbors: MutableList<Node> = mutableListOf())
 
-fun day12_1(lines: List<String>): Any {
-
-    val nodes = mutableMapOf(
-        "start" to Node("start"),
-        "end" to Node("end"),
-    )
-
-    lines.map { it.split("-") }
-        .forEach { (n1, n2) ->
-            val node1 = nodes.getOrPut(n1) { Node(n1) }
-            val node2 = nodes.getOrPut(n2) { Node(n2) }
-            node1.neighbors.add(node2)
-            node2.neighbors.add(node1)
-        }
-
-    var paths = 0
-
-    fun dfs(node:Node, path: List<Node>) {
+fun dfs(start: Node, canVisitSmallTwice: Boolean): Sequence<List<Node>> = sequence {
+    suspend fun SequenceScope<List<Node>>.innerDfs(node: Node, path: List<Node>, canVisitSmall: Boolean) {
         if (node.name == "end") {
-            println(path.joinToString { it.name } + ", end")
-            paths++
+            yield(path + node)
             return
         }
 
+        var canVisitSmallNew = canVisitSmall
         if (node.name != node.name.uppercase() && node in path) {
-            return
+            if (node == start || !canVisitSmall) {
+                return
+            } else {
+                canVisitSmallNew = false
+            }
         }
 
         val newPath = path + node
-
         node.neighbors.forEach { n ->
-            dfs(n, newPath)
+            innerDfs(n, newPath, canVisitSmallNew)
         }
     }
-
-    dfs(nodes["start"]!!, listOf())
-
-    return paths
+    innerDfs(start, listOf(), canVisitSmall = canVisitSmallTwice)
 }
 
 
-fun day12_2(lines: List<String>): Any {
+fun day12(lines: List<String>): Any {
 
     val nodes = mutableMapOf(
         "start" to Node("start"),
@@ -59,43 +43,23 @@ fun day12_2(lines: List<String>): Any {
             node2.neighbors.add(node1)
         }
 
-    var paths = 0
+//    println("part1: " + dfs(nodes["start"]!!, canVisitSmallTwice = false).count())
 
-    fun dfs(node:Node, path: List<Node>, hasVisitedSmallTwice: Boolean) {
-        if (node.name == "end") {
-            println(path.joinToString { it.name } + ", end")
-            paths++
-            return
-        }
-        var hasVisitedSmallTwiceNew = hasVisitedSmallTwice
-        if (node.name != node.name.uppercase() && node in path) {
-            if (node.name == "start") {
-                return
-            }
-            if (hasVisitedSmallTwice) {
-                return
-            } else {
-                hasVisitedSmallTwiceNew = true
-            }
-        }
+    // Sequence emits all paths
+    return dfs(nodes["start"]!!, canVisitSmallTwice = true)
+        // Can print them as we go
+        .onEach { println(it.joinToString { i -> i.name }) }
+        // Can take how many you want, it then doesn't waste time computing un-needed stuff
+        // This one stops generating when something using a path through KW is found
+//        .first { it.any { node -> node.name == "KW" } }.size
 
-        val newPath = path + node
-
-        node.neighbors.forEach { n ->
-            dfs(n, newPath, hasVisitedSmallTwiceNew)
-        }
-    }
-
-    dfs(nodes["start"]!!, listOf(), false)
-
-    return paths
+        // Comment .first line, and uncomment below for true result
+        .count()
 }
 
 fun main() {
-    run("1", fileName = "day12_ex.txt", func = ::day12_1)
-//    run("1", fileName = "day12_1.txt", func = ::day12_1)
-    run("2", fileName = "day12_ex.txt", func = ::day12_2)
-//    run("2", fileName = "day12_1.txt", func = ::day12_2)
+    for (i in 0..100)
+        run("2", fileName = "day12_1.txt", func = ::day12)
 }
 
 /*

@@ -2,18 +2,19 @@ package com.matsemann.adventofcode2021
 
 import com.matsemann.adventofcode2021.IntVec.Companion.toIntVec
 
-fun day13_1(lines: List<String>): Any {
+
+fun fold(lines: List<String>, numFolds: Int = 0): List<IntVec> {
     val initialPoints = lines.filter { it.contains(",") }.map { it.toIntVec() }
 
-    val instructions = lines.filter { it.contains("fold along") }.map { it.split(" ")[2] }
+    val initialInstructions = lines.filter { it.contains("fold along") }.map { it.split(" ")[2] }
         .map {
             val a = it.split("=")
             a[0] to a[1].toInt()
         }
 
+    val instructions = if (numFolds > 0) initialInstructions.take(numFolds) else initialInstructions
 
-    val result = instructions
-        .take(1)
+    return instructions
         .fold(initialPoints) { points, fold ->
             points.map { point ->
                 if (fold.first == "y" && point.y > fold.second) {
@@ -25,34 +26,12 @@ fun day13_1(lines: List<String>): Any {
                 }
             }.distinct()
         }
-
-    return result.size
-
 }
 
+fun day13_1(lines: List<String>) = fold(lines, 1).size
 
 fun day13_2(lines: List<String>): Any {
-    val initialPoints = lines.filter { it.contains(",") }.map { it.toIntVec() }
-
-    val instructions = lines.filter { it.contains("fold along") }.map { it.split(" ")[2] }
-        .map {
-            val a = it.split("=")
-            a[0] to a[1].toInt()
-        }
-
-
-    val result = instructions
-        .fold(initialPoints) { points, fold ->
-        points.map { point ->
-            if (fold.first == "y" && point.y > fold.second) {
-                IntVec(point.x, fold.second - (point.y - fold.second))
-            } else if (fold.first == "x" && point.x > fold.second) {
-                IntVec(fold.second - (point.x - fold.second), point.y)
-            } else {
-                point
-            }
-        }.distinct()
-    }
+    val result = fold(lines)
 
     (0..10).forEach { y ->
         (0..50).forEach { x ->
