@@ -9,6 +9,7 @@ Ranks from https://adventofcode.com/2021/leaderboard/self
 ```
       --------Part 1--------   --------Part 2--------
 Day       Time   Rank  Score       Time   Rank  Score
+ 13   00:09:50    349      0   00:14:28    353      0
  12   00:19:57   1545      0   00:25:59    905      0
  11   00:52:38   4876      0   00:54:56   4585      0
  10   00:46:13   8111      0   00:52:19   6641      0
