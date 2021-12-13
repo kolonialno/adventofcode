@@ -22,13 +22,9 @@ print("Part 1:", len({fold(p, *(folds[0])) for p in points}))
 # Part 2
 for axis, n in folds:
     points = {fold(p, axis, n) for p in points}
-
-width = max(p[0] for p in points) + 1
-height = max(p[1] for p in points) + 1
-
-print("Part 2:")
-for y in range(height):
-    for x in range(width):
+print("\nPart 2:")
+for y in range(max(p[1] for p in points) + 1):
+    for x in range(max(p[0] for p in points) + 1):
         if (x, y) in points:
             print("#", end="")
         else:
