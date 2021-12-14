@@ -35,6 +35,22 @@ fun <T> measure(func: () -> T): T {
     }
 }
 
+class Cached2<I1, I2, O>(val func: Cached2<I1, I2, O>.(I1, I2) -> O) {
+    private val cache = mutableMapOf<Pair<I1, I2>, O>()
+
+    operator fun invoke(i1: I1, i2: I2): O {
+        val key = i1 to i2
+        return if (key in cache) {
+            cache[key]!!
+        } else {
+            this.func(i1, i2).also {
+                cache[key] = it
+            }
+        }
+    }
+}
+
+
 
 enum class Direction(var x: Int, var y: Int) {
     RIGHT(1, 0),
@@ -141,4 +157,60 @@ data class IntVec(val x: Int, val y: Int) {
 operator fun <E> List<List<E>>.get(intVec: IntVec) = this[intVec.y][intVec.x]
 operator fun <E> List<MutableList<E>>.set(intVec: IntVec, value: E) {
     this[intVec.y][intVec.x] = value
+}
+
+
+
+inline operator fun BigInteger.times(other: Int): BigInteger = this * other.toBigInteger()
+inline operator fun BigInteger.plus(other: Int) = this + other.toBigInteger()
+inline operator fun BigInteger.minus(other: Int): BigInteger = this - other.toBigInteger()
+
+
+class Counter<K>(val map: MutableMap<K, BigInteger>) : MutableMap<K, BigInteger> by map {
+    constructor() : this(mutableMapOf())
+
+    override operator fun get(key: K): BigInteger {
+        return map.getOrDefault(key, BigInteger.ZERO)
+    }
+
+    operator fun plus(other: Counter<K>): Counter<K> {
+        val newMap = map.toMutableMap()
+        other.forEach { (k, v) ->
+            newMap.merge(k, v, BigInteger::plus)
+        }
+        return Counter(newMap)
+    }
+
+    operator fun plusAssign(other: Counter<K>) {
+        other.forEach { (k, v) ->
+            map.merge(k, v, BigInteger::plus)
+        }
+    }
+
+    operator fun minus(other: Counter<K>): Counter<K> {
+        val newMap = map.toMutableMap()
+        other.forEach { (k, v) ->
+            newMap.merge(k, -v, BigInteger::plus)
+        }
+        return Counter(newMap)
+    }
+
+    fun copy(): Counter<K> {
+        return Counter(map.toMutableMap())
+    }
+
+    companion object {
+        fun letters(str: String): Counter<Char> {
+            return fromList(str.toList())
+        }
+
+        fun <E> fromList(list: List<E>): Counter<E> {
+            return Counter(
+                list.groupingBy { it }
+                    .eachCount()
+                    .mapValues { it.value.toBigInteger() }
+                    .toMutableMap()
+            )
+        }
+    }
 }
