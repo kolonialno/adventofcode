@@ -13,6 +13,7 @@ mod day11;
 mod day12;
 mod day13;
 mod day14;
+mod day15;
 mod util;
 
 fn main() {
@@ -37,6 +38,7 @@ fn main() {
         12 => run(day, day12::run),
         13 => run(day, day13::run),
         14 => run(day, day14::run),
+        15 => run(day, day15::run),
         _ => println!("Day {} not implemented yet", day),
     }
 }
