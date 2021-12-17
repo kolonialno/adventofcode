@@ -159,6 +159,36 @@ operator fun <E> List<MutableList<E>>.set(intVec: IntVec, value: E) {
     this[intVec.y][intVec.x] = value
 }
 
+data class Rectangle(val pos1: IntVec, val pos2: IntVec) {
+
+    operator fun contains(vec: IntVec): Boolean {
+        return vec.x in pos1.x..pos2.x && vec.y in pos1.y..pos2.y
+    }
+
+    // The point to the rectangle
+    fun pointIsBelow(y: Int) = y < pos1.y
+    fun pointIsAbove(y: Int) = y > pos2.y
+    fun pointIsRightOf(x: Int) = pos2.x < x
+    fun pointIsLeftOf(x: Int) = x < pos1.x
+
+    companion object {
+        fun fromNumbers(x1: Int, y1: Int, x2: Int, y2: Int): Rectangle {
+            // Sorts them so bottom left corner is pos1
+            val xs = listOf(x1, x2).sorted()
+            val ys = listOf(y1, y2).sorted()
+            return Rectangle(
+                IntVec(xs[0], ys[0]),
+                IntVec(xs[1], ys[1])
+            )
+        }
+
+        fun fromVecs(vec1: IntVec, vec2: IntVec): Rectangle {
+            return fromNumbers(vec1.x, vec1.y, vec2.x, vec2.y)
+        }
+    }
+
+}
+
 
 
 inline operator fun BigInteger.times(other: Int): BigInteger = this * other.toBigInteger()
@@ -214,3 +244,18 @@ class Counter<K>(val map: MutableMap<K, BigInteger>) : MutableMap<K, BigInteger>
         }
     }
 }
+
+
+class Parse {
+    companion object {
+        fun allInts(line: String): List<Int> {
+            return """-?\d+""".toRegex().findAll(line)
+                .map {
+                    it.value.toInt()
+                }.toList()
+        }
+
+    }
+}
+
+fun String.allInts() = Parse.allInts(this)
