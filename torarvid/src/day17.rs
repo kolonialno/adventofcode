@@ -37,7 +37,13 @@ fn sim(min_x: i32, max_x: i32, min_y: i32, max_y: i32, mut vx: i32, mut vy: i32)
         if y > high_y {
             high_y = y;
         }
-        vx += if vx > 0 { -1 } else if vx < 0 { 1 } else { 0 };
+        vx += if vx > 0 {
+            -1
+        } else if vx < 0 {
+            1
+        } else {
+            0
+        };
         vy -= 1;
     }
     -1
@@ -52,7 +58,13 @@ fn sim2(min_x: i32, max_x: i32, min_y: i32, max_y: i32, mut vx: i32, mut vy: i32
         }
         x += vx;
         y += vy;
-        vx += if vx > 0 { -1 } else if vx < 0 { 1 } else { 0 };
+        vx += if vx > 0 {
+            -1
+        } else if vx < 0 {
+            1
+        } else {
+            0
+        };
         vy -= 1;
     }
     false
