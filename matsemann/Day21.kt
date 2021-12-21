@@ -42,32 +42,27 @@ fun day21_2(startP1: Int, startP2: Int): Any {
         .map { it.sum() }
         .groupingBy { it }.eachCount()
 
-    fun play(pos: List<Int>, scores: List<Int>, turn: Int): Pair<BigInteger, BigInteger> {
-        return possible3Rolls.map { (roll, count) ->
-            val newPos = pos.toMutableList()
-            val newScores = scores.toMutableList()
+    data class Param(val myPos: Int, val myScore: Int, val otherPos: Int, val otherScore: Int)
+    val play = Cached<Param, Pair<BigInteger, BigInteger>> { (myPos, myScore, otherPos, otherScore) ->
+        possible3Rolls.map { (roll, count) ->
+            val newPos = (myPos + roll) % 10
+            val newScore = myScore + newPos + 1
 
-            newPos[turn] = (pos[turn] + roll) % 10
-            newScores[turn] = scores[turn] + newPos[turn] + 1
-
-            if (newScores[turn] >= 21) {
-                if (turn == 0)
-                    count.toBigInteger() to BigInteger.ZERO
-                else
-                    BigInteger.ZERO to count.toBigInteger()
+            if (newScore >= 21) {
+                count.toBigInteger() to BigInteger.ZERO
             } else {
-                val nextResult = play(newPos, newScores, (turn + 1) % 2)
-                nextResult.first * count to nextResult.second * count
+                val nextResult = this(Param(otherPos, otherScore, newPos, newScore))
+                nextResult.second * count to nextResult.first * count
             }
         }.reduce { acc, p -> acc.first + p.first to acc.second + p.second }
     }
 
-    val result = play(listOf(startP1 - 1, startP2 - 1), listOf(0, 0), 0)
-    return maxOf(result.first, result.second)
+    return play(Param(startP1 - 1, 0, startP2 - 1, 0)).let {
+        maxOf(it.first, it.second)
+    }
 }
 
 fun main() {
-
     run("1", fileName = "day21_ex.txt") {
         day21_1(10, 7)
     }
@@ -80,11 +75,11 @@ fun main() {
 OUTPUT
 ======
 
-Done. Took 1ms to run
+Done. Took 0ms to run
 Result for 1:	906093
 Copied to clipboard!
 
-Done. Took 6229ms to run
+Done. Took 23ms to run
 Result for 2:	274291038026362
 Copied to clipboard!
 
