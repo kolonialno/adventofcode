@@ -1,21 +1,7 @@
 #############
 #...........#
 ###B#B#D#A###
+  #D#C#B#A#
+  #D#B#A#C#
   #D#C#A#C#
   #########
-
-D up right 2000
-A up left 7
-B up left 20
-C up right 600
-B down right 30
-B down right 40
-A ur 3
-C ur 300
-D dr 3000
-D dr 9000
-C 400
-A 3
-A 9
-
-res: 15412
