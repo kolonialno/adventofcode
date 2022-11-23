@@ -10,6 +10,8 @@ Twitter or Reddit account.
 
 ## Access to this repo
 
+**NOTE:** This repo is (intentionally) public, so it is readable by anyone.
+
 - If you don't have write access to this repo already, then go
   [here](https://github.com/orgs/kolonialno/teams/adventofcodeteam) and request access to the
   adventofcode team
