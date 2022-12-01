@@ -1,12 +1,4 @@
-use regex::Regex;
-use std::{collections::BinaryHeap, str::FromStr};
-
-#[macro_use]
-extern crate lazy_static;
-
-lazy_static! {
-    static ref RE: Regex = Regex::new(r#"^$"#).unwrap();
-}
+use std::collections::BinaryHeap;
 
 fn main() {
     let input = include_str!("../input.txt");
@@ -15,7 +7,7 @@ fn main() {
     println!("{}", part2(input));
 }
 
-fn part2(input: &str) -> u32 {
+fn part1(input: &str) -> u32 {
     input
         .split("\n\n")
         .map(|s| {
@@ -26,7 +18,7 @@ fn part2(input: &str) -> u32 {
         .unwrap()
 }
 
-fn part1(input: &str) -> u32 {
+fn part2(input: &str) -> u32 {
     let s = input.split("\n\n").map(|s| {
         s.split('\n')
             .fold(0, |acc, x| acc + x.parse::<u32>().unwrap())
