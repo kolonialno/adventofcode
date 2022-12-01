@@ -12,11 +12,11 @@ for line in sys.stdin:
         total += int(line)
 
 per_elf.append(total) # Last one
+per_elf.sort(reverse=True)
 
-per_elf.sort()
-print(per_elf[-3:])
+print(per_elf[0])
 
 sum = 0
-for calories in per_elf[-3:]:
+for calories in per_elf[:3]:
     sum += calories
 print(sum)
