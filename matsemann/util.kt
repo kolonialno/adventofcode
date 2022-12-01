@@ -278,6 +278,16 @@ operator fun <E> List<MutableList<E>>.set(intVec: IntVec, value: E) {
     this[intVec.y][intVec.x] = value
 }
 
+fun <E> List<E>.splitBy(predicate: (E) -> Boolean): List<List<E>> =
+    this.fold(mutableListOf(mutableListOf<E>())) { acc, element ->
+        if (predicate.invoke(element)) {
+            acc += mutableListOf<E>()
+        } else {
+            acc.last() += element
+        }
+        acc
+    }
+
 fun <E> List<E>.rotate(num: Int): List<E> {
     return if (num >= 0) {
         val n = num % this.size
