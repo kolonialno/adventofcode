@@ -1,7 +1,6 @@
 use std::env;
 use std::fs;
 use std::io::{self, BufRead};
-use std::path;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -9,37 +8,32 @@ fn main() {
     let file_path = &args[1];
     let n = &args[2]
         .parse::<usize>()
-        .expect("Need to be a numerical value");
+        .expect("The second argument should be numeric");
 
-    let mut calorie_count = 0;
-    let mut calorie_vec = vec![];
+    let file = fs::File::open(file_path).expect("The given file path should be able to open.");
+    let reader = io::BufReader::new(file);
 
-    if let Ok(lines) = read_lines(file_path) {
-        for line in lines {
-            if let Ok(line) = line {
-                let l = line.parse::<u32>();
-                match l {
-                    Ok(calorie) => calorie_count += calorie,
-                    Err(_) => {
-                        calorie_vec.push(calorie_count);
-                        calorie_count = 0;
-                    }
+    let mut calories_per_elf = reader
+        .lines()
+        .map(|l| l.expect("All lines in the file should be readable."))
+        .fold(vec![0], |mut acc, line| {
+            let l = line.parse::<u32>();
+            match l {
+                Ok(calories) => {
+                    let calories_count = acc.pop().expect("");
+                    acc.push(calories_count + calories);
+                    acc
+                }
+                Err(_) => {
+                    acc.push(0);
+                    acc
                 }
             }
-        }
-    }
+        });
 
-    calorie_vec.sort();
+    calories_per_elf.sort();
 
-    let sum_calories: u32 = calorie_vec.iter().rev().take(*n).sum();
+    let sum_calories: u32 = calories_per_elf.iter().rev().take(*n).sum();
 
     println!("Max calories: {}", sum_calories);
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<fs::File>>>
-where
-    P: AsRef<path::Path>,
-{
-    let file = fs::File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
