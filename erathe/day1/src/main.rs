@@ -1,5 +1,7 @@
 use std::collections::BinaryHeap;
 
+use itertools::Itertools;
+
 fn main() {
     let input = include_str!("../input.txt");
 
@@ -19,14 +21,14 @@ fn part1(input: &str) -> u32 {
 }
 
 fn part2(input: &str) -> u32 {
-    let s = input.split("\n\n").map(|s| {
-        s.split('\n')
-            .fold(0, |acc, x| acc + x.parse::<u32>().unwrap())
-    });
-    let mut largest = BinaryHeap::from_iter(s);
-    let mut res = 0;
-    for _ in 0..3 {
-        res += largest.pop().unwrap();
-    }
-    res
+    input
+        .split("\n\n")
+        .map(|s| {
+            s.split('\n')
+                .fold(0, |acc, x| acc + x.parse::<u32>().unwrap())
+        })
+        .sorted()
+        .rev()
+        .take(3)
+        .sum()
 }
