@@ -1,72 +1,52 @@
-use std::{
-    collections::HashSet,
-    io::{self, BufRead},
-};
+use std::io::{self, BufRead};
 
-struct TopCaloriedElves {
-    num_tracked_elves: usize,
-    top_elves: HashSet<i32>,
-    last_top_elf: Option<i32>,
+struct ElfCalorieTracker {
+    top_elves: [usize; 3],
 }
 
-impl TopCaloriedElves {
-    fn new(num_tracked_elves: usize) -> Self {
+impl ElfCalorieTracker {
+    fn new() -> Self {
         Self {
-            num_tracked_elves,
-            top_elves: HashSet::new(),
-            last_top_elf: None,
+            top_elves: [0, 0, 0],
         }
     }
 
-    fn maybe_add_top_elf(&mut self, elf_calories: i32) {
-        let should_add = if let Some(last_top_elf) = self.last_top_elf {
-            last_top_elf < elf_calories
-        } else {
-            true
-        };
+    pub fn track_elf(&mut self, candidate: usize) {
+        let least = self.top_elves[0];
 
-        if should_add {
-            self.add_top_elf(elf_calories);
+        if candidate > least {
+            self.top_elves[0] = candidate;
+            self.top_elves.sort();
         }
     }
 
-    fn add_top_elf(&mut self, elf_calories: i32) {
-        if self.top_elves.len() == self.num_tracked_elves {
-            let last_top_elf = self.last_top_elf.expect("last top elf should be tracked");
-            self.top_elves.remove(&last_top_elf);
-        }
-
-        self.top_elves.insert(elf_calories);
-        self.last_top_elf = self.top_elves.iter().min().copied();
-    }
-
-    fn sum_calories(&self) -> i32 {
+    pub fn sum_calories(&self) -> usize {
         self.top_elves.iter().sum()
     }
 }
 
-fn run(reader: impl BufRead, num_elves: usize) -> i32 {
-    let mut top_elves = TopCaloriedElves::new(num_elves);
+fn run(reader: impl BufRead) -> usize {
+    let mut top_elves = ElfCalorieTracker::new();
 
     let mut current_elf_calories = 0;
     for line in reader.lines().map(|l| l.unwrap()) {
         if !line.is_empty() {
-            current_elf_calories += line.parse::<i32>().unwrap();
+            current_elf_calories += line.parse::<usize>().unwrap();
             continue;
         }
 
-        top_elves.maybe_add_top_elf(current_elf_calories);
+        top_elves.track_elf(current_elf_calories);
 
         current_elf_calories = 0;
     }
 
-    top_elves.maybe_add_top_elf(current_elf_calories);
+    top_elves.track_elf(current_elf_calories);
 
     top_elves.sum_calories()
 }
 
 fn main() {
-    let total_calories = run(io::stdin().lock(), 3);
+    let total_calories = run(io::stdin().lock());
 
     println!("{total_calories}");
 }
@@ -82,6 +62,6 @@ mod tests {
         let f = File::open("sample.txt").unwrap();
         let buf = BufReader::new(f);
 
-        assert_eq!(run(buf, 3), 45000);
+        assert_eq!(run(buf), 45000);
     }
 }
