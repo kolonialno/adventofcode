@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CA2939D59000C6A447 /* Input_2022_01.txt */; };
 		043C93CD2939D5A400C6A447 /* Solver_2022_02.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */; };
-		043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CE2939DA4500C6A447 /* Input_2022_02.txt */; };
 		0471F24829369F8200D4B978 /* aocApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24729369F8200D4B978 /* aocApp.swift */; };
 		0471F24A29369F8200D4B978 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24929369F8200D4B978 /* CalendarView.swift */; };
 		0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0471F24B29369F8200D4B978 /* Assets.xcassets */; };
@@ -37,12 +35,12 @@
 		0471F2882936B94100D4B978 /* GridInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F2872936B94100D4B978 /* GridInfo.swift */; };
 		0471F28A2936D65B00D4B978 /* SolverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F2892936D65B00D4B978 /* SolverView.swift */; };
 		0471F28C2936D6D400D4B978 /* SolveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F28B2936D6D400D4B978 /* SolveState.swift */; };
+		478D1B6D293A9479004B9D95 /* Input_2022_01.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B6B293A9478004B9D95 /* Input_2022_01.txt */; };
+		478D1B6E293A9479004B9D95 /* Input_2022_02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B6C293A9479004B9D95 /* Input_2022_02.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		043C93CA2939D59000C6A447 /* Input_2022_01.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_01.txt; sourceTree = "<group>"; };
 		043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_02.swift; sourceTree = "<group>"; };
-		043C93CE2939DA4500C6A447 /* Input_2022_02.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_02.txt; sourceTree = "<group>"; };
 		0471F24429369F8200D4B978 /* aoc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aoc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0471F24729369F8200D4B978 /* aocApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aocApp.swift; sourceTree = "<group>"; };
 		0471F24929369F8200D4B978 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
@@ -71,6 +69,8 @@
 		0471F2872936B94100D4B978 /* GridInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridInfo.swift; sourceTree = "<group>"; };
 		0471F2892936D65B00D4B978 /* SolverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolverView.swift; sourceTree = "<group>"; };
 		0471F28B2936D6D400D4B978 /* SolveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolveState.swift; sourceTree = "<group>"; };
+		478D1B6B293A9478004B9D95 /* Input_2022_01.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_01.txt; sourceTree = "<group>"; };
+		478D1B6C293A9479004B9D95 /* Input_2022_02.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_02.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,8 +178,8 @@
 		0471F2622936B37000D4B978 /* Input */ = {
 			isa = PBXGroup;
 			children = (
-				043C93CA2939D59000C6A447 /* Input_2022_01.txt */,
-				043C93CE2939DA4500C6A447 /* Input_2022_02.txt */,
+				478D1B6B293A9478004B9D95 /* Input_2022_01.txt */,
+				478D1B6C293A9479004B9D95 /* Input_2022_02.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -251,8 +251,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */,
-				043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */,
+				478D1B6D293A9479004B9D95 /* Input_2022_01.txt in Resources */,
+				478D1B6E293A9479004B9D95 /* Input_2022_02.txt in Resources */,
 				0471F24F29369F8200D4B978 /* Preview Assets.xcassets in Resources */,
 				0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */,
 			);
@@ -419,7 +419,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"aoc/Preview Content\"";
-				DEVELOPMENT_TEAM = UMDMXH9PFW;
+				DEVELOPMENT_TEAM = R4689H4N9F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -448,7 +448,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"aoc/Preview Content\"";
-				DEVELOPMENT_TEAM = UMDMXH9PFW;
+				DEVELOPMENT_TEAM = R4689H4N9F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
