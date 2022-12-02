@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "aoc"
+version = "0.1.0"
+description = ""
+authors = ["Stein Magnus Jodal <stein.magnus.jodal@oda.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+mypy = "^0.991"
+pytest = "^7.2.0"
+ruff = "^0.0.151"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
