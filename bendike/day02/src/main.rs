@@ -109,7 +109,7 @@ impl GameRound {
                 let player = Hand::parse(round[1]);
 
                 GameRound {
-                    outcome: Self::get_outcome(player, opponent),
+                    outcome: Self::get_outcome(opponent, player),
                     player,
                 }
             }
