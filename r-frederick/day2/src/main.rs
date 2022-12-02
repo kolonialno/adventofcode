@@ -1,6 +1,7 @@
 use std::fs;
 
-use day2::{solve_part1, solve_part2};
+mod solution;
+mod solution_alt;
 
 fn transform(input: &str) -> Vec<&str> {
     input
@@ -14,6 +15,9 @@ fn main() {
 
     let input = transform(&contents);
 
-    println!("answer to part 1: {}", solve_part1(&input));
-    println!("answer to part 2: {}", solve_part2(&input));
+    println!("answer to part 1: {}", solution::solve_part1(&input));
+    println!("answer to part 1 (alt): {}", solution_alt::solve_part1(&input));
+
+    println!("answer to part 2: {}", solution::solve_part2(&input));
+    println!("answer to part 2 (alt): {}", solution_alt::solve_part2(&input));
 }

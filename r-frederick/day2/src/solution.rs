@@ -29,12 +29,12 @@ fn transform_round(action: &str) -> &str {
 }
 
 pub fn solve_part1(input: &Vec<&str>) -> u32 {
-    input.iter()
-        .fold(0, |acc, round| acc + round_value(round))
+    input.iter().fold(0, |acc, round| acc + round_value(round))
 }
 
 pub fn solve_part2(input: &Vec<&str>) -> u32 {
-    input.iter()
+    input
+        .iter()
         .fold(0, |acc, round| acc + round_value(transform_round(round)))
 }
 
@@ -44,11 +44,7 @@ mod tests {
 
     #[test]
     fn solve_part1_returns_correct_answer() {
-        let input = vec![
-            "A Y",
-            "B X",
-            "C Z",
-        ];
+        let input = vec!["A Y", "B X", "C Z"];
 
         let expected = 15;
 
@@ -57,11 +53,7 @@ mod tests {
 
     #[test]
     fn solve_part2_returns_correct_answer() {
-        let input = vec![
-            "A Y",
-            "B X",
-            "C Z",
-        ];
+        let input = vec!["A Y", "B X", "C Z"];
 
         let expected = 12;
 
