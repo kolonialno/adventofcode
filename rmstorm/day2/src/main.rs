@@ -19,6 +19,16 @@ impl From<u8> for Choice {
     }
 }
 
+impl From<Choice> for i32 {
+    fn from(v: Choice) -> i32 {
+        match v {
+            Choice::Rock => 1,
+            Choice::Paper => 2,
+            Choice::Scissor => 3,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 enum Outcome {
     Win,
@@ -38,17 +48,9 @@ impl From<u8> for Outcome {
 }
 
 fn score1(them: Choice, you: Choice) -> i32 {
-    match (them, you) {
-        (Choice::Rock, Choice::Rock) => 3 + 1,
-        (Choice::Rock, Choice::Paper) => 6 + 2,
-        (Choice::Rock, Choice::Scissor) => 3,
-        (Choice::Paper, Choice::Rock) => 1,
-        (Choice::Paper, Choice::Paper) => 3 + 2,
-        (Choice::Paper, Choice::Scissor) => 6 + 3,
-        (Choice::Scissor, Choice::Rock) => 6 + 1,
-        (Choice::Scissor, Choice::Paper) => 2,
-        (Choice::Scissor, Choice::Scissor) => 3 + 3,
-    }
+    let them: i32 = them.into();
+    let you: i32 = you.into();
+    you + 3 * ((you - them + 4) % 3)
 }
 
 fn score2(them: Choice, outcome: Outcome) -> i32 {
