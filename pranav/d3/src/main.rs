@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use itertools::{Chunk, Itertools};
 use std::collections::HashSet;
 
 const POINTS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -39,7 +39,16 @@ fn b() -> i32 {
         .lines()
         .chunks(3)
         .into_iter()
-        .map(|line| find_letter2(line.collect::<Vec<&str>>()))
+        .map(|mut c| {
+            let h1: HashSet<&str> =
+                HashSet::from_iter(c.next().unwrap().split("").collect::<Vec<&str>>());
+            let mut f = c.fold(h1, |acc, h| {
+                let h2: HashSet<&str> = HashSet::from_iter(h.split("").collect::<Vec<&str>>());
+                acc.intersection(&h2).copied().collect()
+            });
+            f.remove("");
+            f.into_iter().nth(0).unwrap()
+        })
         .map(|letter| (POINTS.find(letter).unwrap() + 1) as i32)
         .sum()
 }
