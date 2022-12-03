@@ -1,26 +1,19 @@
-with open("input.txt") as f:
-    data = f.read()
-
 def priority(item: str) -> int:
-    c = ord(item)
-    if c >= 97:
-        return c - 96
+    if item >= 'a':
+        return ord(item) - ord('a') + 1
     else:
-        return c - 64 + 26
+        return ord(item) - ord('A') + 27
 
-def rucksack_priority(rucksack: str) -> int:
-    half = int(len(rucksack)/2)
-    comp1 = {priority(item) for item in rucksack[:half]}
-    comp2 = {priority(item) for item in rucksack[half:]}
-    return comp1.intersection(comp2).pop()
+def common(rucksack: str) -> int:
+    half = len(rucksack) // 2
+    return set(rucksack[:half]).intersection(rucksack[half:]).pop()
 
 def badge(group: list[str]) -> int:
-    items1 = {priority(item) for item in group[0]}
-    items2 = {priority(item) for item in group[1]}
-    items3 = {priority(item) for item in group[2]}
-    return items1.intersection(items2).intersection(items3).pop()
+    return set(group[0]).intersection(group[1]).intersection(group[2]).pop()
 
+with open("input.txt") as f:
+    data = f.read()
 rucksacks = data.split("\n")
-print(sum([rucksack_priority(r) for r in data.split("\n")]))
 
-print(sum([badge(rucksacks[i:i+3]) for i in range(0, len(rucksacks), 3)]))
+print(sum([priority(common(r)) for r in data.split("\n")]))
+print(sum([priority(badge(rucksacks[i:i+3])) for i in range(0, len(rucksacks), 3)]))
