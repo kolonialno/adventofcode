@@ -5,7 +5,7 @@ from solve01 import solve1, solve2
 
 @pytest.fixture
 def data(data_getter):
-    return data_getter("01")
+    return data_getter(1)
 
 
 def test_solve1(data):

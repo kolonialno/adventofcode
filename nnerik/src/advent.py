@@ -6,7 +6,7 @@ import time
 def main(day):
     day = f"{int(day):02}"
     mod = importlib.import_module(f"solve{day}")
-    with open(f"inputs/input{day}.txt") as f:
+    with open(f"user_inputs/input{day}.txt") as f:
         data = f.read()
 
     start = time.time()

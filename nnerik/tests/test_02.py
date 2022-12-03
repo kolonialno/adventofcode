@@ -5,7 +5,7 @@ from solve02 import score, solve1, solve2
 
 @pytest.fixture
 def data(data_getter):
-    return data_getter("02")
+    return data_getter(2)
 
 
 @pytest.mark.parametrize(

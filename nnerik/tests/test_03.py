@@ -5,7 +5,7 @@ from solve03 import common_item, item_priority, solve1, solve2
 
 @pytest.fixture
 def data(data_getter):
-    return data_getter("03")
+    return data_getter(3)
 
 
 @pytest.mark.parametrize("item, priority", [("a", 1), ("z", 26), ("A", 27), ("Z", 52)])
