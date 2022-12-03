@@ -15,5 +15,5 @@ with open("input.txt") as f:
     data = f.read()
 rucksacks = data.split("\n")
 
-print(sum([priority(common(r)) for r in data.split("\n")]))
+print(sum([priority(common(r)) for r in rucksacks]))
 print(sum([priority(badge(rucksacks[i:i+3])) for i in range(0, len(rucksacks), 3)]))
