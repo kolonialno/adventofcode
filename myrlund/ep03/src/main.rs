@@ -31,7 +31,7 @@ fn find_shared_char(lines: Chunk<Lines>) -> char {
     // Find the set intersection between the characters within the given lines
     let shared_chars: HashSet<char, RandomState> = lines
         .map(|line| HashSet::from_iter(line.chars()))
-        .reduce(|acc, set| acc.intersection(&set).copied().collect())
+        .reduce(|acc, set| &acc & &set)
         .unwrap();
 
     // Pull out the first (only) shared char
