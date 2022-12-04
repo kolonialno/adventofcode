@@ -10,6 +10,8 @@
 		043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CA2939D59000C6A447 /* Input_2022_01.txt */; };
 		043C93CD2939D5A400C6A447 /* Solver_2022_02.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */; };
 		043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CE2939DA4500C6A447 /* Input_2022_02.txt */; };
+		046FD230293D43C300A2992B /* Solver_2022_04.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046FD22F293D43C300A2992B /* Solver_2022_04.swift */; };
+		046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */ = {isa = PBXBuildFile; fileRef = 046FD231293D45D900A2992B /* Input_2022_04.txt */; };
 		0471F24829369F8200D4B978 /* aocApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24729369F8200D4B978 /* aocApp.swift */; };
 		0471F24A29369F8200D4B978 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24929369F8200D4B978 /* CalendarView.swift */; };
 		0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0471F24B29369F8200D4B978 /* Assets.xcassets */; };
@@ -45,6 +47,8 @@
 		043C93CA2939D59000C6A447 /* Input_2022_01.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_01.txt; sourceTree = "<group>"; };
 		043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_02.swift; sourceTree = "<group>"; };
 		043C93CE2939DA4500C6A447 /* Input_2022_02.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_02.txt; sourceTree = "<group>"; };
+		046FD22F293D43C300A2992B /* Solver_2022_04.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_04.swift; sourceTree = "<group>"; };
+		046FD231293D45D900A2992B /* Input_2022_04.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_04.txt; sourceTree = "<group>"; };
 		0471F24429369F8200D4B978 /* aoc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aoc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0471F24729369F8200D4B978 /* aocApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aocApp.swift; sourceTree = "<group>"; };
 		0471F24929369F8200D4B978 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
@@ -176,6 +180,7 @@
 				0471F25F2936B27D00D4B978 /* Solver_2022_01.swift */,
 				043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */,
 				04C81004293B333C00D9B495 /* Solver_2022_03.swift */,
+				046FD22F293D43C300A2992B /* Solver_2022_04.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 				043C93CA2939D59000C6A447 /* Input_2022_01.txt */,
 				043C93CE2939DA4500C6A447 /* Input_2022_02.txt */,
 				04C81006293B36CA00D9B495 /* Input_2022_03.txt */,
+				046FD231293D45D900A2992B /* Input_2022_04.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -260,6 +266,7 @@
 				043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */,
 				043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */,
 				0471F24F29369F8200D4B978 /* Preview Assets.xcassets in Resources */,
+				046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */,
 				04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */,
 				0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */,
 			);
@@ -282,6 +289,7 @@
 				0471F26E2936B6DF00D4B978 /* Direction.swift in Sources */,
 				043C93CD2939D5A400C6A447 /* Solver_2022_02.swift in Sources */,
 				0471F2602936B27D00D4B978 /* Solver_2022_01.swift in Sources */,
+				046FD230293D43C300A2992B /* Solver_2022_04.swift in Sources */,
 				0471F2742936B76300D4B978 /* AdventImage.swift in Sources */,
 				0471F2682936B4D100D4B978 /* FileLoader.swift in Sources */,
 				0471F2862936B84700D4B978 /* String+Ext.swift in Sources */,
