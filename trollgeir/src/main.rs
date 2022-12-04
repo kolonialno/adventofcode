@@ -1,7 +1,7 @@
 mod days;
 mod etc;
 
-use days::{day01, day02};
+use days::{day01, day02, day03};
 use etc::solution::Solution;
 use std::env;
 use std::time::Instant;
@@ -46,7 +46,7 @@ fn get_day_solver(day: u8) -> fn() -> SolutionPair {
     match day {
         1 => day01::solve,
         2 => day02::solve,
-        //  3 => day03::solve,
+        3 => day03::solve,
         //  4 => day04::solve,
         //  5 => day05::solve,
         //  6 => day06::solve,
