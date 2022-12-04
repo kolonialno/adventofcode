@@ -40,31 +40,17 @@ impl Sign {
 }
 
 fn play(my_sign: Sign, other_sign: Sign) -> Outcome {
-    if my_sign == other_sign {
-        return Outcome::Draw;
-    }
-    match my_sign {
-        Sign::Rock => {
-            if other_sign == Sign::Paper {
-                Outcome::Loss
-            } else {
-                Outcome::Win
-            }
-        }
-        Sign::Paper => {
-            if other_sign == Sign::Scissors {
-                Outcome::Loss
-            } else {
-                Outcome::Win
-            }
-        }
-        Sign::Scissors => {
-            if other_sign == Sign::Rock {
-                Outcome::Loss
-            } else {
-                Outcome::Win
-            }
-        }
+    match (my_sign, other_sign) {
+        (Sign::Rock, Sign::Paper) => Outcome::Loss,
+        (Sign::Rock, Sign::Scissors) => Outcome::Win,
+
+        (Sign::Paper, Sign::Scissors) => Outcome::Loss,
+        (Sign::Paper, Sign::Rock) => Outcome::Win,
+
+        (Sign::Scissors, Sign::Rock) => Outcome::Loss,
+        (Sign::Scissors, Sign::Paper) => Outcome::Win,
+
+        (_, _) => Outcome::Draw,
     }
 }
 

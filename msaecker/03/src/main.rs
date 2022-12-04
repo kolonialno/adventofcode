@@ -1,32 +1,29 @@
 use std::{
+    collections::HashSet,
     fs::File,
     io::{BufRead, BufReader},
 };
 
 fn priority(c: char) -> u32 {
-    if c.is_lowercase() {
-        c as u32 - 96
-    } else {
-        c as u32 - 38
+    match c {
+        'a'..='z' => c as u32 - 96,
+        'A'..='Z' => c as u32 - 38,
+        _ => panic!("Unknown input!"),
     }
 }
 
 fn check_compartments(lhs: &str, rhs: &str) -> u32 {
-    for c1 in lhs.chars() {
-        if rhs.find(c1).is_some() {
-            return priority(c1);
-        }
-    }
-    panic!("No common items");
+    let h0 = lhs.chars().collect::<HashSet<char>>();
+    priority(rhs.chars().find(|c| h0.contains(c)).unwrap())
 }
 
 fn find_badge(group: &[String]) -> char {
-    for c1 in group[0].chars() {
-        if group[1].find(c1).is_some() && group[2].find(c1).is_some() {
-            return c1;
-        }
-    }
-    panic!("No common badge");
+    let h0 = group[0].chars().collect::<HashSet<char>>();
+    let h1 = group[1].chars().collect::<HashSet<char>>();
+    group[2]
+        .chars()
+        .find(|c| h0.contains(c) && h1.contains(c))
+        .unwrap()
 }
 
 fn main() {
@@ -49,8 +46,7 @@ fn main() {
         .lines()
         .flatten()
         .collect::<Vec<String>>();
-    let elf_groups = lines.chunks_exact(3);
-    for group in elf_groups {
+    for group in lines.chunks_exact(3) {
         badge_sum += priority(find_badge(group));
     }
     println!("Badge priorities: {}", badge_sum);
