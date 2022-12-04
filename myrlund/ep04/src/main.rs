@@ -1,10 +1,10 @@
-use std::{collections::HashSet, ops::Range};
+use std::collections::HashSet;
 
 use anyhow::Result;
 
 fn parse_range(s: &str) -> Result<HashSet<u32>> {
     let (i1, i2) = s.split_once('-').unwrap();
-    let range: Range<u32> = i1.parse::<u32>()?..i2.parse::<u32>()? + 1;
+    let range = i1.parse::<u32>()?..=i2.parse::<u32>()?;
     Ok(HashSet::from_iter(range))
 }
 
