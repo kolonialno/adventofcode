@@ -22,6 +22,25 @@ fun day04_2(lines: List<String>): Any {
         }
 }
 
+
+fun day04_1_2(lines: List<String>): Any {
+    return lines
+        .map { it.split(",", "-").ints() }
+        .count { (x1, y1, x2, y2) ->
+            x1 >= x2 && y1 <= y2
+                    || x2 >= x1 && y2 <= y1
+        }
+}
+
+fun day04_2_2(lines: List<String>): Any {
+    return lines
+        .map { it.split(",", "-").ints() }
+        .count { (x1, y1, x2, y2) ->
+            y1 >= x2 && x1 <= y2
+        }
+}
+
+
 fun main() {
 
 //    run("1", fileName = "day04_ex.txt", func = ::day04_1)
