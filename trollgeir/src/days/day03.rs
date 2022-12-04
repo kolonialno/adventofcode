@@ -4,12 +4,11 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn char_to_priority(character: char) -> usize {
-    let lower_case_character: char = character.to_lowercase().last().unwrap();
-    let priority = "abcdefghijklmnopqrstuvwxyz"
-        .find(lower_case_character)
-        .expect("Unrecognized char")
-        + 1;
-    (26 * character.is_uppercase() as usize) + priority
+    if character.is_lowercase() {
+        character as usize - 96
+    } else {
+        character as usize - 38
+    }
 }
 
 pub fn solve() -> SolutionPair {
