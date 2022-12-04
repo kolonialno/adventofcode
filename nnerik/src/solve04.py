@@ -5,18 +5,16 @@ class Assignment:
         self.first = first
         self.last = last
 
+    def __bool__(self):
+        return self.first is not None
+
     def __eq__(self, other):
         return self.first == other.first and self.last == other.last
 
     def __le__(self, other):
-        if self.first is None:
-            return True
-        if other.first is None:
-            return False
-        return self.first >= other.first and self.last <= other.last
-
-    def __bool__(self):
-        return self.first is not None
+        if self and other:
+            return self.first >= other.first and self.last <= other.last
+        return not self
 
     def __and__(self, other):
         if not (self and other):
