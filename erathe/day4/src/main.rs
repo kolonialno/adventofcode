@@ -19,16 +19,16 @@ fn part2(input: &str) -> usize {
     input
         .lines()
         .map(|l| l.parse::<ElfPair>().unwrap())
-        .map(|pair| pair.cleaning_includes())
-        .sum::<usize>()
+        .filter(|pair| range_overlaps(&pair.0, &pair.1))
+        .count()
 }
 
 fn part1(input: &str) -> usize {
     input
         .lines()
         .map(|l| l.parse::<ElfPair>().unwrap())
-        .map(|pair| pair.cleaning_overrides())
-        .sum::<usize>()
+        .filter(|pair| range_includes_other(&pair.0, &pair.1))
+        .count()
 }
 
 fn range_includes_other(r1: &Range<usize>, r2: &Range<usize>) -> bool {
@@ -43,22 +43,6 @@ fn range_overlaps(r1: &Range<usize>, r2: &Range<usize>) -> bool {
 }
 
 struct ElfPair(Range<usize>, Range<usize>);
-
-impl ElfPair {
-    fn cleaning_overrides(&self) -> usize {
-        if range_includes_other(&self.0, &self.1) {
-            return 1;
-        }
-        0
-    }
-
-    fn cleaning_includes(&self) -> usize {
-        if range_overlaps(&self.0, &self.1) {
-            return 1;
-        }
-        0
-    }
-}
 
 impl FromStr for ElfPair {
     type Err = String;
