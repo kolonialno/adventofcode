@@ -1,27 +1,9 @@
-class Assignment:
+class Assignment(set):
     def __init__(self, first=None, last=None):
         if first is None or last is None or first > last:
-            first, last = None, None
-        self.first = first
-        self.last = last
-
-    def __eq__(self, other):
-        return self.first == other.first and self.last == other.last
-
-    def __le__(self, other):
-        if self.first is None:
-            return True
-        if other.first is None:
-            return False
-        return self.first >= other.first and self.last <= other.last
-
-    def __bool__(self):
-        return self.first is not None
-
-    def __and__(self, other):
-        if not (self and other):
-            return Assignment()
-        return Assignment(max(self.first, other.first), min(self.last, other.last))
+            super().__init__()
+            return
+        super().__init__(range(first, last + 1))
 
 
 def parse_assignment_pair(spec):
