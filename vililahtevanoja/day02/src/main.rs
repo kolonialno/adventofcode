@@ -94,23 +94,27 @@ fn parse(data: &str) -> Vec<&str> {
 }
 
 fn solve1(data: &str) -> u64 {
-    let rounds: Vec<RoundP1> = parse(data).iter()
-        .map(|l| l.split(" ").map(Hand::from).collect())
-        .map(|r: Vec<Hand>| RoundP1 { opponent: r[0], own: r[1]})
-        .collect(); 
-    rounds.iter().map(|r| r.score()).sum()
+  let parsed = parse(data);
+  let rounds = parsed.iter()
+    .map(|l| {
+      let (opponent, own) = l.split_once(" ").unwrap();
+      RoundP1 { opponent: Hand::from(opponent), own: Hand::from(own)}
+    });
+  rounds.map(|r| r.score()).sum()
 }
 
 fn solve2(data: &str) -> u64 {
-    let round_goals: Vec<RoundWithGoal> = parse(data).iter()
-        .map(|l| l.split(" ").collect())
-        .map(|l: Vec<&str>| RoundWithGoal {opponent: Hand::from(l[0]), goal: Goal::from(l[1])}) 
-        .collect();
-    
-    let rounds = round_goals.iter()
-        .map(|rg| RoundP1 { opponent: rg.opponent, own: rg.get_own_hand_for_result(rg.goal)});
-    
-    rounds.map(|r| r.score()).sum()
+  let parsed = parse(data);
+  let round_goals = parsed.iter()
+    .map(|l| {
+      let (opponent, goal) = l.split_once(" ").unwrap();
+      RoundWithGoal {opponent: Hand::from(opponent), goal: Goal::from(goal)}
+    });
+
+  let rounds = round_goals
+    .map(|rg| RoundP1 { opponent: rg.opponent, own: rg.get_own_hand_for_result(rg.goal)});
+
+  rounds.map(|r| r.score()).sum()
     
 }
 
@@ -132,3 +136,4 @@ fn test_part2() {
     let data = include_str!("../example.txt");
     assert_eq!(solve2(data), 12)
 }
+
