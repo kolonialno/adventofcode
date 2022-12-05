@@ -21,8 +21,8 @@ extension String {
         return StringGrid(stringArray: stringArray)
     }
 
-    func loadAsTextString(fileType: String? = "txt") -> String {
-        return FileLoader.loadText(fileName: self, fileType: fileType)
+    func loadAsTextString(fileType: String? = "txt", trimming: Bool = true) -> String {
+        return FileLoader.loadText(fileName: self, fileType: fileType, trimming: trimming)
     }
 
     func loadJSON<T: Codable>(fileType: String? = "txt", parseType: T.Type) -> T {

@@ -12,6 +12,8 @@
 		043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CE2939DA4500C6A447 /* Input_2022_02.txt */; };
 		046FD230293D43C300A2992B /* Solver_2022_04.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046FD22F293D43C300A2992B /* Solver_2022_04.swift */; };
 		046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */ = {isa = PBXBuildFile; fileRef = 046FD231293D45D900A2992B /* Input_2022_04.txt */; };
+		046FD234293DD0AD00A2992B /* Solver_2022_05.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046FD233293DD0AD00A2992B /* Solver_2022_05.swift */; };
+		046FD236293DDC1D00A2992B /* Input_2022_05.txt in Resources */ = {isa = PBXBuildFile; fileRef = 046FD235293DDC1D00A2992B /* Input_2022_05.txt */; };
 		0471F24829369F8200D4B978 /* aocApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24729369F8200D4B978 /* aocApp.swift */; };
 		0471F24A29369F8200D4B978 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471F24929369F8200D4B978 /* CalendarView.swift */; };
 		0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0471F24B29369F8200D4B978 /* Assets.xcassets */; };
@@ -49,6 +51,8 @@
 		043C93CE2939DA4500C6A447 /* Input_2022_02.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_02.txt; sourceTree = "<group>"; };
 		046FD22F293D43C300A2992B /* Solver_2022_04.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_04.swift; sourceTree = "<group>"; };
 		046FD231293D45D900A2992B /* Input_2022_04.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_04.txt; sourceTree = "<group>"; };
+		046FD233293DD0AD00A2992B /* Solver_2022_05.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_05.swift; sourceTree = "<group>"; };
+		046FD235293DDC1D00A2992B /* Input_2022_05.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_05.txt; sourceTree = "<group>"; };
 		0471F24429369F8200D4B978 /* aoc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aoc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0471F24729369F8200D4B978 /* aocApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aocApp.swift; sourceTree = "<group>"; };
 		0471F24929369F8200D4B978 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
@@ -181,6 +185,7 @@
 				043C93CC2939D5A400C6A447 /* Solver_2022_02.swift */,
 				04C81004293B333C00D9B495 /* Solver_2022_03.swift */,
 				046FD22F293D43C300A2992B /* Solver_2022_04.swift */,
+				046FD233293DD0AD00A2992B /* Solver_2022_05.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -192,6 +197,7 @@
 				043C93CE2939DA4500C6A447 /* Input_2022_02.txt */,
 				04C81006293B36CA00D9B495 /* Input_2022_03.txt */,
 				046FD231293D45D900A2992B /* Input_2022_04.txt */,
+				046FD235293DDC1D00A2992B /* Input_2022_05.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -268,6 +274,7 @@
 				0471F24F29369F8200D4B978 /* Preview Assets.xcassets in Resources */,
 				046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */,
 				04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */,
+				046FD236293DDC1D00A2992B /* Input_2022_05.txt in Resources */,
 				0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +291,7 @@
 				0471F26A2936B4EE00D4B978 /* DateHelper.swift in Sources */,
 				0471F2702936B70600D4B978 /* IntPoint.swift in Sources */,
 				0471F26C2936B53B00D4B978 /* Math.swift in Sources */,
+				046FD234293DD0AD00A2992B /* Solver_2022_05.swift in Sources */,
 				0471F2842936B82C00D4B978 /* PriorityQueue.swift in Sources */,
 				0471F28A2936D65B00D4B978 /* SolverView.swift in Sources */,
 				0471F26E2936B6DF00D4B978 /* Direction.swift in Sources */,

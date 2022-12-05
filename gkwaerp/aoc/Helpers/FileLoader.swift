@@ -22,7 +22,8 @@ class FileLoader {
         return try! JSONDecoder().decode(T.self, from: data)
     }
 
-    static func loadText(fileName: String, fileType: String? = nil) -> String {
-        try! String(contentsOf: getURL(for: fileName, fileType: fileType), encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
+    static func loadText(fileName: String, fileType: String? = nil, trimming: Bool = true) -> String {
+        let string = try! String(contentsOf: getURL(for: fileName, fileType: fileType), encoding: .utf8)
+        return trimming ? string.trimmingCharacters(in: .whitespacesAndNewlines) : string
     }
 }
