@@ -1,20 +1,23 @@
 fn main() {
     let input = include_bytes!("input.txt");
-    let mut lines = input.split(|e| *e as char == '\n').collect::<Vec<&[u8]>>();
+    let lines = input.split(|e| *e as char == '\n').collect::<Vec<&[u8]>>();
     let index = lines.iter().position(|&r| r.is_empty()).unwrap();
     let num_stacks: usize = (lines[index - 1].iter().max().unwrap() - 48).into();
 
-    let mut stacks_1: Vec<Vec<char>> = vec![Vec::new(); num_stacks];
+    let mut stacks: Vec<Vec<char>> = vec![Vec::new(); num_stacks];
     for l in &mut lines[..index - 1].iter().rev() {
         for (stack, item) in l.chunks(4).enumerate() {
             if item[1] as char != ' ' {
-                stacks_1[stack].push((item[1] as char).clone())
+                stacks[stack].push((item[1] as char).clone())
             }
         }
     }
-    let mut stacks_2 = stacks_1.clone();
+    execute_instructions(&lines[index + 1..], stacks.clone(), true);
+    execute_instructions(&lines[index + 1..], stacks.clone(), false);
+}
 
-    for l in &mut lines[index + 1..] {
+fn execute_instructions(lines: &[&[u8]], mut stacks: Vec<Vec<char>>, reverse: bool) {
+    for l in lines.iter() {
         let command: Vec<usize> = l
             .split(|e| *e as char == ' ')
             .enumerate()
@@ -26,25 +29,16 @@ fn main() {
             })
             .collect();
 
-        for n in 0..command[0] {
-            if let Some(item) = stacks_1[command[1] - 1].pop() {
-                stacks_1[command[2] - 1].push(item);
-            }
+        let mut new_items: Vec<char> = (0..command[0])
+            .filter_map(|_| stacks[command[1] - 1].pop())
+            .collect();
+        if reverse {
+            new_items.reverse();
         }
-
-        let mut new_items: Vec<char> = Vec::new();
-        for n in 0..command[0] {
-            if let Some(item) = stacks_2[command[1] - 1].pop() {
-                new_items.push(item);
-            }
-        }
-        new_items.reverse();
-        stacks_2[command[2] - 1].append(&mut new_items);
+        stacks[command[2] - 1].append(&mut new_items);
     }
-    let ans1: Vec<char> = stacks_1.into_iter().filter_map(|mut s| s.pop()).collect();
-    dbg!(&ans1);
-    let ans2: Vec<char> = stacks_2.into_iter().filter_map(|mut s| s.pop()).collect();
-    dbg!(&ans2);
-
-    println!("Hello, world!");
+    dbg!(stacks
+        .into_iter()
+        .filter_map(|mut s| s.pop())
+        .collect::<String>());
 }
