@@ -41,12 +41,6 @@ class Solver_2022_05: Solver {
 
             var stacksSetup = mainSplit[0]
                 .components(separatedBy: .newlines)
-                .map { $0
-                    .replacingOccurrences(of: "[", with: "")
-                    .replacingOccurrences(of: "] ", with: "")
-                    .replacingOccurrences(of: "]", with: "")
-                    .replacingOccurrences(of: "    ", with: " ")
-                }
                 .map { $0.convertToStringArray() }
 
             stacksSetup = Array(stacksSetup.dropLast().reversed())
@@ -54,22 +48,21 @@ class Solver_2022_05: Solver {
             self.stacks = []
 
             stacksSetup.forEach { row in
-                var column = 0
-                while column < row.count {
-                    defer {
-                        column += 1
+                stride(from: 1, to: row.count, by: 4).forEach { readIndex in
+                    let char = row[readIndex]
+
+                    guard char != " " else {
+                        return
                     }
 
-                    let c = row[column]
-                    guard c != " " else {
-                        continue
-                    }
+                    let writeIndex = (readIndex - 1) / 4
 
-                    while self.stacks.count <= column {
+                    while self.stacks.count <= writeIndex {
                         self.stacks.append([])
                     }
 
-                    self.stacks[column].append(c)
+                    self.stacks[writeIndex].append(char)
+
                 }
             }
         }
