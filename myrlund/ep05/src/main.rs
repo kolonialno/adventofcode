@@ -6,11 +6,11 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 #[derive(Debug)]
-struct CrateStacks {
+struct StagingArea {
     stacks: Vec<VecDeque<char>>,
 }
 
-impl CrateStacks {
+impl StagingArea {
     /// Picks up the given number of crates from the given stack number.
     fn pick_crates(&mut self, stack_number: &usize, num_crates: usize) -> Vec<char> {
         let from_stack = &mut self.stacks[stack_number - 1];
@@ -24,40 +24,38 @@ impl CrateStacks {
 
     /// Places the given crates into the given stack number.
     fn place_crates(&mut self, stack_number: &usize, crates: Vec<char>) {
-        for moved_crate in crates {
-            self.stacks[stack_number - 1].push_front(moved_crate);
+        for c in crates {
+            self.stacks[stack_number - 1].push_front(c);
         }
     }
 
     /// Moves the affected crates one by one, effectively reversing their order.
-    pub fn perform_moves_individually(&mut self, crate_move: Move) {
-        for _ in 0..crate_move.count {
-            let moved_crates = self.pick_crates(&crate_move.from, 1);
-            let moved_crate = moved_crates.first().unwrap();
-
-            self.stacks[&crate_move.to - 1].push_front(moved_crate.to_owned());
+    pub fn execute_stepwise(&mut self, op: Operation) {
+        for _ in 0..op.count {
+            let crates = self.pick_crates(&op.from, 1);
+            self.place_crates(&op.to, crates);
         }
     }
 
     /// Moves the affected crates without changing their orders, i.e. batched.
-    pub fn perform_moves_batched(&mut self, crate_move: Move) {
-        let moved_crates = self.pick_crates(&crate_move.from, crate_move.count);
-        self.place_crates(&crate_move.to, moved_crates);
+    pub fn execute_batched(&mut self, op: Operation) {
+        let crates = self.pick_crates(&op.from, op.count);
+        self.place_crates(&op.to, crates);
     }
 }
 
 /// String representation is the crates at the top of the stacks in order, i.e.
 /// our puzzle answer format.
-impl ToString for CrateStacks {
+impl ToString for StagingArea {
     fn to_string(&self) -> String {
         self.stacks
             .iter()
             .map(|stack| stack.front().unwrap_or(&' '))
-            .join("")
+            .collect()
     }
 }
 
-impl FromStr for CrateStacks {
+impl FromStr for StagingArea {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -98,13 +96,13 @@ impl FromStr for CrateStacks {
 }
 
 #[derive(Debug)]
-struct Move {
+struct Operation {
     pub count: usize,
     pub from: usize,
     pub to: usize,
 }
 
-impl FromStr for Move {
+impl FromStr for Operation {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -112,7 +110,10 @@ impl FromStr for Move {
             static ref RE: Regex = Regex::new(r"^move (\d+) from (\d+) to (\d+)$").unwrap();
         }
 
-        let cap = RE.captures(s).context("No Move match for given string")?;
+        let cap = RE
+            .captures(s)
+            .context("No Operation match for given string")?;
+
         Ok(Self {
             count: cap.get(1).unwrap().as_str().parse().unwrap(),
             from: cap.get(2).unwrap().as_str().parse().unwrap(),
@@ -122,29 +123,29 @@ impl FromStr for Move {
 }
 
 /// Parses the two sections of the input. Mostly defers to the FromStr
-/// implementations of CrateStacks and Move.
-fn parse_input(s: &str) -> (CrateStacks, impl Iterator<Item = Move> + '_) {
-    let stacks: CrateStacks = s.parse().unwrap();
-    let moves = s.lines().filter_map(|line| Move::from_str(line).ok());
+/// implementations of StagingArea and Operation.
+fn parse_input(s: &str) -> (StagingArea, impl Iterator<Item = Operation> + '_) {
+    let staging_area = s.parse().unwrap();
+    let operations = s.lines().filter_map(|line| Operation::from_str(line).ok());
 
-    (stacks, moves)
+    (staging_area, operations)
 }
 
 fn run_part_one(s: &str) -> String {
-    let (mut stacks, moves) = parse_input(s);
+    let (mut stacks, operations) = parse_input(s);
 
-    for crate_move in moves {
-        stacks.perform_moves_individually(crate_move);
+    for op in operations {
+        stacks.execute_stepwise(op);
     }
 
     stacks.to_string()
 }
 
 fn run_part_two(s: &str) -> String {
-    let (mut stacks, moves) = parse_input(s);
+    let (mut stacks, operations) = parse_input(s);
 
-    for crate_move in moves {
-        stacks.perform_moves_batched(crate_move);
+    for op in operations {
+        stacks.execute_batched(op);
     }
 
     stacks.to_string()
