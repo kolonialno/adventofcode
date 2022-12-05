@@ -3,20 +3,16 @@ package com.matsemann.adventofcode2022
 
 fun day05_1(lines: List<String>): Any {
     val (stacks, moves) = lines.splitBy { it == "" }
-    val crates = stacks.last().allInts().size * mutableListOf<Char>()
 
-    stacks.forEach { crt ->
-        crt.chunked(4).map { it[1] }.mapIndexed { i, c ->
-            if (c != ' ')
-                crates[i].add(c)
-        }
-    }
+    val crates = stacks.map { crt ->
+        crt.chunked(4).map { it[1] }
+    }.transpose().toMutableList()
 
     moves.map { it.allInts() }
-        .forEach { (num, from, to) ->
-            for (i in 0 until num) {
-                val popped = crates[from - 1].removeFirst()
-                crates[to - 1].add(0, popped)
+        .forEach { (numMoves, from, to) ->
+            repeat(numMoves) {
+                val popped = crates[from].removeFirst()
+                crates[to].add(0, popped)
             }
         }
 
@@ -26,7 +22,7 @@ fun day05_1(lines: List<String>): Any {
 
 fun day05_2(lines: List<String>): Any {
     val (stacks, moves) = lines.splitBy { it == "" }
-    val crates = stacks.last().allInts().size * mutableListOf<Char>()
+    val crates = DefaultMap<Int, _> { mutableListOf<Char>()}
 
     stacks.forEach { crt ->
         crt.chunked(4).map { it[1] }.mapIndexed { i, c ->
@@ -41,7 +37,7 @@ fun day05_2(lines: List<String>): Any {
         crates[to - 1].addAll(0, toMove)
     }
 
-    return crates.map { it.first() }.joinToString("")
+    return crates.map { it.value.first() }.joinToString("")
 }
 
 fun main() {

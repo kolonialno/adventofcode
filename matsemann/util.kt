@@ -5,6 +5,7 @@ import java.awt.datatransfer.StringSelection
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.TreeMap
 import kotlin.math.*
 
 
@@ -16,8 +17,12 @@ fun run(runName: String? = null, fileName: String, func: (List<String>) -> Any) 
     val result = measure { func(lines) }
 
     println("Result for ${runName ?: fileName}:\t${result}")
+    copyToClipBoard(result)
+}
+
+fun copyToClipBoard(data: Any) {
     try {
-        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(result.toString()), null)
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(data.toString()), null)
         println("Copied to clipboard!\n")
     } catch (_: Exception) {
 
@@ -115,7 +120,6 @@ enum class Direction(var x: Int, var y: Int) {
                 else -> throw Exception("unkown direction ${ch}")
 
             }
-
 
 
         fun setYDown() {
@@ -299,9 +303,38 @@ fun <E> List<E>.rotate(num: Int): List<E> {
 }
 
 operator fun <E> Int.times(list: List<E>): List<List<E>> {
-    val lists = Array(this) { list}
+    val lists = Array(this) { list }
     return listOf(*lists)
 }
+
+@JvmName("timesMutable")
+operator fun <E> Int.times(list: MutableList<E>) =
+    MutableList(this) { list.toMutableList() }
+
+fun <E> List<List<E>>.transpose(): List<List<E>> =
+    List(this[0].size) { i ->
+        List(this.size) { j ->
+            this[j][i]
+        }
+    }
+
+/*
+Or a functional variant I wrote lol
+fun <E> List<List<E>>.transpose2(): List<List<E>> {
+    val size = this.getOrNull(0)?.size ?: 0
+    return this.fold(size * listOf()) { es, acc ->
+        es.zip(acc) { el1, el2 -> el1 + el2}
+    }
+}
+
+ */
+
+fun <E> List<List<E>>.toMutableList(): MutableList<MutableList<E>> =
+    MutableList(this.size) { i ->
+        this[i].toMutableList()
+    }
+
+
 
 fun <E> permutations(list: List<E>, length: Int? = null): Sequence<List<E>> = sequence {
     val n = list.size
@@ -366,7 +399,6 @@ fun <E> cartesian(lists: List<List<E>>): Sequence<List<E>> {
     }
 }
 
-
 inline fun Int.big() = this.toBigInteger()
 
 inline operator fun BigInteger.times(other: Int): BigInteger = this * other.toBigInteger()
@@ -379,6 +411,20 @@ inline operator fun BigInteger.minus(other: Int): BigInteger = this - other.toBi
  */
 infix fun Int.mod1To(max: Int): Int {
     return (this - 1) % max + 1
+}
+
+/**
+ * A map where computeIfAbsent is called on each getter
+ * Items sorted by key, so safe to use as a sparse list
+ */
+class DefaultMap<K, V>(val map: MutableMap<K, V> = TreeMap(), val default: () -> V) : MutableMap<K, V> by map {
+
+    //    constructor(default: () -> V) : this(mutableMapOf<K, V>(), default)
+    override operator fun get(key: K): V {
+        return map.computeIfAbsent(key) {
+            default()
+        }
+    }
 }
 
 
@@ -448,6 +494,9 @@ class Parse {
 }
 
 fun String.allInts() = Parse.allIntsInString(this)
+
+fun List<String>.ints(radix: Int = 10) = this.map { it.toInt(radix) }
+fun List<String>.bigInts(radix: Int = 10) = this.map { it.toBigInteger(radix) }
 
 
 interface Graph {
