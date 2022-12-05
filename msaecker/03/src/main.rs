@@ -4,6 +4,8 @@ use std::{
     io::{BufRead, BufReader},
 };
 
+use helpers::get_input_file;
+
 fn priority(c: char) -> u32 {
     match c {
         'a'..='z' => c as u32 - 96,
@@ -27,8 +29,8 @@ fn find_badge(group: &[String]) -> char {
 }
 
 fn main() {
-    const INPUT_FILE: &str = "input.txt";
-    let file = File::open(INPUT_FILE).unwrap();
+    let input_file = get_input_file().unwrap();
+    let file = File::open(input_file.clone()).unwrap();
     let lines = BufReader::new(file).lines();
 
     // part 1
@@ -41,7 +43,7 @@ fn main() {
 
     // part2
     let mut badge_sum = 0;
-    let file = File::open(INPUT_FILE).unwrap();
+    let file = File::open(input_file).unwrap();
     let lines = BufReader::new(file)
         .lines()
         .flatten()

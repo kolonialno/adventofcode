@@ -3,9 +3,11 @@ use std::{
     io::{BufRead, BufReader},
 };
 
+use helpers::get_input_file;
+
 fn main() {
-    const INPUT_FILE: &str = "input.txt";
-    let file = File::open(INPUT_FILE).unwrap();
+    let input_file = get_input_file().unwrap();
+    let file = File::open(input_file).unwrap();
     let lines = BufReader::new(file).lines();
 
     let mut calories = vec![0];

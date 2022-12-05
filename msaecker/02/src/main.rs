@@ -3,6 +3,8 @@ use std::{
     io::{BufRead, BufReader},
 };
 
+use helpers::get_input_file;
+
 #[derive(Copy, Clone, PartialEq, Eq)]
 enum Sign {
     Rock,
@@ -86,8 +88,8 @@ fn score(sign: Sign, outcome: Outcome) -> usize {
 }
 
 fn main() {
-    const INPUT_FILE: &str = "input.txt";
-    let file = File::open(INPUT_FILE).unwrap();
+    let input_file = get_input_file().unwrap();
+    let file = File::open(input_file.clone()).unwrap();
     let lines = BufReader::new(file).lines();
 
     // part 1
@@ -101,7 +103,7 @@ fn main() {
     println!("Final score: {}", total_score);
 
     // part 2
-    let file = File::open(INPUT_FILE).unwrap();
+    let file = File::open(input_file).unwrap();
     let lines = BufReader::new(file).lines();
     let mut total_score = 0;
     for line in lines.flatten() {

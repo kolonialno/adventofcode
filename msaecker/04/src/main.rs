@@ -4,6 +4,8 @@ use std::{
     ops::RangeInclusive,
 };
 
+use helpers::get_input_file;
+
 fn get_ranges(line: String) -> (RangeInclusive<isize>, RangeInclusive<isize>) {
     let (lhs, rhs) = line.split_once(',').unwrap();
     let (lhs_begin, lhs_end) = lhs.split_once('-').unwrap();
@@ -29,8 +31,8 @@ fn has_overlap(lhs_range: &RangeInclusive<isize>, rhs_range: &RangeInclusive<isi
 }
 
 fn main() {
-    const INPUT_FILE: &str = "input.txt";
-    let file = File::open(INPUT_FILE).unwrap();
+    let input_file = get_input_file().unwrap();
+    let file = File::open(input_file).unwrap();
     let lines = BufReader::new(file).lines().flatten();
 
     let mut fully_contained = 0;

@@ -34,7 +34,7 @@ impl MoveOperation {
 }
 
 fn main() {
-    const INPUT_FILE: &str = "input.txt";
+    const INPUT_FILE: &str = "05/input.txt";
     let input = fs::read_to_string(INPUT_FILE).unwrap();
     let mut parts = input.split("\n\n");
     let mut stacks: Vec<Vec<char>> = Vec::new();
