@@ -1,6 +1,6 @@
 use arrayvec::ArrayVec;
 use regex::Regex;
-use std::{str::FromStr, time::Instant};
+use std::{array, str::FromStr};
 
 #[macro_use]
 extern crate lazy_static;
@@ -16,26 +16,22 @@ fn main() {
     println!("{:?}", part2(initial_state_string, input));
 }
 
-fn part2(initial_state_string: &str, input: &str) -> [char; 9] {
-    let mut res: [char; 9] = ['_'; 9];
+fn part2(initial_state_string: &str, input: &str) -> String {
     let mut state = generate_initial_state(initial_state_string);
 
     for command in input.lines().map(|l| l.parse::<Command>().unwrap()) {
         let idx = state[command.from].len() - command.amount;
-        for _ in 0..command.amount {
-            let popped = state[command.from].remove(idx);
-            state[command.to].push(popped);
-        }
+        let popped = state[command.from].split_off(idx);
+        state[command.to].extend(popped);
     }
 
-    for i in 0..9 {
-        res[i] = state[i].pop().unwrap();
-    }
-    res
+    state
+        .into_iter()
+        .map(|mut v| v.pop().unwrap())
+        .collect::<String>()
 }
 
-fn part1(initial_state_string: &str, input: &str) -> [char; 9] {
-    let mut res: [char; 9] = ['_'; 9];
+fn part1(initial_state_string: &str, input: &str) -> String {
     let mut state = generate_initial_state(initial_state_string);
 
     for command in input.lines().map(|l| l.parse::<Command>().unwrap()) {
@@ -45,10 +41,10 @@ fn part1(initial_state_string: &str, input: &str) -> [char; 9] {
         }
     }
 
-    for i in 0..9 {
-        res[i] = state[i].pop().unwrap();
-    }
-    res
+    state
+        .into_iter()
+        .map(|mut v| v.pop().unwrap())
+        .collect::<String>()
 }
 
 struct Command {
@@ -69,27 +65,18 @@ impl FromStr for Command {
     }
 }
 
-fn generate_initial_state(state_string: &str) -> ArrayVec<ArrayVec<char, 60>, 9> {
-    let mut state: ArrayVec<ArrayVec<char, 60>, 9> = ArrayVec::from([
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-        ArrayVec::new_const(),
-    ]);
-    let mut indexes: [usize; 40] = [0; 40];
-    state_string.lines().rev().for_each(|st| {
-        st.chars().enumerate().for_each(|(i, c)| {
-            if c.is_ascii_digit() {
-                indexes[i] = c.to_digit(10).unwrap() as usize - 1;
-            } else if c.is_ascii_alphabetic() {
-                state[indexes[i]].push(c)
-            }
-        })
+fn generate_initial_state(state_string: &str) -> [Vec<char>; 9] {
+    let mut state: [Vec<char>; 9] = array::from_fn(|_| Vec::new());
+    state_string.lines().rev().skip(1).for_each(|st| {
+        st.chars()
+            .skip(1)
+            .step_by(4)
+            .enumerate()
+            .for_each(|(i, c)| {
+                if c.is_ascii_alphabetic() {
+                    state[i].push(c);
+                }
+            })
     });
     state
 }
