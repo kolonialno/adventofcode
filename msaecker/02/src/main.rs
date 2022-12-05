@@ -88,7 +88,7 @@ fn score(sign: Sign, outcome: Outcome) -> usize {
 }
 
 fn main() {
-    let input_file = get_input_file().unwrap();
+    let input_file = get_input_file();
     let file = File::open(input_file.clone()).unwrap();
     let lines = BufReader::new(file).lines();
 

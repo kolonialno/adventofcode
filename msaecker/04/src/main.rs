@@ -31,7 +31,7 @@ fn has_overlap(lhs_range: &RangeInclusive<isize>, rhs_range: &RangeInclusive<isi
 }
 
 fn main() {
-    let input_file = get_input_file().unwrap();
+    let input_file = get_input_file();
     let file = File::open(input_file).unwrap();
     let lines = BufReader::new(file).lines().flatten();
 

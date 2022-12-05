@@ -1,5 +1,7 @@
 use std::fs::{self};
 
+use helpers::get_input_file;
+
 #[derive(Copy, Debug, Clone)]
 struct MoveOperation {
     from: usize,
@@ -34,8 +36,7 @@ impl MoveOperation {
 }
 
 fn main() {
-    const INPUT_FILE: &str = "05/input.txt";
-    let input = fs::read_to_string(INPUT_FILE).unwrap();
+    let input = fs::read_to_string(get_input_file()).unwrap();
     let mut parts = input.split("\n\n");
     let mut stacks: Vec<Vec<char>> = Vec::new();
     let mut stack_iter = parts.next().unwrap().lines().rev();

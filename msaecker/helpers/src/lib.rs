@@ -1,7 +1,7 @@
-use std::{env, io};
+use std::env;
 
-pub fn get_input_file() -> io::Result<String> {
-    let dir = env::current_exe()?;
+pub fn get_input_file() -> String {
+    let dir = env::current_exe().unwrap();
     let exe = dir
         .file_name()
         .unwrap()
@@ -9,8 +9,8 @@ pub fn get_input_file() -> io::Result<String> {
         .into_string()
         .unwrap();
 
-    Ok(format!(
+    format!(
         "{}/input.txt",
         exe.chars().skip(exe.len() - 2).collect::<String>()
-    ))
+    )
 }
