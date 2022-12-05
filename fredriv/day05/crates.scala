@@ -1,37 +1,37 @@
 import scala.io.Source
 import scala.collection.mutable.Stack
 
-@main def main =
-  val data = Source.fromFile("input.txt").getLines.mkString("\n").split("\n\n")
-  val stacksData = data(0).split("\n").reverse
-  val movesData = data(1).split("\n")
-
+def getStacks(stacksData: Array[String]): IndexedSeq[Stack[Char]] =
   val numStacks = (stacksData.head.length + 1) / 4
   val stacks = for _ <- 1 to numStacks yield Stack[Char]()
 
   for row <- stacksData.tail
-      col <- 0 until numStacks
-      crate = row(col * 4 + 1)
+      (crate, col) <- row.grouped(4).map(_(1)).zipWithIndex
       if crate != ' '
-  yield stacks(col).push(crate)
+  do stacks(col).push(crate)
+
+  return stacks
+
+@main def main =
+  val data = Source.fromFile("input.txt").getLines.mkString("\n").split("\n\n")
+  val stacksData = data(0).split("\n").reverse
 
   val moves =
-    for row <- movesData
+    for row <- data(1).split("\n")
         Array(_, num, _, from, _, to) = row.split(" ")
     yield (num.toInt, from.toInt - 1, to.toInt - 1)
 
   // Part 1:
-  /*
+  val stacks1 = getStacks(stacksData)
   for (num, from, to) <- moves
       _ <- 1 to num
-  yield stacks(to).push(stacks(from).pop())
-  */
+  do stacks1(to).push(stacks1(from).pop())
+  println(stacks1.map(_.pop).mkString)
 
   // Part 2:
-  for (num, from, to) <- moves
-  yield {
-    val moved = for _ <- 1 to num yield stacks(from).pop()
-    stacks(to).pushAll(moved.reverse)
+  val stacks2 = getStacks(stacksData)
+  for (num, from, to) <- moves do {
+    val moved = for _ <- 1 to num yield stacks2(from).pop()
+    stacks2(to).pushAll(moved.reverse)
   }
-
-  println(stacks.map(_.pop).mkString)
+  println(stacks2.map(_.pop).mkString)
