@@ -1,6 +1,6 @@
 use arrayvec::ArrayVec;
 use regex::Regex;
-use std::str::FromStr;
+use std::{str::FromStr, time::Instant};
 
 #[macro_use]
 extern crate lazy_static;
@@ -21,13 +21,11 @@ fn part2(initial_state_string: &str, input: &str) -> [char; 9] {
     let mut state = generate_initial_state(initial_state_string);
 
     for command in input.lines().map(|l| l.parse::<Command>().unwrap()) {
-        let mut buffer = ArrayVec::<char, 60>::new();
+        let idx = state[command.from].len() - command.amount;
         for _ in 0..command.amount {
-            buffer.insert(0, state[command.from].pop().unwrap());
+            let popped = state[command.from].remove(idx);
+            state[command.to].push(popped);
         }
-        state[command.to]
-            .try_extend_from_slice(buffer.as_slice())
-            .unwrap();
     }
 
     for i in 0..9 {
