@@ -7,8 +7,12 @@ fn main() {
     let mut initial_stacks = create_initial_stacks(initial_stack_string);
     let mutable_stacks = &mut initial_stacks;
     rearrange_all_stacks(mutable_stacks, instructions_string);
-    //process_one_instruction("move 4 from 3 to 1");
     println!("{:?}", mutable_stacks);
+
+    let num_stacks = get_number_of_stacks(input_string);
+    for i in 0..num_stacks {
+        println!("{:?}", mutable_stacks[i as usize].last().unwrap());
+    }
 }
 
 fn get_number_of_stacks (initial_stack_string: &str) -> u16 {
@@ -61,9 +65,10 @@ fn create_initial_stacks (initial_stack_string: &str) -> Vec<Vec<char>> {
 
 fn rearrange_all_stacks(initial_stack_vector: &mut Vec<Vec<char>>, instructions: &str) {
     for instruction in instructions.lines() {
-        println!("{}" ,instruction);
         let (num_ops, from, to) = process_one_instruction(instruction);
-        rearrange_one_stack_operation(initial_stack_vector, num_ops, from, to);
+        for _ in 0..num_ops {
+            rearrange_one_stack_operation(initial_stack_vector, num_ops, from, to);
+        }
     }
 }
 
