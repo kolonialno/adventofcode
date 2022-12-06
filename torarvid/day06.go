@@ -8,16 +8,10 @@ func (a Advent) Day06() {
 	solve := func(req int) int {
 		for i := req; i < len(input); i++ {
 			m := make(map[byte]int)
-			maybeSolved := true
 			for j := 0; j < req; j++ {
-				current := m[input[i-j]]
-				if current > 0 {
-					maybeSolved = false
-					break
-				}
-				m[input[i-j]] += 1
+				m[input[i-j]]++
 			}
-			if maybeSolved {
+			if len(m) == req {
 				return i + 1
 			}
 		}
