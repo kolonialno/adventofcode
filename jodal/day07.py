@@ -13,8 +13,7 @@ def parse(data: str) -> Dir:
 
     stack = [(root_path, root_dir)]
 
-    lines = iter(data.splitlines())
-    for line in lines:
+    for line in data.splitlines():
         curr_path, curr_dir = stack[-1]
         if line.startswith("$"):
             match line.split():
