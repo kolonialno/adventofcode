@@ -12,14 +12,12 @@ fn main() {
     for line in input.lines().map(|l| l.parse::<Line>().unwrap()) {
         match line.0 {
             LineType::Info(InfoType::File(s)) => {
-                folders
-                    .entry(active_folder.clone())
-                    .and_modify(|f| f.size += s);
+                let entry = folders.get_mut(&active_folder).unwrap();
+                entry.size += s;
             }
             LineType::Info(InfoType::Dir(folder)) => {
-                folders
-                    .entry(active_folder.clone())
-                    .and_modify(|f| f.sub_folders.push(folder + &active_folder));
+                let entry = folders.get_mut(&active_folder).unwrap();
+                entry.sub_folders.push(folder + &active_folder);
             }
             LineType::Command(CommandType::Cd(folder)) => match folder.as_str() {
                 ".." => {
