@@ -10,16 +10,16 @@ fn main() {
     let mut stack = Vec::new();
 
     for line in input.lines().map(|l| l.parse::<Line>().unwrap()) {
-        match line.0 {
-            LineType::Info(InfoType::File(s)) => {
+        match line {
+            Line::Info(InfoType::File(s)) => {
                 let entry = folders.get_mut(&active_folder).unwrap();
                 entry.size += s;
             }
-            LineType::Info(InfoType::Dir(folder)) => {
+            Line::Info(InfoType::Dir(folder)) => {
                 let entry = folders.get_mut(&active_folder).unwrap();
                 entry.sub_folders.push(folder + &active_folder);
             }
-            LineType::Command(CommandType::Cd(folder)) => match folder.as_str() {
+            Line::Command(CommandType::Cd(folder)) => match folder.as_str() {
                 ".." => {
                     active_folder = stack.pop().unwrap();
                 }
@@ -36,36 +36,34 @@ fn main() {
                     );
                 }
             },
-            LineType::Command(CommandType::Ls) => continue,
+            Line::Command(CommandType::Ls) => continue,
         };
     }
 
     // part 1
-    let mut res_1 = Vec::new();
-    let (_, res) = dfs(&folders, String::from("//"), &mut res_1, 100000);
-    println!("{:?}", res.iter().sum::<i64>());
-
-    // part 2
-    let mut res_2 = Vec::new();
-    let (tot, res) = dfs(&folders, String::from("//"), &mut res_2, i64::MAX);
-    let needed = tot - 40000000;
-    println!("{:?}", res.iter().filter(|s| *s >= &needed).min().unwrap());
+    let mut res = Vec::new();
+    let (tot, res) = dfs(&folders, String::from("//"), &mut res);
+    println!(
+        "part 1: {:?}",
+        res.iter().filter(|s| **s <= 100000).sum::<i64>()
+    );
+    println!(
+        "part 2: {:?}",
+        res.iter().filter(|s| **s >= tot - 40000000).min().unwrap()
+    );
 }
 
 fn dfs<'a>(
     folders: &HashMap<String, Folder>,
     v: String,
     res: &'a mut Vec<i64>,
-    treshold: i64,
 ) -> (i64, &'a mut Vec<i64>) {
     let folder = folders.get(&v).unwrap();
     let mut tot_size = folder.size;
     for sub_folder in &folder.sub_folders {
-        tot_size += dfs(folders, sub_folder.clone(), res, treshold).0;
+        tot_size += dfs(folders, sub_folder.clone(), res).0;
     }
-    if tot_size <= treshold {
-        res.push(tot_size)
-    }
+    res.push(tot_size);
     (tot_size, res)
 }
 
@@ -88,29 +86,26 @@ enum InfoType {
 }
 
 #[derive(Debug)]
-enum LineType {
+enum Line {
     Command(CommandType),
     Info(InfoType),
 }
-
-#[derive(Debug)]
-struct Line(LineType);
 
 impl FromStr for Line {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.split(' ').collect();
         if s.starts_with('$') {
-            return Ok(Self(LineType::Command(match parts[1] {
+            return Ok(Line::Command(match parts[1] {
                 "cd" => CommandType::Cd(parts[2].into()),
                 "ls" => CommandType::Ls,
                 _ => panic!("wtf"),
-            })));
+            }));
         }
 
-        Ok(Self(LineType::Info(match parts[0] {
+        Ok(Line::Info(match parts[0] {
             "dir" => InfoType::Dir(parts[1].into()),
             _ => InfoType::File(parts[0].parse::<i64>().unwrap()),
-        })))
+        }))
     }
 }
