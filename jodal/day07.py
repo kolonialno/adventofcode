@@ -15,29 +15,24 @@ def parse(data: str) -> Dir:
 
     for line in data.splitlines():
         curr_path, curr_dir = stack[-1]
-        if line.startswith("$"):
-            match line.split():
-                case ["$", "cd", "/"]:
-                    stack = [(root_path, root_dir)]
-                case ["$", "cd", ".."]:
-                    stack.pop()
-                case ["$", "cd", name]:
-                    new_path = curr_path / name
-                    new_dir = curr_dir[new_path]
-                    assert isinstance(new_dir, dict)
-                    stack.append((new_path, new_dir))
-                case ["$", "ls"]:
-                    pass
-                case cmd:
-                    raise Exception(f"Command not found: {cmd}")
-        else:
-            match line.split():
-                case ["dir", name]:
-                    curr_dir[curr_path / name] = {}
-                case [size, name]:
-                    curr_dir[curr_path / name] = int(size)
-                case other:
-                    raise Exception(f"Unknown pattern: {other}")
+        match line.split():
+            case ["$", "cd", "/"]:
+                stack = [(root_path, root_dir)]
+            case ["$", "cd", ".."]:
+                stack.pop()
+            case ["$", "cd", name]:
+                new_path = curr_path / name
+                new_dir = curr_dir[new_path]
+                assert isinstance(new_dir, dict)
+                stack.append((new_path, new_dir))
+            case ["$", "ls"]:
+                pass
+            case ["dir", name]:
+                curr_dir[curr_path / name] = {}
+            case [size, name]:
+                curr_dir[curr_path / name] = int(size)
+            case other:
+                raise Exception(f"Unknown pattern: {other}")
 
     return root_dir
 
