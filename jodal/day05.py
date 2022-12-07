@@ -38,7 +38,7 @@ def parse(data: str) -> tuple[Cargo, Procedure]:
     while lines:
         line = lines.pop(0)
 
-        if match := re.match("move (\d+) from (\d+) to (\d+)", line):
+        if match := re.match(r"move (\d+) from (\d+) to (\d+)", line):
             procedure.append(
                 (int(match.group(1)), int(match.group(2)), int(match.group(3)))
             )
