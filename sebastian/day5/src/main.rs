@@ -1,4 +1,3 @@
-use anyhow;
 use std::collections::HashMap;
 
 type Crate = char;
@@ -65,7 +64,10 @@ impl CargoPiles {
 
                 self.piles
                     .get_mut(&m.to)
-                    .map(|p| Ok(p.add_top(c)))
+                    .map(|p| {
+                        p.add_top(c);
+                        Ok(())
+                    })
                     .unwrap_or_else(|| anyhow::bail!("Expected to find pile to add to"))?;
             }
         }
@@ -85,7 +87,10 @@ impl CargoPiles {
             }
             self.piles
                 .get_mut(&m.to)
-                .map(|p| Ok(p.add_pile(&mut crate_buffer)))
+                .map(|p| {
+                    p.add_pile(&mut crate_buffer);
+                    Ok(())
+                })
                 .unwrap_or_else(|| anyhow::bail!("Expected to find pile to add to"))?;
         }
         Ok(())
@@ -95,7 +100,7 @@ impl CargoPiles {
         let mut crates = vec![];
         for key in self.nums.iter() {
             if let Some(c) = self.piles.get(key).and_then(Pile::peek_top) {
-                crates.push(c.clone());
+                crates.push(*c);
             } else {
                 panic!("Missing crate on top of pile!");
             }
@@ -163,9 +168,8 @@ mod parser {
         
         for row in rows {
             for (c, idx) in row.into_iter().zip(&nums) {
-                match c {
-                    Some(c) => config.add_on_bottom(*idx, c),
-                    None => (), // No crate to add to this pile...
+                if let Some(c) = c {
+                    config.add_on_bottom(*idx, c);
                 }
             }
         }
