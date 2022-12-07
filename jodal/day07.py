@@ -24,7 +24,9 @@ def parse(data: str) -> Dir:
                     stack.pop()
                 case ["$", "cd", name]:
                     new_path = curr_path / name
-                    stack.append((new_path, curr_dir[new_path]))
+                    new_dir = curr_dir[new_path]
+                    assert isinstance(new_dir, dict)
+                    stack.append((new_path, new_dir))
                 case ["$", "ls"]:
                     pass
                 case cmd:
