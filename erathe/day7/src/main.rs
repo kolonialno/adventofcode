@@ -1,10 +1,124 @@
-use std::{collections::HashMap, str::FromStr};
+use std::{collections::HashMap, str::FromStr, time::Instant};
 
 type Target = String;
 type Size = i64;
 
 fn main() {
     let input = include_str!("../input.txt");
+
+    let t = Instant::now();
+    let tree = initialize_arena_tree(input);
+    // part 1 arena
+    let r = tree
+        .arena
+        .iter()
+        .filter(|node| node.val <= 100000)
+        .map(|node| node.val)
+        .sum::<i64>();
+    println!("part 1: {r}");
+
+    // part 2 arena
+    let r = tree
+        .arena
+        .iter()
+        .filter(|node| node.val >= tree.arena[0].val - 40000000)
+        .map(|node| node.val)
+        .min()
+        .unwrap();
+    println!("part 2: {r}");
+    println!("Second try finished in: {:?}", t.elapsed()); // ~270 microsecs
+
+    //-------------------------------------------------------------------------
+    let t = Instant::now();
+    let folders = initialize_hash_map(input);
+    let mut res = Vec::new();
+    let (tot, res) = dfs(&folders, String::from("//"), &mut res);
+    println!(
+        "part 1: {:?}",
+        res.iter().filter(|s| **s <= 100000).sum::<i64>()
+    );
+    println!(
+        "part 2: {:?}",
+        res.iter().filter(|s| **s >= tot - 40000000).min().unwrap()
+    );
+    println!("First solution finished in: {:?}", t.elapsed()); // ~480 microsecs
+}
+
+fn initialize_arena_tree(input: &str) -> ArenaTree<i64> {
+    let mut tree: ArenaTree<i64> = ArenaTree::default();
+    tree.arena.push(Node::new(0, None));
+
+    for line in input.lines().skip(1).map(|l| l.parse::<Line>().unwrap()) {
+        match line {
+            Line::Info(InfoType::File(s)) => {
+                tree.arena[tree.active_idx].val += s;
+                // propagate file size up
+                for idx in tree.ancestors() {
+                    tree.arena[idx].val += s;
+                }
+            }
+            Line::Command(CommandType::Cd(folder)) => match folder.as_str() {
+                ".." => tree.active_idx = tree.arena[tree.active_idx].parent.unwrap(),
+                _ => tree.active_idx = tree.add_node(0),
+            },
+            Line::Info(InfoType::Dir(_folder)) => continue,
+            Line::Command(CommandType::Ls) => continue,
+        };
+    }
+    tree
+}
+
+// inspired by https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6
+#[derive(Debug, Default)]
+struct ArenaTree<T>
+where
+    T: PartialEq,
+{
+    arena: Vec<Node<T>>,
+    active_idx: usize,
+}
+
+impl<T> ArenaTree<T>
+where
+    T: PartialEq,
+{
+    fn add_node(&mut self, val: T) -> usize {
+        let idx = self.arena.len();
+        self.arena.push(Node::new(val, Some(self.active_idx)));
+        idx
+    }
+
+    fn ancestors(&self) -> Vec<usize> {
+        let mut curr = self.active_idx;
+        let mut ancestors = vec![];
+        while let Some(p) = self.arena[curr].parent {
+            ancestors.push(p);
+            curr = p;
+        }
+        ancestors
+    }
+}
+
+#[derive(Debug)]
+struct Node<T>
+where
+    T: PartialEq,
+{
+    val: T,
+    parent: Option<usize>,
+}
+
+impl<T> Node<T>
+where
+    T: PartialEq,
+{
+    fn new(val: T, parent: Option<usize>) -> Self {
+        Self { val, parent }
+    }
+}
+
+// First solution
+fn initialize_hash_map(input: &str) -> HashMap<String, Folder> {
     let mut folders: HashMap<String, Folder> = HashMap::new();
     let mut active_folder = "/".to_string();
     let mut stack = Vec::new();
@@ -39,18 +153,7 @@ fn main() {
             Line::Command(CommandType::Ls) => continue,
         };
     }
-
-    // part 1
-    let mut res = Vec::new();
-    let (tot, res) = dfs(&folders, String::from("//"), &mut res);
-    println!(
-        "part 1: {:?}",
-        res.iter().filter(|s| **s <= 100000).sum::<i64>()
-    );
-    println!(
-        "part 2: {:?}",
-        res.iter().filter(|s| **s >= tot - 40000000).min().unwrap()
-    );
+    folders
 }
 
 fn dfs<'a>(
