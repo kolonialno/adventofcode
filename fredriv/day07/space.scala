@@ -1,41 +1,41 @@
 import scala.io.Source
-import scala.collection.mutable.Stack
+import scala.collection.mutable.ArrayBuffer
 
-case class Dir(name: String, subdirs: List[Dir], files: List[File]) {
-  def size: Int = subdirs.map(_.size).sum + files.map(_.size).sum
+case class Dir(
+  name: String,
+  parent: Option[Dir] = None,
+  subdirs: ArrayBuffer[Dir] = ArrayBuffer(),
+  var totalFileSize: Int = 0)
+{
+  lazy val size: Int = subdirs.map(_.size).sum + totalFileSize
+  override def toString: String = s"Dir($name, $totalFileSize, [${subdirs.map(_.toString).mkString(", ")}])"
 }
-case class File(name: String, size: Int)
 
-def buildTree(dirName: String, data: Stack[String]): Dir =
-  var dir = Dir(dirName, Nil, Nil)
-  while (data.nonEmpty)
-    val cmd = data.pop
-    if cmd == "$ cd .." then
-      return dir
-    else if cmd.startsWith("$ cd ") then
-      val subdirName = cmd.drop(5)
-      val subdir = buildTree(subdirName, data)
-      dir = dir.copy(subdirs = subdir :: dir.subdirs)
-    else if cmd != "$ ls" && !cmd.startsWith("dir ") then
-      val Array(size, name) = cmd.split(" ")
-      val file = File(name, size.toInt)
-      dir = dir.copy(files = file :: dir.files)
-  return dir
+def buildTree(data: List[String]): Dir =
+  val root = Dir("/")
+  var currentDir = root
+  for line <- data.tail do // skip first "$ cd /"
+    if line == "$ cd .." then
+      currentDir = currentDir.parent.get
+    else if line.startsWith("$ cd ") then
+      val name = line.drop(5)
+      val dir = Dir(name, Some(currentDir))
+      currentDir.subdirs.append(dir)
+      currentDir = dir
+    else if line(0).isDigit then
+      val size = line.split(" ")(0).toInt
+      currentDir.totalFileSize += size
+  root
 
-def findDirs(dir: Dir, cond: Dir => Boolean): List[Dir] =
+def findDirs(dir: Dir, cond: Dir => Boolean): ArrayBuffer[Dir] =
   val children = dir.subdirs.flatMap(findDirs(_, cond))
-  if cond(dir) then dir :: children else children
+  if cond(dir) then dir +: children else children
 
 @main def main =
   val data = Source.fromFile("input.txt").getLines.toList
-  val s = Stack[String]()
-  s.pushAll(data.reverse)
-  val first = s.pop() // "$ cd /"
-  val root = buildTree("/", s)
+  val root = buildTree(data)
 
-  // println(root)
   val part1 = findDirs(root, d => d.size < 100000)
-  // println(part1)
   println(part1.map(_.size).sum)
 
   val total = 70000000
