@@ -124,9 +124,7 @@ fn solve_part1(input: &str) -> usize {
 
     let dirs: Vec<usize> = fs.dirs().iter().map(|dir| dir.size()).collect();
     let limit: usize = 100000;
-    dirs.iter()
-        .filter(|size| size.clone().clone() < limit)
-        .sum()
+    dirs.iter().filter(|size| **size < limit).sum()
 }
 
 fn solve_part2(input: &str) -> usize {
