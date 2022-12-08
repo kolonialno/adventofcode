@@ -45,6 +45,8 @@
 		04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04C81006293B36CA00D9B495 /* Input_2022_03.txt */; };
 		478D1B74293EB267004B9D95 /* Solver_2022_06.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B73293EB267004B9D95 /* Solver_2022_06.swift */; };
 		478D1B76293F1867004B9D95 /* Input_2022_06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B75293F1867004B9D95 /* Input_2022_06.txt */; };
+		478D1B782940DD99004B9D95 /* Solver_2022_07.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B772940DD99004B9D95 /* Solver_2022_07.swift */; };
+		478D1B7A294200D2004B9D95 /* Input_2022_07.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B79294200D2004B9D95 /* Input_2022_07.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +89,8 @@
 		04C81006293B36CA00D9B495 /* Input_2022_03.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_03.txt; sourceTree = "<group>"; };
 		478D1B73293EB267004B9D95 /* Solver_2022_06.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_06.swift; sourceTree = "<group>"; };
 		478D1B75293F1867004B9D95 /* Input_2022_06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_06.txt; sourceTree = "<group>"; };
+		478D1B772940DD99004B9D95 /* Solver_2022_07.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_07.swift; sourceTree = "<group>"; };
+		478D1B79294200D2004B9D95 /* Input_2022_07.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_07.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +195,7 @@
 				046FD22F293D43C300A2992B /* Solver_2022_04.swift */,
 				046FD233293DD0AD00A2992B /* Solver_2022_05.swift */,
 				478D1B73293EB267004B9D95 /* Solver_2022_06.swift */,
+				478D1B772940DD99004B9D95 /* Solver_2022_07.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				046FD231293D45D900A2992B /* Input_2022_04.txt */,
 				046FD235293DDC1D00A2992B /* Input_2022_05.txt */,
 				478D1B75293F1867004B9D95 /* Input_2022_06.txt */,
+				478D1B79294200D2004B9D95 /* Input_2022_07.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -275,6 +281,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				478D1B7A294200D2004B9D95 /* Input_2022_07.txt in Resources */,
 				043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */,
 				478D1B76293F1867004B9D95 /* Input_2022_06.txt in Resources */,
 				043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */,
@@ -307,6 +314,7 @@
 				046FD230293D43C300A2992B /* Solver_2022_04.swift in Sources */,
 				0471F2742936B76300D4B978 /* AdventImage.swift in Sources */,
 				0471F2682936B4D100D4B978 /* FileLoader.swift in Sources */,
+				478D1B782940DD99004B9D95 /* Solver_2022_07.swift in Sources */,
 				0471F2862936B84700D4B978 /* String+Ext.swift in Sources */,
 				0471F2782936B79300D4B978 /* IntAStar.swift in Sources */,
 				0471F2882936B94100D4B978 /* GridInfo.swift in Sources */,
