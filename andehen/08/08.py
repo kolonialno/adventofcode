@@ -9,41 +9,26 @@ def count_visible_trees(array, h):
 
 
 with open("input.txt") as f:
-    data = f.read()
-
-
-grid = np.array([[int(c) for c in x] for x in data.strip().split("\n")])
-
+    grid = np.array([[int(c) for c in r] for r in f.read().strip().split("\n")])
 
 rows, cols = grid.shape
-
 visible_trees = rows * 2 + (cols - 2) * 2
 scenic_score = 0
 
 for r in range(1, rows - 1):
     for c in range(1, cols - 1):
-        h = grid[r, c]
+        tree_height = grid[r, c]
+        directions = [
+            grid[:r, c][::-1],
+            grid[r + 1 :, c],
+            grid[r, :c][::-1],
+            grid[r, c + 1 :],
+        ]
 
-        upwards = grid[:r, c][::-1]
-        downwards = grid[r + 1 :, c]
-        leftwards = grid[r, :c][::-1]
-        rightwards = grid[r, c + 1 :]
-
-        if any(
-            np.array(
-                [upwards.max(), downwards.max(), leftwards.max(), rightwards.max()]
-            )
-            < h
-        ):
+        if any(np.array([d.max() for d in directions]) < tree_height):
             visible_trees += 1
 
-        current_scenic_score = np.prod(
-            [
-                count_visible_trees(a, h)
-                for a in [upwards, downwards, leftwards, rightwards]
-            ]
-        )
-
+        current_scenic_score = np.prod([count_visible_trees(d, tree_height) for d in directions])
         if current_scenic_score > scenic_score:
             scenic_score = current_scenic_score
 
