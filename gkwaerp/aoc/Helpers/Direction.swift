@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// Note: North is negative `y`
-enum Direction: Int, CaseIterable {
+/// Note: North is negative `y` / South is positive `y`
+enum Direction: Int, CaseIterable, Hashable {
     case north = 1
     case south = 2
     case west = 3

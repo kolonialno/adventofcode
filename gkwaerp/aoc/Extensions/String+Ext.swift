@@ -21,6 +21,12 @@ extension String {
         return StringGrid(stringArray: stringArray)
     }
 
+    /// Convenience, where every character is a new cell of type Int -- thus only supports cells with valeus [0-9]
+    func loadAsIntGrid(fileType: String? = "txt", separator: String = "\n") -> IntGrid {
+        let stringArray = loadAsTextStringArray(fileType: fileType, separator: separator)
+        return IntGrid(stringArray: stringArray)
+    }
+
     func loadAsTextString(fileType: String? = "txt", trimming: Bool = true) -> String {
         return FileLoader.loadText(fileName: self, fileType: fileType, trimming: trimming)
     }

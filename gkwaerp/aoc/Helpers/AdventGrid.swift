@@ -214,13 +214,27 @@ extension AdventGrid {
         }
     }
 
-    /// Each element in the array corresponds to 1 row
+    /// Each element in the array corresponds to 1 row, each element in the row corresponds to 1 cell
     convenience init(stringArray: [String]) where GridValue == String {
         var values: [GridValue] = []
 
         for line in stringArray {
             for char in line {
                 values.append(String(char))
+            }
+        }
+
+        let size = IntPoint(x: stringArray.first!.count, y: stringArray.count)
+        self.init(size: size, values: values)
+    }
+
+    /// Each element in the array corresponds to 1 row, each element in the row corresponds to 1 cell
+    convenience init(stringArray: [String]) where GridValue == Int {
+        var values: [GridValue] = []
+
+        for line in stringArray {
+            for char in line {
+                values.append(Int(String(char))!)
             }
         }
 
