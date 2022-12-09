@@ -1,45 +1,35 @@
-use std::{array, cmp::Ordering, collections::HashSet};
+use std::{array, collections::HashSet};
 
 type Coordinate = (i32, i32);
-const DIRS: [Coordinate; 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
 fn main() {
     let input = include_str!("../input.txt");
-
-    println!("part 1: {:?}", part1(input));
-    println!("part 2: {:?}", part2(input));
+    let knots: [Knot; 10] = array::from_fn(|_| Knot::default());
+    println!("part 1 and 2: {:?}", solve(knots, input));
 }
 
-fn solve<const N: usize>(mut knots: [Knot; N], input: &str) -> usize {
+fn solve<const N: usize>(mut knots: [Knot; N], input: &str) -> (usize, usize) {
     for (d, l) in input.lines().map(|l| l.split_once(" ").unwrap()) {
         // head direction
-        let (dx, dy) = DIRS[match d {
-            "L" => 0,
-            "U" => 1,
-            "R" => 2,
-            "D" => 3,
+        let (dx, dy) = match d {
+            "L" => (-1, 0),
+            "U" => (0, 1),
+            "R" => (1, 0),
+            "D" => (0, -1),
             _ => panic!("wtf"),
-        }];
-        // move
+        };
         for _ in 0..l.parse::<i32>().unwrap() {
+            // move head
             knots[0].position.0 += dx;
             knots[0].position.1 += dy;
+            // move rest
             for i in 1..knots.len() {
                 knots[i].slither(knots[i - 1].position)
             }
         }
     }
-    knots.last().unwrap().visited.len()
-}
-
-fn part2(input: &str) -> usize {
-    let knots: [Knot; 10] = array::from_fn(|_| Knot::default());
-    solve(knots, input)
-}
-
-fn part1(input: &str) -> usize {
-    let knots: [Knot; 2] = array::from_fn(|_| Knot::default());
-    solve(knots, input)
+    // return second knot for part 1 and last for part 2
+    (knots[1].visited.len(), knots[9].visited.len())
 }
 
 #[derive(Debug)]
@@ -49,23 +39,11 @@ struct Knot {
 }
 
 impl Knot {
-    fn track(&mut self) {
-        self.visited.insert(self.position);
-    }
-
     fn slither(&mut self, pos: Coordinate) {
         if !self.is_adj(pos) {
-            match pos.0.cmp(&self.position.0) {
-                Ordering::Less => self.position.0 -= 1,
-                Ordering::Greater => self.position.0 += 1,
-                _ => (),
-            }
-            match pos.1.cmp(&self.position.1) {
-                Ordering::Less => self.position.1 -= 1,
-                Ordering::Greater => self.position.1 += 1,
-                _ => (),
-            }
-            self.track();
+            self.position.0 += (pos.0 - self.position.0).signum();
+            self.position.1 += (pos.1 - self.position.1).signum();
+            self.visited.insert(self.position);
         }
     }
 
