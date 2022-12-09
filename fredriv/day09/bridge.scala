@@ -4,7 +4,7 @@ import scala.collection.mutable.Set
 
 case class Pos(row: Int, col: Int)
 
-def clamp(i: Int) = if i > 0 then 1 else -1
+def clamp(i: Int) = Math.min(1, Math.max(-1, i))
 
 def moveKnot(headPos: Pos, tailPos: Pos): Pos =
   val rowDiff = headPos.row - tailPos.row
@@ -12,11 +12,7 @@ def moveKnot(headPos: Pos, tailPos: Pos): Pos =
 
   if rowDiff.abs <= 1 && colDiff.abs <= 1 then
     tailPos // touching
-  else if rowDiff == 0 then // horizontal
-    Pos(tailPos.row, tailPos.col + clamp(colDiff))
-  else if colDiff == 0 then // vertical
-    Pos(tailPos.row + clamp(rowDiff), tailPos.col)
-  else // diagonal
+  else
     Pos(tailPos.row + clamp(rowDiff), tailPos.col + clamp(colDiff))
 
 def solve(data: List[String], numKnots: Int): Set[Pos] =
