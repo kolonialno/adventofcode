@@ -47,8 +47,12 @@ class IntPoint: Equatable, Hashable {
         IntPoint(x: 0, y: 0)
     }
 
-    func manhattanDistance(to other: IntPoint) -> Int {
+    func manhattanDistance(to other: IntPoint = .origin) -> Int {
         abs(x - other.x) + abs(y - other.y)
+    }
+
+    func chebyshevDistance(to other: IntPoint = .origin) -> Int {
+        max(abs(x - other.x), abs(y - other.y))
     }
 
     func scaled(by scalar: Int) -> IntPoint {

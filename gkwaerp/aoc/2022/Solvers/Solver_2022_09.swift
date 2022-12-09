@@ -14,7 +14,7 @@ class Solver_2022_09: Solver {
         private var tailVisits: Set<IntPoint>
 
         init(numKnots: Int) {
-            self.knotPositions = (0..<numKnots).map { _ in .origin}
+            self.knotPositions = (0..<numKnots).map { _ in .origin }
             self.tailVisits = [.origin]
         }
 
@@ -46,26 +46,15 @@ class Solver_2022_09: Solver {
 
         /// Returns whether knot moved (which could trigger next knot to move)
         private func updatePositions(knotIndex i: Int) -> Bool {
-            let headPos = knotPositions[i - 1]
-            let knotPos = knotPositions[i]
-            let delta = headPos - knotPos
+            let delta = knotPositions[i - 1] - knotPositions[i]
 
             // Not separated enough to force a move, no need to check more knots
-            guard abs(delta.x) > 1 || abs(delta.y) > 1 else {
+            guard delta.chebyshevDistance() > 1 else {
                 return false
             }
 
-            let isDiagonal = (delta.x * delta.y) != 0
+            knotPositions[i] += IntPoint(x: delta.x.signum(), y: delta.y.signum())
 
-            let knotMovement: IntPoint
-            if isDiagonal {
-                knotMovement = .init(x: delta.x / abs(delta.x),
-                                     y: delta.y / abs(delta.y))
-            } else {
-                knotMovement = delta.divided(by: delta.magnitude())
-            }
-
-            knotPositions[i] += knotMovement
             return true
         }
     }
