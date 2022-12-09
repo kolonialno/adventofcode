@@ -44,9 +44,17 @@ func max[T constraints.Ordered](a, b T) T {
 	return b
 }
 
-func abs[T constraints.Signed](a T) T {
+func abs[T constraints.Signed | constraints.Float](a T) T {
 	if a < 0 {
 		return -a
 	}
 	return a
+}
+
+func chebyshevDist[T constraints.Signed | constraints.Float](a, b []T) T {
+	var dist T
+	for i := range a {
+		dist = max(dist, abs(a[i]-b[i]))
+	}
+	return dist
 }

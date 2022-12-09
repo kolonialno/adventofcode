@@ -6,12 +6,12 @@ type day9Knot struct {
 	row, col int
 }
 
-func (k day9Knot) Dist(other day9Knot) int {
-	return max(abs(k.row-other.row), abs(k.col-other.col))
+func (k day9Knot) ToArr() []int {
+	return []int{k.row, k.col}
 }
 
 func (k *day9Knot) TailMove(knotInFront day9Knot) {
-	if knotInFront.Dist(*k) > 1 {
+	if chebyshevDist(k.ToArr(), knotInFront.ToArr()) > 1 {
 		rowDiff := knotInFront.row - k.row
 		if rowDiff != 0 {
 			rowDiff /= abs(rowDiff)
