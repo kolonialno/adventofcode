@@ -49,6 +49,8 @@
 		478D1B7A294200D2004B9D95 /* Input_2022_07.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B79294200D2004B9D95 /* Input_2022_07.txt */; };
 		478D1B7C2942449A004B9D95 /* Solver_2022_08.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B7B2942449A004B9D95 /* Solver_2022_08.swift */; };
 		478D1B7E29424D1C004B9D95 /* Input_2022_08.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */; };
+		478D1B80294315D4004B9D95 /* Solver_2022_09.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */; };
+		478D1B822943163B004B9D95 /* Input_2022_09.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B812943163B004B9D95 /* Input_2022_09.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +97,8 @@
 		478D1B79294200D2004B9D95 /* Input_2022_07.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_07.txt; sourceTree = "<group>"; };
 		478D1B7B2942449A004B9D95 /* Solver_2022_08.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_08.swift; sourceTree = "<group>"; };
 		478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_08.txt; sourceTree = "<group>"; };
+		478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_09.swift; sourceTree = "<group>"; };
+		478D1B812943163B004B9D95 /* Input_2022_09.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_09.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +205,7 @@
 				478D1B73293EB267004B9D95 /* Solver_2022_06.swift */,
 				478D1B772940DD99004B9D95 /* Solver_2022_07.swift */,
 				478D1B7B2942449A004B9D95 /* Solver_2022_08.swift */,
+				478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				478D1B75293F1867004B9D95 /* Input_2022_06.txt */,
 				478D1B79294200D2004B9D95 /* Input_2022_07.txt */,
 				478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */,
+				478D1B812943163B004B9D95 /* Input_2022_09.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -292,6 +298,7 @@
 				478D1B76293F1867004B9D95 /* Input_2022_06.txt in Resources */,
 				478D1B7E29424D1C004B9D95 /* Input_2022_08.txt in Resources */,
 				043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */,
+				478D1B822943163B004B9D95 /* Input_2022_09.txt in Resources */,
 				0471F24F29369F8200D4B978 /* Preview Assets.xcassets in Resources */,
 				046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */,
 				04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */,
@@ -307,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				478D1B80294315D4004B9D95 /* Solver_2022_09.swift in Sources */,
 				0471F25D2936B1E600D4B978 /* DayView.swift in Sources */,
 				0471F27C2936B7C800D4B978 /* Misc.swift in Sources */,
 				0471F26A2936B4EE00D4B978 /* DateHelper.swift in Sources */,
