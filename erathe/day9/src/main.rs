@@ -1,17 +1,7 @@
 use std::{array, cmp::Ordering, collections::HashSet};
 
 type Coordinate = (i32, i32);
-const DIRS: [Coordinate; 9] = [
-    (-1, 0),
-    (0, 1),
-    (1, 0),
-    (0, -1),
-    (-1, 1),
-    (1, 1),
-    (1, -1),
-    (-1, -1),
-    (0, 0),
-];
+const DIRS: [Coordinate; 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
 fn main() {
     let input = include_str!("../input.txt");
@@ -80,8 +70,7 @@ impl Knot {
     }
 
     fn is_adj(&self, pos: Coordinate) -> bool {
-        DIRS.iter()
-            .any(|(dx, dy)| (self.position.0 + dx, self.position.1 + dy) == pos)
+        self.position.0.abs_diff(pos.0) <= 1 && self.position.1.abs_diff(pos.1) <= 1
     }
 }
 
