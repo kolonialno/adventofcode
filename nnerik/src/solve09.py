@@ -4,12 +4,9 @@ def sign(n):
 
 def move_tail(hx, hy, tx, ty):
     x, y = tx, ty
-    if not -1 <= hx - tx <= 1:
+    if not (-1 <= hx - tx <= 1 and -1 <= hy - ty <= 1):
         y = ty + sign(hy - ty)
-        x = hx + sign(tx - hx)
-    if not -1 <= hy - ty <= 1:
         x = tx + sign(hx - tx)
-        y = hy + sign(ty - hy)
     return (x, y)
 
 
