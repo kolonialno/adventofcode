@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"os"
 	"strconv"
+
+	"golang.org/x/exp/constraints"
 )
 
 func fileByLines(filename string) []string {
@@ -33,4 +35,18 @@ func fileByIntLines(filename string) []int {
 		ints = append(ints, i)
 	}
 	return ints
+}
+
+func max[T constraints.Ordered](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func abs[T constraints.Signed](a T) T {
+	if a < 0 {
+		return -a
+	}
+	return a
 }
