@@ -40,8 +40,8 @@ fun day09_2(lines: List<String>): Any {
             knots[0] = knots[0] + dir
             for (i in 1 until knots.size) {
                 val dst = knots[i-1] - knots[i]
-                if (dst.chebyshev() > 1) {
-                    knots[i] += dst.asDir()
+                if (abs(dst.y) == 2 || abs(dst.x) == 2) {
+                    knots[i] = knots[i] + dst.asDir()
                 }
             }
             positions.add(knots[9])
