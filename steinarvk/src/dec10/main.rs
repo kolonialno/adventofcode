@@ -5,7 +5,6 @@ fn main() -> Result<()> {
     let mut pixel_row: Vec<char> = Vec::new();
     let mut screen: Vec<String> = Vec::new();
 
-    // expect: 1 1 1 4 4 -1
     let (final_cycles, final_x, final_score) = std::io::stdin()
         .lines()
         .filter_map(|line| {
@@ -45,8 +44,6 @@ fn main() -> Result<()> {
                     assert!(pixel_row.len() == 40);
                     screen.push(pixel_row.iter().collect());
                     pixel_row = Vec::new();
-                    //println!("Pixels: {}", pixel_row.join(""));
-                    //pixel_row.clear();
                 }
 
                 let sprite_position = x;
