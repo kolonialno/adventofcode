@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, ops::Index, ops::IndexMut};
 
 #[derive(Debug, PartialEq, Eq)]
 enum Instruction {
@@ -17,7 +17,7 @@ impl Instruction {
 
 type Program = VecDeque<Instruction>;
 
-fn parse_instructions(input: &str) -> VecDeque<Instruction> {
+fn parse_program(input: &str) -> Program {
     input
         .lines()
         .map(|line| {
@@ -38,53 +38,71 @@ fn parse_instructions(input: &str) -> VecDeque<Instruction> {
         .collect()
 }
 
-struct CPU {
+struct Registers {
     x: isize,
-    current_instruction: Option<Instruction>,
-    remaining_cycles: usize,
+}
+
+struct CPU {
+    /// The program to execute, in the form of a sequence of instruction
     program: Program,
+    /// Current state of registers
+    registers: Registers,
+    /// The instruction that's currently being executed
+    current_instruction: Option<Instruction>,
+    /// Remaining cycles of the current instruction
+    remaining_cycles: usize,
 }
 
 impl CPU {
     fn new(input: &str) -> Self {
-        let program = parse_instructions(input);
+        let program = parse_program(input);
         Self {
-            x: 1,
+            program,
+            registers: Registers { x: 1 },
             current_instruction: None,
             remaining_cycles: 0,
-            program,
         }
     }
-}
 
-impl Iterator for CPU {
-    type Item = isize;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.remaining_cycles == 0 {
-            if let Some(instruction) = &self.current_instruction {
-                self.x += self.execute(instruction);
+    // Execute the current instruction
+    fn execute(&mut self) {
+        if let Some(instruction) = &self.current_instruction {
+            match instruction {
+                Instruction::Addx(value) => self.registers.x += value,
+                Instruction::Noop => (),
             }
-            if let Some(instruction) = self.program.pop_front() {
-                self.remaining_cycles = instruction.cycles();
-                self.current_instruction = Some(instruction);
-            } else {
-                return None;
+            // Reset state to ensure we don't re-execute the same instruction
+            self.current_instruction = None;
+            self.remaining_cycles = 0;
+        }
+    }
+
+    /// Load the next instruction, if any left in the current program
+    fn load_next(&mut self) -> bool {
+        if let Some(instruction) = self.program.pop_front() {
+            self.remaining_cycles = instruction.cycles();
+            self.current_instruction = Some(instruction);
+            return true;
+        }
+
+        false
+    }
+
+    fn tick(&mut self) -> bool {
+        // The previous instruction takes affect _after_ the cycle,
+        // so we update it only when the next cycle starts
+        if self.remaining_cycles == 0 {
+            self.execute();
+        }
+        if self.current_instruction.is_none() {
+            if !self.load_next() {
+                return false;
             }
         }
 
         self.remaining_cycles -= 1;
 
-        Some(self.x)
-    }
-}
-
-impl CPU {
-    fn execute(&self, instruction: &Instruction) -> isize {
-        match instruction {
-            Instruction::Addx(value) => *value,
-            Instruction::Noop => 0,
-        }
+        return true;
     }
 }
 
@@ -93,17 +111,13 @@ struct Display {
 }
 
 impl Display {
-    fn set(&mut self, i: usize, value: bool) {
-        self.pixels[i] = value;
-    }
-
     fn draw(&self) -> String {
         let mut result = String::new();
         for (i, pixel) in self.pixels.iter().enumerate() {
             if *pixel {
-                result += "#";
+                result += "█";
             } else {
-                result += ".";
+                result += " ";
             }
             if i > 0 && (i + 1) % 40 == 0 {
                 result += "\n";
@@ -114,14 +128,64 @@ impl Display {
     }
 }
 
+impl Index<usize> for Display {
+    type Output = bool;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.pixels[index]
+    }
+}
+
+impl IndexMut<usize> for Display {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.pixels[index]
+    }
+}
+
+struct Device {
+    cpu: CPU,
+    display: Display,
+    cycle: usize,
+}
+
+impl Device {
+    fn new(input: &str) -> Self {
+        let cpu = CPU::new(input);
+        let display = Display {
+            pixels: [false; 240],
+        };
+
+        Device {
+            cpu,
+            display,
+            cycle: 0,
+        }
+    }
+
+    /// Run until the CPU has executed the entire program
+    fn run(&mut self) {
+        while self.cpu.tick() {
+            // Update the display based on the x registry of the CPU
+            let column = self.cycle % 40;
+            let num_pixels = self.display.pixels.len();
+            let value = ((column as isize) - self.cpu.registers.x).abs() <= 1;
+            self.display[self.cycle % num_pixels] = value;
+            // Update cycle counter as we're now done with the cycle
+            // (zero indexing makes the calculation above simpler)
+            self.cycle += 1;
+        }
+    }
+}
+
 fn solve_part1(input: &str) -> isize {
-    let cpu = CPU::new(input);
+    let mut cpu = CPU::new(input);
 
     let mut sum: isize = 0;
-    for (i, value) in cpu.enumerate() {
-        let instruction = (i as isize) + 1;
-        if (instruction - 20) % 40 == 0 {
-            sum = sum + (instruction * value);
+    let mut cycle: isize = 0;
+    while cpu.tick() {
+        cycle += 1;
+        if (cycle as isize - 20) % 40 == 0 {
+            sum = sum + (cycle as isize * cpu.registers.x);
         }
     }
 
@@ -129,18 +193,9 @@ fn solve_part1(input: &str) -> isize {
 }
 
 fn solve_part2(input: &str) -> String {
-    let cpu = CPU::new(input);
-    let mut display = Display {
-        pixels: [false; 240],
-    };
-
-    for (i, value) in cpu.enumerate() {
-        let column = i % 40;
-        let value = ((column as isize) - value).abs() <= 1;
-        display.set(i, value);
-    }
-
-    display.draw()
+    let mut device = Device::new(input);
+    device.run();
+    device.display.draw()
 }
 
 fn main() {
@@ -156,15 +211,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_instructions() {
+    fn test_parse_program() {
         let input = "noop\naddx 3\naddx -5";
-        let actual_instructions = parse_instructions(input);
-        let expected_instructions = vec![
+        let actual_program = parse_program(input);
+        let expected_program = vec![
             Instruction::Noop,
             Instruction::Addx(3),
             Instruction::Addx(-5),
         ];
-        for (actual, expected) in actual_instructions.iter().zip(expected_instructions) {
+        for (actual, expected) in actual_program.iter().zip(expected_program) {
             assert_eq!(*actual, expected);
         }
     }
