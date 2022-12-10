@@ -53,6 +53,14 @@ name = "day8"
 version = "0.1.0"
 
 [[package]]
+name = "day9"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+ "regex",
+]
+
+[[package]]
 name = "either"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
