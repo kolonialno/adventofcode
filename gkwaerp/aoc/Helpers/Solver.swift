@@ -44,6 +44,14 @@ class Solver: ObservableObject {
     var part2RequiresPart1Solved: Bool {
         false
     }
+
+    var solveType1: SolverView.SolveType {
+        .text
+    }
+
+    var solveType2: SolverView.SolveType {
+        .text
+    }
 }
 
 extension Solver {
@@ -121,6 +129,10 @@ extension Solver {
 
     final var defaultInputFileString: String {
         String.yearAndDayString(year: year, day: day, prefix: "Input")
+    }
+
+    final func defaultTestInputString(suffix: String) -> String {
+        String(format: "Test%@_%@", defaultInputFileString, suffix)
     }
 
     final var solveState1: SolveState {

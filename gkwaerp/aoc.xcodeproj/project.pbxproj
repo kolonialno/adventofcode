@@ -51,6 +51,10 @@
 		478D1B7E29424D1C004B9D95 /* Input_2022_08.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */; };
 		478D1B80294315D4004B9D95 /* Solver_2022_09.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */; };
 		478D1B822943163B004B9D95 /* Input_2022_09.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B812943163B004B9D95 /* Input_2022_09.txt */; };
+		478D1B8429447E0F004B9D95 /* Solver_2022_10.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478D1B8329447E0F004B9D95 /* Solver_2022_10.swift */; };
+		478D1B8729447EA4004B9D95 /* TestInput_2022_10_a.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B8629447EA4004B9D95 /* TestInput_2022_10_a.txt */; };
+		478D1B8929447EC2004B9D95 /* TestInput_2022_10_b.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B8829447EC2004B9D95 /* TestInput_2022_10_b.txt */; };
+		478D1B8B2944887C004B9D95 /* Input_2022_10.txt in Resources */ = {isa = PBXBuildFile; fileRef = 478D1B8A2944887C004B9D95 /* Input_2022_10.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +103,10 @@
 		478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_08.txt; sourceTree = "<group>"; };
 		478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_09.swift; sourceTree = "<group>"; };
 		478D1B812943163B004B9D95 /* Input_2022_09.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_09.txt; sourceTree = "<group>"; };
+		478D1B8329447E0F004B9D95 /* Solver_2022_10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_10.swift; sourceTree = "<group>"; };
+		478D1B8629447EA4004B9D95 /* TestInput_2022_10_a.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInput_2022_10_a.txt; sourceTree = "<group>"; };
+		478D1B8829447EC2004B9D95 /* TestInput_2022_10_b.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInput_2022_10_b.txt; sourceTree = "<group>"; };
+		478D1B8A2944887C004B9D95 /* Input_2022_10.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_10.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +214,7 @@
 				478D1B772940DD99004B9D95 /* Solver_2022_07.swift */,
 				478D1B7B2942449A004B9D95 /* Solver_2022_08.swift */,
 				478D1B7F294315D4004B9D95 /* Solver_2022_09.swift */,
+				478D1B8329447E0F004B9D95 /* Solver_2022_10.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -222,6 +231,7 @@
 				478D1B79294200D2004B9D95 /* Input_2022_07.txt */,
 				478D1B7D29424D1C004B9D95 /* Input_2022_08.txt */,
 				478D1B812943163B004B9D95 /* Input_2022_09.txt */,
+				478D1B8A2944887C004B9D95 /* Input_2022_10.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -229,10 +239,20 @@
 		0471F2662936B3A900D4B978 /* 2022 */ = {
 			isa = PBXGroup;
 			children = (
+				478D1B8529447E4F004B9D95 /* TestInput */,
 				0471F2622936B37000D4B978 /* Input */,
 				0471F25E2936B25F00D4B978 /* Solvers */,
 			);
 			path = 2022;
+			sourceTree = "<group>";
+		};
+		478D1B8529447E4F004B9D95 /* TestInput */ = {
+			isa = PBXGroup;
+			children = (
+				478D1B8629447EA4004B9D95 /* TestInput_2022_10_a.txt */,
+				478D1B8829447EC2004B9D95 /* TestInput_2022_10_b.txt */,
+			);
+			path = TestInput;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				478D1B7A294200D2004B9D95 /* Input_2022_07.txt in Resources */,
+				478D1B8929447EC2004B9D95 /* TestInput_2022_10_b.txt in Resources */,
 				043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */,
 				478D1B76293F1867004B9D95 /* Input_2022_06.txt in Resources */,
 				478D1B7E29424D1C004B9D95 /* Input_2022_08.txt in Resources */,
@@ -302,7 +323,9 @@
 				0471F24F29369F8200D4B978 /* Preview Assets.xcassets in Resources */,
 				046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */,
 				04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */,
+				478D1B8B2944887C004B9D95 /* Input_2022_10.txt in Resources */,
 				046FD236293DDC1D00A2992B /* Input_2022_05.txt in Resources */,
+				478D1B8729447EA4004B9D95 /* TestInput_2022_10_a.txt in Resources */,
 				0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,6 +360,7 @@
 				0471F2822936B81B00D4B978 /* Heap.swift in Sources */,
 				04C81005293B333C00D9B495 /* Solver_2022_03.swift in Sources */,
 				0471F2762936B77900D4B978 /* AdventColor.swift in Sources */,
+				478D1B8429447E0F004B9D95 /* Solver_2022_10.swift in Sources */,
 				478D1B7C2942449A004B9D95 /* Solver_2022_08.swift in Sources */,
 				0471F27A2936B7AE00D4B978 /* Node.swift in Sources */,
 				0471F24829369F8200D4B978 /* aocApp.swift in Sources */,

@@ -15,12 +15,16 @@ struct DayView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                SolverView(solveState: solver.solveState1, buttonText: "Solve Part 1") {
+                SolverView(solveType: solver.solveType1,
+                           solveState: solver.solveState1,
+                           buttonText: "Solve Part 1") {
                     solver.solvePart1()
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height / 2)
 
-                SolverView(solveState: solver.solveState2, buttonText: "Solve Part 2") {
+                SolverView(solveType: solver.solveType2,
+                           solveState: solver.solveState2,
+                           buttonText: "Solve Part 2") {
                     solver.solvePart2()
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height / 2)

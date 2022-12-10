@@ -90,6 +90,6 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Advent of Code, input files are stored as .txt
-*.txt
+Input*.txt
 
 .DS_Store

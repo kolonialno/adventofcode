@@ -10,6 +10,21 @@ import SwiftUI
 
 // MARK: - UI
 struct SolverView: View {
+    enum SolveType {
+        case text
+        case image
+
+        var font: Font {
+            switch self {
+            case .text:
+                return .body
+            case .image:
+                return .system(size: 4)
+            }
+        }
+    }
+
+    let solveType: SolveType
     let solveState: SolveState
     let buttonText: String
     let action: () -> Void
@@ -20,6 +35,7 @@ struct SolverView: View {
                 .opacity(solveState.progressViewOpacity)
 
             Text(solveState.text)
+                .font(solveType.font)
                 .opacity(solveState.textOpacity)
 
             Button(action: action, label: {
@@ -35,11 +51,20 @@ struct SolverView: View {
 // MARK: - Previews
 struct SolverView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            SolverView(solveState: .waiting, buttonText: "Waiting", action: {})
-            SolverView(solveState: .ready, buttonText: "Solve me", action: {})
-            SolverView(solveState: .solving, buttonText: "Solving...", action: {})
-            SolverView(solveState: .solved(result: "Solved!"), buttonText: "Solve me", action: {})
+        let imageText = """
+🟦🟦🟧🟧🟦🟦🟧🟧🟧🟦🟦
+🟦🟧🟦🟦🟧🟦🟧🟦🟦🟧🟦
+🟦🟧🟦🟦🟧🟦🟧🟧🟧🟦🟦
+🟦🟧🟧🟧🟧🟦🟧🟦🟦🟧🟦
+🟦🟧🟦🟦🟧🟦🟧🟦🟦🟧🟦
+🟦🟧🟦🟦🟧🟦🟧🟧🟧🟦🟦
+"""
+        return VStack {
+            SolverView(solveType: .text, solveState: .waiting, buttonText: "Waiting", action: {})
+            SolverView(solveType: .text, solveState: .ready, buttonText: "Solve me", action: {})
+            SolverView(solveType: .text, solveState: .solving, buttonText: "Solving...", action: {})
+            SolverView(solveType: .text, solveState: .solved(result: "Solved!"), buttonText: "Solve me", action: {})
+            SolverView(solveType: .image, solveState: .solved(result: imageText), buttonText: "Solve me", action: {})
         }
     }
 }

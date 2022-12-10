@@ -47,7 +47,8 @@ class AdventGrid<GridValue> {
             fatalError("Invalid grid, size must be non-negative in both axes.")
         }
 
-        let values: [GridValue] = (0..<size.magnitude()).map({ _ in return value })
+        let numCells = size.x * size.y
+        let values: [GridValue] = (0..<numCells).map { _ in return value }
         self.init(size: size, values: values)
     }
 

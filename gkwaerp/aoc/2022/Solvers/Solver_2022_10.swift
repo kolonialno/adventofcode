@@ -1,0 +1,205 @@
+//
+//  Solver_2022_10.swift
+//  aoc
+//
+//  Created by Geir-Kåre S. Wærp on 10/12/2022.
+//
+
+import Foundation
+
+class Solver_2022_10: Solver {
+    override var solveType2: SolverView.SolveType {
+        .image
+    }
+
+    class CRT {
+        enum Operation {
+            case noop
+            case add(register: String, value: Int)
+
+            var numCyclesToComplete: Int {
+                switch self {
+                case .noop: return 1
+                case .add: return 2
+                }
+            }
+
+            init(string: String) {
+                if string == "noop" {
+                    self = .noop
+                } else if string.hasPrefix("add") {
+                    let split = string
+                        .replacingOccurrences(of: "add", with: "")
+                        .components(separatedBy: " ")
+
+                    let register = split[0]
+                    let value = Int(split[1])!
+
+                    self = .add(register: register, value: value)
+                } else {
+                    fatalError("Invalid operation: \(string)")
+                }
+            }
+        }
+
+        private let program: [Operation]
+
+        private(set) var cycle: Int
+        private(set) var registers: [String: Int]
+        private var operationIndex: Int
+        private var operationTimer: Int
+        private var currentOperation: Operation?
+
+        private(set) var signalStrengths: [Int]
+        private(set) var screen: StringGrid
+
+        static let spriteRegister = "x"
+
+        init(program: [Operation]) {
+            self.program = program
+            self.cycle = 0
+            self.registers = [Self.spriteRegister: 1]
+            self.operationTimer = 0
+            self.operationIndex = 0
+            self.currentOperation = nil
+            self.signalStrengths = []
+            self.screen = StringGrid(size: .init(x: 40, y: 6), fillWith: "-")
+        }
+
+        func run() {
+            while operationIndex < program.count || operationTimer > 0 {
+                preTick()
+                tick()
+                postTick()
+            }
+        }
+
+        private func preTick() {
+            if currentOperation == nil, operationIndex < program.count {
+                currentOperation = program[operationIndex]
+                operationTimer = currentOperation!.numCyclesToComplete
+            }
+        }
+
+        private func tick() {
+            cycle += 1
+            operationTimer -= 1
+        }
+
+        private func postTick() {
+            measureSignalStrength()
+            draw()
+
+            if let currentOperation, operationTimer == 0 {
+                execute(operation: currentOperation)
+            }
+        }
+
+        private func measureSignalStrength() {
+            guard cycle == 20 || (cycle - 20).isMultiple(of: 40) else {
+                return
+            }
+
+            signalStrengths.append(getRegisterValue(register: Self.spriteRegister) * cycle)
+        }
+
+        private func draw() {
+            let spriteWidth = 3
+            let writePos = IntPoint(x: (cycle - 1) % 40,
+                                    y: (cycle - 1) / 40)
+
+            let spriteDisplayed = abs(getRegisterValue(register: Self.spriteRegister) - writePos.x) <= (spriteWidth / 2)
+            let writeValue = spriteDisplayed ? "🟧" : "🟦"
+
+            screen.setValue(at: writePos, to: writeValue)
+        }
+
+        private func execute(operation: Operation) {
+            switch operation {
+            case .noop:
+                break
+            case .add(let register, let value):
+                let newValue = getRegisterValue(register: register) + value
+                setRegisterValue(register: register, value: newValue)
+            }
+
+            currentOperation = nil
+            operationIndex += 1
+        }
+
+        private func getRegisterValue(register: String) -> Int {
+            registers[register]!
+        }
+
+        private func setRegisterValue(register: String, value: Int) {
+            registers[register] = value
+        }
+    }
+
+    func getSignalStrengthSum(crt: CRT) -> Int {
+        crt.signalStrengths.reduce(0, +)
+    }
+
+    func readScreen(crt: CRT) -> String {
+        crt.screen.asText(printClosure: StringGrid.defaultPrintClosure())
+    }
+
+    private var program: [CRT.Operation] = []
+
+    override func didLoadFunction() {
+        self.program = defaultInputFileString
+            .loadAsTextStringArray()
+            .map { CRT.Operation(string: $0) }
+    }
+
+    override func solveFunction1() -> String {
+        let crt = CRT(program: program)
+        crt.run()
+
+        let signalStrengthSum = getSignalStrengthSum(crt: crt)
+        return "\(signalStrengthSum)"
+    }
+
+    override func solveFunction2() -> String {
+        let crt = CRT(program: program)
+        crt.run()
+
+        let output = readScreen(crt: crt)
+        return output
+    }
+}
+
+extension Solver_2022_10: TestableDay {
+    func runTests() {
+        let programA = defaultTestInputString(suffix: "a")
+            .loadAsTextStringArray()
+            .map { CRT.Operation(string: $0) }
+
+        let crtA = CRT(program: programA)
+        crtA.run()
+        assert(crtA.cycle == 5)
+        assert(crtA.registers[CRT.spriteRegister] == -1)
+
+        let programB = defaultTestInputString(suffix: "b")
+            .loadAsTextStringArray()
+            .map { CRT.Operation(string: $0) }
+
+        let crtB = CRT(program: programB)
+        crtB.run()
+        assert(crtB.signalStrengths == [420, 1140, 1800, 2940, 2880, 3960])
+        assert(getSignalStrengthSum(crt: crtB) == 13140)
+
+        let expectedScreen = """
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+"""
+            .replacingOccurrences(of: "#", with: "🟧")
+            .replacingOccurrences(of: ".", with: "🟦")
+
+        assert(readScreen(crt: crtB) == expectedScreen)
+    }
+}
