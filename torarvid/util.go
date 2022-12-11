@@ -58,3 +58,19 @@ func chebyshevDist[T constraints.Signed | constraints.Float](a, b []T) T {
 	}
 	return dist
 }
+
+func atoi[T constraints.Integer](s string) T {
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	return T(i)
+}
+
+func Map[T, U any](a []T, f func(T) U) []U {
+	b := make([]U, len(a))
+	for i, x := range a {
+		b[i] = f(x)
+	}
+	return b
+}
