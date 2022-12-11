@@ -1,9 +1,10 @@
 import scala.io.Source
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Try
 
 type WorryLevel = BigInt
 
-case class Operation(operand: Char, target: String)
+case class Operation(operand: Char, x: Int | String)
 
 case class Monkey(
   items: ArrayBuffer[WorryLevel],
@@ -16,8 +17,8 @@ case class Monkey(
   def compute(item: WorryLevel, reduceWorryBy: Int, lcd: Int): WorryLevel =
     val newLevel = operation match
       case Operation('*', "old") => item * item
-      case Operation('*', x) => item * x.toInt
-      case Operation('+', x) => item + x.toInt
+      case Operation('*', x: Int) => item * x
+      case Operation('+', x: Int) => item + x
     (newLevel / reduceWorryBy) % lcd
 
   def test(item: WorryLevel): Boolean =
@@ -33,11 +34,14 @@ case class Monkey(
     moves
 
 object Monkey:
+  def tryParseInt(s: String): Int | String =
+    Try(s.toInt).getOrElse(s)
+
   def apply(data: IndexedSeq[String]): Monkey =
     val items = ArrayBuffer[WorryLevel]()
     items.addAll(data(1).split(": ")(1).split(", ").toList.map(_.toInt).map(BigInt(_)))
     val operation = data(2).split(": ")(1).drop("new = old ".length)
-    val op = Operation(operation(0), operation.drop(2))
+    val op = Operation(operation(0), tryParseInt(operation.drop(2)))
     val testDivideBy = data(3).drop("  Test: divisible by ".length).toInt
     val trueTarget = data(4).last - '0'
     val falseTarget = data(5).last - '0'
@@ -62,4 +66,4 @@ def solve(data: String, turns: Int, reduceWorryBy: Int): WorryLevel =
   val data = Source.fromFile("input.txt").getLines.mkString("\n")
 
   println("Part 1: " + solve(data, 20, 3))
-  println("Part 1: " + solve(data, 10000, 1))
+  println("Part 2: " + solve(data, 10000, 1))
