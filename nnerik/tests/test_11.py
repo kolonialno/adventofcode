@@ -1,3 +1,4 @@
+import math
 import pytest
 
 from solve11 import get_monkeys, run_monkeys, solve1, solve2
@@ -23,7 +24,7 @@ def test_get_monkeys(data):
 
 def test_run_monkeys(data):
     monkeys = get_monkeys(data)
-    inspections = run_monkeys(monkeys, 3)
+    inspections = run_monkeys(monkeys, 3, 13 * 17 * 19 * 23)
     assert inspections == [2, 4, 3, 5]
     assert [m.worries for m in monkeys] == [
         [20, 23, 27, 26],

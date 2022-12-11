@@ -8,36 +8,37 @@ class Monkey:
 
         self.worries = [int(i) for i in lines[1][18:].split(", ")]
 
-        expression = lines[2][19:].split()
-        op = {"+": operator.add, "*": operator.mul}[expression[1]]
-        arg1 = None if expression[0] == "old" else int(expression[0])
-        arg2 = None if expression[2] == "old" else int(expression[2])
-        self.operation = lambda old: op(
-            arg1 if arg1 is not None else old, arg2 if arg2 is not None else old
-        )
+        arg1, op, arg2 = lines[2][19:].split()
+        self.operator = {"+": operator.add, "*": operator.mul}[op]
+        self.arg1 = int(arg1) if arg1.isdigit() else arg1
+        self.arg2 = int(arg2) if arg2.isdigit() else arg2
 
         self.divisor = int(lines[3][21:])
-        if_divisible = int(lines[4][29:])
-        if_not_divisible = int(lines[5][30:])
-        self.next_monkey = (
-            lambda n: if_not_divisible if n % self.divisor else if_divisible
+        self.if_true = int(lines[4][29:])
+        self.if_false = int(lines[5][30:])
+
+    def operation(self, old):
+        return self.operator(
+            old if self.arg1 == "old" else self.arg1,
+            old if self.arg2 == "old" else self.arg2,
         )
+
+    def next_monkey(self, worry):
+        return self.if_false if worry % self.divisor else self.if_true
 
 
 def get_monkeys(data):
     return [Monkey(spec) for spec in data.strip().split("\n\n")]
 
 
-def run_monkeys(monkeys, divisor, lcm=None):
+def run_monkeys(monkeys, divisor, lcm):
     inspections = []
     for monkey in monkeys:
         inspections.append(len(monkey.worries))
         for worry in (
             monkey.operation(old_worry) // divisor for old_worry in monkey.worries
         ):
-            monkeys[monkey.next_monkey(worry)].worries.append(
-                worry % lcm if lcm else worry
-            )
+            monkeys[monkey.next_monkey(worry)].worries.append(worry % lcm)
         monkey.worries = []
     return inspections
 
@@ -47,8 +48,7 @@ def solve(data, divisor, rounds):
     inspections = [0] * len(monkeys)
     lcm = math.lcm(*(m.divisor for m in monkeys))
     for _ in range(rounds):
-        for i, count in enumerate(run_monkeys(monkeys, divisor, lcm)):
-            inspections[i] += count
+        inspections = map(operator.add, run_monkeys(monkeys, divisor, lcm), inspections)
     return operator.mul(*sorted(inspections)[-2:])
 
 
