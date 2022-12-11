@@ -13,7 +13,7 @@ class Solver_2022_10: Solver {
     }
 
     class CRT {
-        enum Operation {
+        enum Instruction {
             case noop
             case add(register: String, value: Int)
 
@@ -37,37 +37,37 @@ class Solver_2022_10: Solver {
 
                     self = .add(register: register, value: value)
                 } else {
-                    fatalError("Invalid operation: \(string)")
+                    fatalError("Invalid instruction: \(string)")
                 }
             }
         }
 
-        private let program: [Operation]
+        private let program: [Instruction]
 
         private(set) var cycle: Int
         private(set) var registers: [String: Int]
-        private var operationIndex: Int
-        private var operationTimer: Int
-        private var currentOperation: Operation?
+        private var instructionIndex: Int
+        private var instructionTimer: Int
+        private var currentInstruction: Instruction?
 
         private(set) var signalStrengths: [Int]
         private(set) var screen: StringGrid
 
         static let spriteRegister = "x"
 
-        init(program: [Operation]) {
+        init(program: [Instruction]) {
             self.program = program
             self.cycle = 0
             self.registers = [Self.spriteRegister: 1]
-            self.operationTimer = 0
-            self.operationIndex = 0
-            self.currentOperation = nil
+            self.instructionTimer = 0
+            self.instructionIndex = 0
+            self.currentInstruction = nil
             self.signalStrengths = []
             self.screen = StringGrid(size: .init(x: 40, y: 6), fillWith: "-")
         }
 
         func run() {
-            while operationIndex < program.count || operationTimer > 0 {
+            while instructionIndex < program.count || instructionTimer > 0 {
                 preTick()
                 tick()
                 postTick()
@@ -75,23 +75,23 @@ class Solver_2022_10: Solver {
         }
 
         private func preTick() {
-            if currentOperation == nil, operationIndex < program.count {
-                currentOperation = program[operationIndex]
-                operationTimer = currentOperation!.numCyclesToComplete
+            if currentInstruction == nil, instructionIndex < program.count {
+                currentInstruction = program[instructionIndex]
+                instructionTimer = currentInstruction!.numCyclesToComplete
             }
         }
 
         private func tick() {
             cycle += 1
-            operationTimer -= 1
+            instructionTimer -= 1
         }
 
         private func postTick() {
             measureSignalStrength()
             draw()
 
-            if let currentOperation, operationTimer == 0 {
-                execute(operation: currentOperation)
+            if let currentInstruction, instructionTimer == 0 {
+                execute(instruction: currentInstruction)
             }
         }
 
@@ -114,8 +114,8 @@ class Solver_2022_10: Solver {
             screen.setValue(at: writePos, to: writeValue)
         }
 
-        private func execute(operation: Operation) {
-            switch operation {
+        private func execute(instruction: Instruction) {
+            switch instruction {
             case .noop:
                 break
             case .add(let register, let value):
@@ -123,8 +123,8 @@ class Solver_2022_10: Solver {
                 setRegisterValue(register: register, value: newValue)
             }
 
-            currentOperation = nil
-            operationIndex += 1
+            currentInstruction = nil
+            instructionIndex += 1
         }
 
         private func getRegisterValue(register: String) -> Int {
@@ -144,12 +144,12 @@ class Solver_2022_10: Solver {
         crt.screen.asText(printClosure: StringGrid.defaultPrintClosure())
     }
 
-    private var program: [CRT.Operation] = []
+    private var program: [CRT.Instruction] = []
 
     override func didLoadFunction() {
         self.program = defaultInputFileString
             .loadAsTextStringArray()
-            .map { CRT.Operation(string: $0) }
+            .map { CRT.Instruction(string: $0) }
     }
 
     override func solveFunction1() -> String {
@@ -173,7 +173,7 @@ extension Solver_2022_10: TestableDay {
     func runTests() {
         let programA = defaultTestInputString(suffix: "a")
             .loadAsTextStringArray()
-            .map { CRT.Operation(string: $0) }
+            .map { CRT.Instruction(string: $0) }
 
         let crtA = CRT(program: programA)
         crtA.run()
@@ -182,7 +182,7 @@ extension Solver_2022_10: TestableDay {
 
         let programB = defaultTestInputString(suffix: "b")
             .loadAsTextStringArray()
-            .map { CRT.Operation(string: $0) }
+            .map { CRT.Instruction(string: $0) }
 
         let crtB = CRT(program: programB)
         crtB.run()
