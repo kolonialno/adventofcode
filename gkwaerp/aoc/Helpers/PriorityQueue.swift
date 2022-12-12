@@ -27,7 +27,7 @@
   queue (largest element first) or a min-priority queue (smallest element first).
 */
 public struct PriorityQueue<T> {
-  fileprivate var heap: Heap<T>
+  private(set) var heap: Heap<T>
 
   /*
     To create a max-priority queue, supply a > sort function. For a min-priority

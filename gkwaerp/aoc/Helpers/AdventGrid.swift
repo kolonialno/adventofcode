@@ -139,6 +139,14 @@ class AdventGrid<GridValue> {
         values.filter(filter)
     }
 
+    func positions(matching filter: (GridValue) -> (Bool)) -> [IntPoint] where GridValue: Equatable {
+        gridPoints.filter { filter(getValue(at: $0)!) }
+    }
+
+    func firstPosition(matching filter: (GridValue) -> (Bool)) -> IntPoint? where GridValue: Equatable {
+        gridPoints.first { filter(getValue(at: $0)!) }
+    }
+
     func asText(printClosure: PrintBlock) -> String {
         var finalText = "\n"
         for y in 0..<height {
@@ -157,8 +165,7 @@ class AdventGrid<GridValue> {
 extension AdventGrid {
     typealias WalkableBlock = (GridValue) -> (Bool)
 
-    ///FromNode
-    ///ToNode
+    /// FromNode, ToNode. Return `Int.max` to indicate edge is not traversable
     typealias CostBlock = (IntPoint, IntPoint) -> Int
     func createAStarNodes(walkableBlock isWalkable: WalkableBlock,
                           allowedDirections: [Direction] = Direction.allCases,
@@ -181,9 +188,13 @@ extension AdventGrid {
                     continue
                 }
 
-                let newNode = nodes[newPosition]!
                 let cost = costBlock(node.position, newPosition)
-                node.edges.insert(AStarEdge(from: node, to: newNode, cost: cost))
+                guard cost < .max else {
+                    continue
+                }
+
+                let newNode = nodes[newPosition]!
+                node.edges.insert(AStarEdge(to: newNode, cost: cost))
             }
         }
         return nodes
