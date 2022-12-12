@@ -1,0 +1,11 @@
+[package]
+name = "day-11"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+fraction = "0.12.2"
+num-bigint = "0.4.3"
+regex = "1.7.0"
