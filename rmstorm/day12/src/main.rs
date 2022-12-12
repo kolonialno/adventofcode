@@ -60,17 +60,19 @@ impl fmt::Debug for Map {
 
 impl Map {
     fn element_as_char(&self, i: usize) -> String {
-        let char = format!("{}", self.elements[i] as char);
+        let g = 9 * (self.elements[i] - 'a' as u8);
+        let char = String::from_utf8_lossy(&[self.elements[i]]).truecolor(40, g, 0);
         match &self.solution {
             Some(sol) => {
                 if sol.contains(&i) {
-                    char.on_blue().to_string()
+                    char.on_blue()
                 } else {
                     char
                 }
             }
             None => char,
         }
+        .to_string()
     }
     fn accesible(&self, i: &usize) -> Vec<usize> {
         let cur_heigth = self.elements[*i];
@@ -98,6 +100,7 @@ fn main() {
     let input = include_bytes!("input.txt");
     let mut map = Map::from(&input[..]);
 
+    dbg!(&map);
     map.solution = bfs(&map.end, |p| map.accesible(p), |p| p == &map.start);
     dbg!(&map);
     dbg!(map.solution.as_ref().unwrap().len() - 1);
