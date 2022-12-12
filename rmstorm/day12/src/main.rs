@@ -14,37 +14,34 @@ struct Map {
 
 impl From<&[u8]> for Map {
     fn from(input: &[u8]) -> Self {
-        let width = input.iter().position(|e| '\n' as u8 == *e).unwrap() as usize;
-        let mut heigth = 0;
-        let mut start = 0;
-        let mut end = 0;
-        let mut elements = vec![];
+        let mut m = Map {
+            width: input.iter().position(|e| '\n' as u8 == *e).unwrap() as usize,
+            heigth: 0,
+            start: 0,
+            end: 0,
+            elements: vec![],
+            solution: None,
+        };
+
         for (i, e) in input.iter().enumerate() {
             match *e as char {
                 'S' => {
-                    start = i - heigth;
-                    elements.push('a' as u8);
+                    m.start = i - m.heigth;
+                    m.elements.push('a' as u8);
                 }
                 'E' => {
-                    end = i - heigth;
-                    elements.push('z' as u8);
+                    m.end = i - m.heigth;
+                    m.elements.push('z' as u8);
                 }
                 '\n' => {
-                    heigth += 1;
+                    m.heigth += 1;
                 }
                 e => {
-                    elements.push(e as u8);
+                    m.elements.push(e as u8);
                 }
             }
         }
-        Map {
-            width,
-            heigth,
-            start,
-            end,
-            elements,
-            solution: None,
-        }
+        m
     }
 }
 
@@ -78,8 +75,6 @@ impl Map {
     fn accesible(&self, i: &usize) -> Vec<usize> {
         let cur_heigth = self.elements[*i];
         let mut accessibles = vec![];
-        self.heigth;
-        self.width;
         if (i % self.width) > 0 {
             accessibles.push(i - 1)
         };
