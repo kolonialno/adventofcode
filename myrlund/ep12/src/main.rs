@@ -121,7 +121,7 @@ impl HeightMap {
             return self.path_length_cache.get(start).copied();
         }
 
-        let (_, cost) = self.traverse(start, false)?;
+        let (_, cost) = self.traverse(start, true)?;
         Some(cost)
     }
 
