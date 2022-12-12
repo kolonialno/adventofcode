@@ -31,12 +31,10 @@ fn part2(input: &str) -> usize {
 }
 
 fn bfs(start: Coordinate, end: Coordinate, grid: &HashMap<Coordinate, i32>) -> Option<usize> {
-    let mut valid_path = false;
     let mut q = VecDeque::from([start]);
     let mut came_from: HashMap<Coordinate, Coordinate> = HashMap::new();
     while let Some(c) = q.pop_back() {
         if c == end {
-            valid_path = true;
             break;
         }
         for n in get_legal_neighbours(&c, grid) {
@@ -47,16 +45,16 @@ fn bfs(start: Coordinate, end: Coordinate, grid: &HashMap<Coordinate, i32>) -> O
         }
     }
 
-    if valid_path {
-        let mut current = end;
-        let mut steps = 0;
-        while current != start {
-            steps += 1;
-            current = *came_from.get(&current).unwrap();
-        }
-        return Some(steps);
+    let mut current = end;
+    let mut steps = 0;
+    while current != start {
+        steps += 1;
+        let Some(c) = came_from.get(&current) else {
+            return None;
+        };
+        current = *c;
     }
-    None
+    Some(steps)
 }
 
 fn get_legal_neighbours(c: &Coordinate, grid: &HashMap<Coordinate, i32>) -> Vec<Coordinate> {
