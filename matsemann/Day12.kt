@@ -3,22 +3,25 @@ package com.matsemann.adventofcode2022
 import com.matsemann.adventofcode2022.utils.*
 import com.matsemann.adventofcode2022.utils.IntVec.Companion.allWithinBounds
 
-fun bfs(grid: List<List<Char>>, start: IntVec, goal: IntVec): Int {
+fun bfs(grid: List<List<Char>>, start: IntVec, neighbors: (IntVec, IntVec) -> Boolean, goal: (IntVec) -> Boolean): Int {
     val bounds = grid.bounds()
 
     val parents = mutableMapOf<IntVec, IntVec>()
     val explored = mutableSetOf(start)
     val queue = mutableListOf(start)
 
+    var endGoal: IntVec? = null
+
     while (queue.isNotEmpty()) {
         val next = queue.removeFirst()
 
-        if (next == goal) {
+        if (goal(next)) {
+            endGoal = next
             break
         }
 
         next.neighbors(bounds)
-            .filter { grid[it] <= grid[next] + 1 }
+            .filter { neighbors(next, it) }
             .filter { it !in explored }
             .forEach {
                 parents[it] = next
@@ -28,7 +31,7 @@ fun bfs(grid: List<List<Char>>, start: IntVec, goal: IntVec): Int {
     }
 
     var count = -1
-    var current: IntVec? = goal
+    var current: IntVec? = endGoal
     while (current != null) {
         count++
         current = parents[current]
@@ -46,7 +49,7 @@ fun day12_1(lines: List<String>): Any {
     grid[start] = 'a'
     grid[goal] = 'z'
 
-    return bfs(grid, start, goal)
+    return bfs(grid, start, { a, b -> grid[b] <= grid[a] + 1 }, { it == goal })
 }
 
 
@@ -57,15 +60,13 @@ fun day12_2(lines: List<String>): Any {
     val start = positions.first { grid[it] == 'S' }
     val goal = positions.first { grid[it] == 'E' }
 
-
     grid[start] = 'a'
     grid[goal] = 'z'
 
-    return positions
-        .filter { grid[it] == 'a' }
-        .map { bfs(grid, it, goal) }
-        .filter { it > 0 }
-        .min()
+    return bfs(grid, goal,
+        { a, b -> grid[a] <= grid[b] + 1 },
+        { grid[it] == 'a' }
+    )
 
 }
 
