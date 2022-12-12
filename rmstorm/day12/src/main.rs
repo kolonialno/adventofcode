@@ -89,7 +89,7 @@ impl Map {
         };
         accessibles
             .into_iter()
-            .filter(|i| self.elements[*i] - 2 < cur_heigth)
+            .filter(|j| cur_heigth < (self.elements[*j] + 2))
             .collect()
     }
 }
@@ -98,28 +98,14 @@ fn main() {
     let input = include_bytes!("input.txt");
     let mut map = Map::from(&input[..]);
 
-    map.solution = bfs(&map.start, |p| map.accesible(p), |p| p == &map.end);
+    map.solution = bfs(&map.end, |p| map.accesible(p), |p| p == &map.start);
     dbg!(&map);
     dbg!(map.solution.as_ref().unwrap().len() - 1);
-
-    map.solution = map
-        .elements
-        .iter()
-        .enumerate()
-        .filter_map(|(i, e)| {
-            if *e as char == 'a' {
-                bfs(&i, |p| map.accesible(p), |p| p == &map.end)
-            } else {
-                None
-            }
-        })
-        .reduce(|v_cur, v_new| {
-            if v_new.len() < v_cur.len() {
-                v_new
-            } else {
-                v_cur
-            }
-        });
+    map.solution = bfs(
+        &map.end,
+        |p| map.accesible(p),
+        |p| 'a' == map.elements[*p] as char,
+    );
     dbg!(&map);
     dbg!(map.solution.as_ref().unwrap().len() - 1);
 }
