@@ -28,19 +28,12 @@ func day12NewGraph(lines []string) day12Graph {
 	}
 	for y := 0; y < len(lines); y++ {
 		for x := 0; x < len(lines[y]); x++ {
-			for dy := -1; dy <= 1; dy++ {
-				for dx := -1; dx <= 1; dx++ {
-					if dx == 0 && dy == 0 || dx != 0 && dy != 0 {
-						continue // skip identity and diagonals
-					}
-					if x+dx < 0 || x+dx >= len(lines[y]) || y+dy < 0 || y+dy >= len(lines) {
-						continue // skip out of bounds
-					}
-					heightDiff := heights[[2]int{x + dx, y + dy}] - heights[[2]int{x, y}]
-					n := day12Node{x + dx, y + dy}
-					if heightDiff <= 1 {
-						g[n] = append(g[n], day12Edge{n, day12Node{x, y}})
-					}
+			for _, offset := range [][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}} {
+				dx, dy := offset[0], offset[1]
+				heightDiff := heights[[2]int{x + dx, y + dy}] - heights[[2]int{x, y}]
+				n := day12Node{x + dx, y + dy}
+				if heightDiff <= 1 {
+					g[n] = append(g[n], day12Edge{n, day12Node{x, y}})
 				}
 			}
 		}
