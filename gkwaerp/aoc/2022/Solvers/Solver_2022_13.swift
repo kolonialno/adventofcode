@@ -7,157 +7,58 @@
 
 import Foundation
 
-fileprivate protocol Packet {
-    var rawString: String? { get } // Used to find divider packets in part 2
-}
-
 class Solver_2022_13: Solver {
-    fileprivate struct PacketList: Packet {
-        let packets: [Packet]
-        var rawString: String?
+    indirect enum Packet: Decodable, Comparable {
+        case list([Packet])
+        case value(Int)
 
-        init(packets: [Packet], rawString: String? = nil) {
-            self.packets = packets
-            self.rawString = rawString
-        }
-    }
-
-    fileprivate struct PacketInt: Packet {
-        let value: Int
-        let rawString: String? = nil
-    }
-
-    fileprivate class Parser {
-        static func parse(string: String, initialCall: Bool = true) -> PacketList {
-            guard !string.isEmpty else {
-                return PacketList(packets: [])
+        init(from decoder: Decoder) throws {
+            do {
+                let container = try decoder.singleValueContainer()
+                self = .value(try container.decode(Int.self))
+            } catch {
+                self = .list(try [Packet](from: decoder))
             }
-
-            // No more nested lists --> has to be list of ints
-            if !string.contains(where: { $0 == "[" }) {
-                let packetInts = string
-                    .components(separatedBy: ",")
-                    .filter { !$0.isEmpty }
-                    .map { Int($0)! }
-                    .map { PacketInt(value: $0) }
-
-                return PacketList(packets: packetInts)
-            }
-
-            var arrayed = string.convertToStringArray()
-
-            // Here be more nested lists
-            var packets: [Packet] = []
-            var tmpString = ""
-
-            var bracketStack: [Int] = []
-            var index = 0
-            while index < arrayed.count {
-                let character = arrayed[index]
-                if character == "[" {
-                    bracketStack.append(index)
-                } else if character == "]" {
-                    let matchingBracketIndex = bracketStack.popLast()!
-                    if bracketStack.isEmpty {
-                        let substring = arrayed[(matchingBracketIndex + 1)..<index].joined()
-                        var parsedList = parse(string: substring, initialCall: false)
-
-                        if initialCall {
-                            parsedList.rawString = string
-                            return parsedList
-                        }
-
-                        packets.append(parsedList)
-                        arrayed.removeSubrange(matchingBracketIndex...index)
-                        index = matchingBracketIndex
-                        continue
-                    }
-                } else if bracketStack.isEmpty {
-                    if character == "," {
-                        if let intValue = Int(tmpString) {
-                            packets.append(PacketInt(value: intValue))
-                        }
-                        tmpString = ""
-                    } else {
-                        tmpString += character
-                    }
-                }
-
-                index += 1
-            }
-
-            if let intValue = Int(tmpString) {
-                packets.append(PacketInt(value: intValue))
-            }
-
-            return PacketList(packets: packets)
-        }
-    }
-
-    fileprivate class Comparer {
-        enum Comparison {
-            case leftSmaller
-            case equal
-            case rightSmaller
         }
 
-        static func compare(lhs: Packet, rhs: Packet) -> Comparison {
+        static func < (lhs: Packet, rhs: Packet) -> Bool {
             switch (lhs, rhs) {
-            case (let lhs as PacketList, let rhs as PacketList):
-                let maxCount = max(lhs.packets.count, rhs.packets.count)
-                for i in 0..<maxCount {
-                    // If something runs out first, it is smaller
-                    if lhs.packets.count <= i {
-                        return .leftSmaller
-                    } else if rhs.packets.count <= i {
-                        return .rightSmaller
-                    }
-
-                    let comparison = compare(lhs: lhs.packets[i], rhs: rhs.packets[i])
-                    switch comparison {
-                    case .equal:
-                        continue
-                    case .leftSmaller, .rightSmaller:
-                        return comparison
-                    }
+            case (.list(let lhsList), .list(let rhsList)):
+                for (lhsValue, rhsValue) in zip(lhsList, rhsList) {
+                    if lhsValue < rhsValue { return true }
+                    if lhsValue > rhsValue { return false }
                 }
-                return .equal
-            case (let lhs as PacketInt, let rhs as PacketInt):
-                if lhs.value == rhs.value {
-                    return .equal
-                }
-
-                return lhs.value < rhs.value ? .leftSmaller : .rightSmaller
-            case (let lhs as PacketList, let rhs as PacketInt):
-                return compare(lhs: lhs, rhs: PacketList(packets: [rhs]))
-
-            case (let lhs as PacketInt, let rhs as PacketList):
-                return compare(lhs: PacketList(packets: [lhs]), rhs: rhs)
-            default:
-                fatalError()
+                return lhsList.count < rhsList.count
+            case (.value(let lhsValue), .value(let rhsValue)):
+                return lhsValue < rhsValue
+            case (.value, .list):
+                return .list([lhs]) < rhs
+            case (.list, .value):
+                return lhs < .list([rhs])
             }
         }
     }
 
     class PacketManager {
-        private var packetLists: [PacketList]
+        private static let jsonDecoder = JSONDecoder()
 
+        private var packets: [Packet]
         private let dividerPacketStrings: [String] = ["[[2]]", "[[6]]"]
-        private lazy var dividerPackets: [PacketList] = {
-            return dividerPacketStrings.map { Parser.parse(string: $0) }
+        private lazy var dividerPackets: [Packet] = {
+            return dividerPacketStrings.map { try! Self.jsonDecoder.decode(Packet.self, from: $0.data(using: .utf8)!) }
         }()
 
         init(string: String) {
-            self.packetLists = string
+            self.packets = string
                 .components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
-                .map { Parser.parse(string: $0) }
+                .map { try! Self.jsonDecoder.decode(Packet.self, from: $0.data(using: .utf8)!) }
         }
 
         func getSumOfValidPairIndices() -> Int {
             var sum = 0
-            for i in stride(from: 0, to: packetLists.count, by: 2) {
-                if Comparer.compare(lhs: packetLists[i], rhs: packetLists[i + 1]) == .leftSmaller {
+            for i in stride(from: 0, to: packets.count, by: 2) {
+                if packets[i] < packets[i + 1] {
                     sum += (i / 2) + 1
                 }
             }
@@ -165,14 +66,12 @@ class Solver_2022_13: Solver {
         }
 
         func sortAndGetDecoderSignal() -> Int {
-            packetLists.append(contentsOf: dividerPackets)
-            packetLists = packetLists.sorted(by: { lhs, rhs in
-                Comparer.compare(lhs: lhs, rhs: rhs) == .leftSmaller
-            })
+            packets.append(contentsOf: dividerPackets)
+            packets.sort()
 
             var product = 1
-            for i in 0..<packetLists.count {
-                if dividerPacketStrings.contains(where: { $0 == packetLists[i].rawString }) {
+            for i in 0..<packets.count {
+                if dividerPackets.contains(where: { $0 == packets[i] }) {
                     product *= (i + 1)
                 }
             }
