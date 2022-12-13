@@ -1,7 +1,21 @@
 extern crate nalgebra as na;
-use na::DMatrix;
+
+use na::{DMatrix, Dynamic, MatrixSlice};
 
 type Matrix = DMatrix<i32>;
+
+fn left(matrix: &Matrix, i: usize, j: usize) -> MatrixSlice<i32, Dynamic, Dynamic> {
+    matrix.slice((0, j), (i, 1))
+}
+fn right(matrix: &Matrix, i: usize, j: usize) -> MatrixSlice<i32, Dynamic, Dynamic> {
+    matrix.slice((i + 1, j), (matrix.ncols() - i - 1, 1))
+}
+fn up(matrix: &Matrix, i: usize, j: usize) -> MatrixSlice<i32, Dynamic, Dynamic> {
+    matrix.slice((i, 0), (1, j))
+}
+fn down(matrix: &Matrix, i: usize, j: usize) -> MatrixSlice<i32, Dynamic, Dynamic> {
+    matrix.slice((i, j + 1), (1, matrix.nrows() - j - 1))
+}
 
 fn input_to_matrix(string: &str, size: usize) -> Matrix {
     Matrix::from_row_iterator(
@@ -20,11 +34,12 @@ fn problem_1(matrix: &Matrix) -> i32 {
 
     for i in 1..size - 1 {
         for j in 1..size - 1 {
-            if matrix[(i, j)] > matrix.slice((i, 0), (1, j)).max() // up
-                || matrix[(i, j)] > matrix.slice((i, j + 1), (1, size - j - 1)).max() // down
-                || matrix[(i, j)] > matrix.slice((0, j), (i, 1)).max() // left
-                || matrix[(i, j)] > matrix.slice((i + 1, j), (size - i - 1, 1)).max()
-            // right
+            let element = matrix[(i, j)];
+
+            if element > left(matrix, i, j).max()
+                || element > right(matrix, i, j).max()
+                || element > up(matrix, i, j).max()
+                || element > down(matrix, i, j).max()
             {
                 counter += 1;
             }
@@ -33,61 +48,32 @@ fn problem_1(matrix: &Matrix) -> i32 {
     counter
 }
 
+fn score(slice: MatrixSlice<i32, Dynamic, Dynamic>, element: &i32, reverse: bool) -> i32 {
+    let position = if reverse {
+        slice.iter().rev().position(|m| m >= &element)
+    } else {
+        slice.iter().position(|m| m >= &element)
+    };
+
+    (match position {
+        Some(p) => p + 1,
+        None => slice.len(),
+    }) as i32
+}
+
 fn problem_2(matrix: &Matrix) -> i32 {
     let size = matrix.nrows();
     let mut scenic_score: i32 = 0;
+
     for i in 0..size {
         for j in 0..size {
             let element = matrix[(i, j)];
-            let mut element_score: i32 = 1;
+            let element_score: i32 = score(left(matrix, i, j), &element, true)
+                * score(right(matrix, i, j), &element, false)
+                * score(up(matrix, i, j), &element, true)
+                * score(down(matrix, i, j), &element, false);
 
-            // left
-            element_score *= match matrix
-                .slice((i, 0), (1, j))
-                .iter()
-                .rev()
-                .position(|m| m >= &element)
-            {
-                Some(p) => p + 1,
-                None => j,
-            } as i32;
-
-            // up
-            element_score *= match matrix
-                .slice((0, j), (i, 1))
-                .iter()
-                .rev()
-                .position(|m| m >= &element)
-            {
-                Some(p) => p + 1,
-                None => i,
-            } as i32;
-
-            // down
-            element_score *= match matrix
-                .slice((i, j + 1), (1, size - j - 1))
-                .iter()
-                .position(|m| m >= &element)
-            {
-                Some(p) => p + 1,
-                None => size - j - 1,
-            } as i32;
-
-            // right
-            element_score *= match matrix
-                .slice((i + 1, j), (size - i - 1, 1))
-                .iter()
-                .position(|m| m >= &element)
-            {
-                Some(p) => p + 1,
-                None => size - i - 1,
-            } as i32;
-
-            scenic_score = if element_score > scenic_score {
-                element_score
-            } else {
-                scenic_score
-            };
+            scenic_score = scenic_score.max(element_score);
         }
     }
     scenic_score
