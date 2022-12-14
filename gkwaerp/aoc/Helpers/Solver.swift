@@ -97,26 +97,36 @@ extension Solver {
         let startTime = Date()
 
         isSolvingPart1 = true
-        resultPart1 = solveFunction1()
-        isSolvingPart1 = false
+        DispatchQueue.global(qos: .unspecified).async {
+            let result = self.solveFunction1()
+            DispatchQueue.main.async {
+                self.resultPart1 = result
+                self.isSolvingPart1 = false
 
-        print("Part 1:\n\(resultPart1 ?? "NO RESULT")")
+                print("Part 1:\n\(result)")
 
-        let elapsedTime = DateHelper.getElapsedTimeString(from: startTime)
-        print("\(elapsedTime)\n")
+                let elapsedTime = DateHelper.getElapsedTimeString(from: startTime)
+                print("\(elapsedTime)\n")
+            }
+        }
     }
 
     final func solvePart2() {
         let startTime = Date()
 
         isSolvingPart2 = true
-        resultPart2 = solveFunction2()
-        isSolvingPart2 = false
+        DispatchQueue.global(qos: .unspecified).async {
+            let result = self.solveFunction2()
+            DispatchQueue.main.async {
+                self.resultPart2 = result
+                self.isSolvingPart2 = false
 
-        print("Part 2:\n\(resultPart2 ?? "NO RESULT\n")")
+                print("Part 2:\n\(result)")
 
-        let elapsedTime = DateHelper.getElapsedTimeString(from: startTime)
-        print("\(elapsedTime)\n")
+                let elapsedTime = DateHelper.getElapsedTimeString(from: startTime)
+                print("\(elapsedTime)\n")
+            }
+        }
     }
 
     final var isSolving: Bool {
@@ -136,6 +146,10 @@ extension Solver {
     }
 
     final var solveState1: SolveState {
+        if let result = resultPart1 {
+            return .solved(result: result)
+        }
+
         if !isReady || isSolvingPart2 {
             return .waiting
         }
@@ -144,24 +158,20 @@ extension Solver {
             return .solving
         }
 
-        if let result = resultPart1 {
-            return .solved(result: result)
-        }
-
         return .ready
     }
 
     final var solveState2: SolveState {
+        if let result = resultPart2 {
+            return .solved(result: result)
+        }
+
         if !isReady || isSolvingPart1 || isPart2BlockedByPart1 {
             return .waiting
         }
 
         if isSolvingPart2 {
             return .solving
-        }
-
-        if let result = resultPart2 {
-            return .solved(result: result)
         }
 
         return .ready
