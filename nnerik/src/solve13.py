@@ -7,10 +7,9 @@ from functools import total_ordering
 class Packet:
     def __init__(self, input):
         input = json.loads(input) if isinstance(input, str) else input
-        if isinstance(input, int):
-            self.value = input
-        elif isinstance(input, list):
-            self.value = tuple(Packet(i) for i in input)
+        self.value = (
+            input if isinstance(input, int) else tuple(Packet(i) for i in input)
+        )
 
     def __eq__(self, other):
         if type(self.value) == type(other.value):
@@ -45,6 +44,6 @@ def solve1(data):
 
 
 def solve2(data):
-    div1, div2 = Packet("[[2]]"), Packet("[[6]]")
+    div1, div2 = Packet([[2]]), Packet([[6]])
     packets = sorted(get_packets(data, div1, div2))
     return (packets.index(div1) + 1) * (packets.index(div2) + 1)
