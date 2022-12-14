@@ -113,6 +113,21 @@ class IntPoint: Equatable, Hashable {
         return atan2(x, y)
     }
 
+    /// Returns all points in line between `a` & `b` -- `[a...b]`.
+    /// Must be able to step in direct line (with direction.x & direction.y both being 0 or ± 1)
+    static func line(from a: IntPoint, to b: IntPoint) -> [IntPoint] {
+        let delta = b - a
+        let distance = delta.chebyshevDistance()
+
+        let absx = abs(delta.x)
+        let absy = abs(delta.y)
+        assert(absx.isMultiple(of: distance))
+        assert(absy.isMultiple(of: distance))
+
+        let direction = IntPoint(x: delta.x.signum(), y: delta.y.signum())
+        return (0...distance).map { a + direction.scaled(by: $0) }
+    }
+
     static func angleInDegrees(between a: IntPoint, and b: IntPoint, invertY: Bool) -> Double? {
         guard let radians = IntPoint.angle(between: a, and: b, invertY: invertY) else {
             return nil

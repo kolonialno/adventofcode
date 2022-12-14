@@ -66,6 +66,9 @@
 		4790A013294852BB007DBA6B /* Solver_2022_13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4790A012294852BB007DBA6B /* Solver_2022_13.swift */; };
 		4790A015294852F4007DBA6B /* TestInput_2022_13_a.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4790A014294852F4007DBA6B /* TestInput_2022_13_a.txt */; };
 		4790A01729485316007DBA6B /* Input_2022_13.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4790A01629485316007DBA6B /* Input_2022_13.txt */; };
+		4790A0192949A614007DBA6B /* Solver_2022_14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4790A0182949A614007DBA6B /* Solver_2022_14.swift */; };
+		4790A01B2949A63C007DBA6B /* TestInput_2022_14_a.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4790A01A2949A63C007DBA6B /* TestInput_2022_14_a.txt */; };
+		4790A01D2949A654007DBA6B /* Input_2022_14.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4790A01C2949A654007DBA6B /* Input_2022_14.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +132,9 @@
 		4790A012294852BB007DBA6B /* Solver_2022_13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_13.swift; sourceTree = "<group>"; };
 		4790A014294852F4007DBA6B /* TestInput_2022_13_a.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInput_2022_13_a.txt; sourceTree = "<group>"; };
 		4790A01629485316007DBA6B /* Input_2022_13.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_13.txt; sourceTree = "<group>"; };
+		4790A0182949A614007DBA6B /* Solver_2022_14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2022_14.swift; sourceTree = "<group>"; };
+		4790A01A2949A63C007DBA6B /* TestInput_2022_14_a.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInput_2022_14_a.txt; sourceTree = "<group>"; };
+		4790A01C2949A654007DBA6B /* Input_2022_14.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_14.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +248,7 @@
 				478D1B8C2945CB5D004B9D95 /* Solver_2022_11.swift */,
 				478D1B92294704D4004B9D95 /* Solver_2022_12.swift */,
 				4790A012294852BB007DBA6B /* Solver_2022_13.swift */,
+				4790A0182949A614007DBA6B /* Solver_2022_14.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -262,6 +269,7 @@
 				478D1B902945D387004B9D95 /* Input_2022_11.txt */,
 				478D1B9629470529004B9D95 /* Input_2022_12.txt */,
 				4790A01629485316007DBA6B /* Input_2022_13.txt */,
+				4790A01C2949A654007DBA6B /* Input_2022_14.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -284,6 +292,7 @@
 				478D1B8E2945D26C004B9D95 /* TestInput_2022_11_a.txt */,
 				478D1B9429470504004B9D95 /* TestInput_2022_12_a.txt */,
 				4790A014294852F4007DBA6B /* TestInput_2022_13_a.txt */,
+				4790A01A2949A63C007DBA6B /* TestInput_2022_14_a.txt */,
 			);
 			path = TestInput;
 			sourceTree = "<group>";
@@ -363,6 +372,8 @@
 				046FD232293D45D900A2992B /* Input_2022_04.txt in Resources */,
 				04C81007293B36CA00D9B495 /* Input_2022_03.txt in Resources */,
 				478D1B8B2944887C004B9D95 /* Input_2022_10.txt in Resources */,
+				4790A01B2949A63C007DBA6B /* TestInput_2022_14_a.txt in Resources */,
+				4790A01D2949A654007DBA6B /* Input_2022_14.txt in Resources */,
 				046FD236293DDC1D00A2992B /* Input_2022_05.txt in Resources */,
 				478D1B8729447EA4004B9D95 /* TestInput_2022_10_a.txt in Resources */,
 				0471F24C29369F8200D4B978 /* Assets.xcassets in Resources */,
@@ -379,6 +390,7 @@
 				478D1B80294315D4004B9D95 /* Solver_2022_09.swift in Sources */,
 				0471F25D2936B1E600D4B978 /* DayView.swift in Sources */,
 				0471F27C2936B7C800D4B978 /* Misc.swift in Sources */,
+				4790A0192949A614007DBA6B /* Solver_2022_14.swift in Sources */,
 				0471F26A2936B4EE00D4B978 /* DateHelper.swift in Sources */,
 				0471F2702936B70600D4B978 /* IntPoint.swift in Sources */,
 				0471F26C2936B53B00D4B978 /* Math.swift in Sources */,
