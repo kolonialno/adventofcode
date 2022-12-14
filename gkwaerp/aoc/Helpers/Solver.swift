@@ -97,7 +97,7 @@ extension Solver {
         let startTime = Date()
 
         isSolvingPart1 = true
-        DispatchQueue.global(qos: .unspecified).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let result = self.solveFunction1()
             DispatchQueue.main.async {
                 self.resultPart1 = result
@@ -115,7 +115,7 @@ extension Solver {
         let startTime = Date()
 
         isSolvingPart2 = true
-        DispatchQueue.global(qos: .unspecified).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let result = self.solveFunction2()
             DispatchQueue.main.async {
                 self.resultPart2 = result
