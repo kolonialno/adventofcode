@@ -17,6 +17,7 @@ struct DayView: View {
             VStack {
                 SolverView(solveType: solver.solveType1,
                            solveState: solver.solveState1,
+                           progressState: solver.progressState1,
                            buttonText: "Solve Part 1") {
                     solver.solvePart1()
                 }
@@ -24,6 +25,7 @@ struct DayView: View {
 
                 SolverView(solveType: solver.solveType2,
                            solveState: solver.solveState2,
+                           progressState: solver.progressState2,
                            buttonText: "Solve Part 2") {
                     solver.solvePart2()
                 }

@@ -13,10 +13,12 @@ class Solver_2022_14: Solver {
         private let sandSpawnPoint = IntPoint(x: 500, y: 0)
         private let floorHeight: Int
         private let useFloor: Bool
+        private let solver: Solver?
 
         private(set) var numSandAtRest = 0
 
-        init(string: String, rememberFloor: Bool) {
+        init(string: String, rememberFloor: Bool, solver: Solver? = nil) {
+            self.solver = solver
             var rockPoints: Set<IntPoint> = []
             let rockPaths = string.components(separatedBy: .newlines)
             rockPaths.forEach { rockPath in
@@ -53,6 +55,7 @@ class Solver_2022_14: Solver {
 
                 if isSandInBounds(at: sandPos) {
                     numSandAtRest += 1
+                    solver?.visualizeCurrentPart(text: "\(numSandAtRest)")
 
                     caveMap[sandPos] = "o"
                     if sandPos == sandSpawnPoint {
@@ -91,14 +94,14 @@ class Solver_2022_14: Solver {
 
     override func solveFunction1() -> String {
         let input = defaultInputFileString.loadAsTextString()
-        let cave = Cave(string: input, rememberFloor: false)
+        let cave = Cave(string: input, rememberFloor: false, solver: self)
         cave.simulate()
         return "\(cave.numSandAtRest)"
     }
 
     override func solveFunction2() -> String {
         let input = defaultInputFileString.loadAsTextString()
-        let cave = Cave(string: input, rememberFloor: true)
+        let cave = Cave(string: input, rememberFloor: true, solver: self)
         cave.simulate()
         return "\(cave.numSandAtRest)"
     }

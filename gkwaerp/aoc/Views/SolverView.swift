@@ -26,25 +26,33 @@ struct SolverView: View {
 
     let solveType: SolveType
     let solveState: SolveState
+    let progressState: ProgressState?
     let buttonText: String
     let action: () -> Void
 
     var body: some View {
-        ZStack {
-            ProgressView()
-                .opacity(solveState.progressViewOpacity)
+        VStack {
+            if let progressState {
+                VisualizationView(progressState: progressState)
+                    .animation(.none, value: self.progressState)
+            }
 
-            Text(solveState.text)
-                .font(solveType.font)
-                .opacity(solveState.textOpacity)
+            ZStack {
+                ProgressView()
+                    .opacity(solveState.progressViewOpacity)
 
-            Button(action: action, label: {
-                Text(buttonText)
-            })
-            .opacity(solveState.buttonOpacity)
-            .disabled(solveState.buttonIsDisabled)
+                Text(solveState.text)
+                    .font(solveType.font)
+                    .opacity(solveState.textOpacity)
+
+                Button(action: action, label: {
+                    Text(buttonText)
+                })
+                .opacity(solveState.buttonOpacity)
+                .disabled(solveState.buttonIsDisabled)
+            }
+            .animation(.default, value: solveState)
         }
-        .animation(.default, value: solveState)
     }
 }
 
@@ -59,12 +67,38 @@ struct SolverView_Previews: PreviewProvider {
 🟦🟧🟦🟦🟧🟦🟧🟦🟦🟧🟦
 🟦🟧🟦🟦🟧🟦🟧🟧🟧🟦🟦
 """
-        return VStack {
-            SolverView(solveType: .text, solveState: .waiting, buttonText: "Waiting", action: {})
-            SolverView(solveType: .text, solveState: .ready, buttonText: "Solve me", action: {})
-            SolverView(solveType: .text, solveState: .solving, buttonText: "Solving...", action: {})
-            SolverView(solveType: .text, solveState: .solved(result: "Solved!"), buttonText: "Solve me", action: {})
-            SolverView(solveType: .image, solveState: .solved(result: imageText), buttonText: "Solve me", action: {})
+        return VStack(spacing: 20) {
+            SolverView(solveType: .text,
+                       solveState: .waiting,
+                       progressState: nil,
+                       buttonText: "Waiting",
+                       action: {})
+            SolverView(solveType: .text,
+                       solveState: .ready,
+                       progressState: nil,
+                       buttonText: "Solve me",
+                       action: {})
+            SolverView(solveType: .text,
+                       solveState: .solving,
+                       progressState: nil,
+                       buttonText: "Solving...",
+                       action: {})
+            SolverView(solveType: .text,
+                       solveState: .solved(result: "Solved!"),
+                       progressState: nil,
+                       buttonText: "Solve me",
+                       action: {})
+            SolverView(solveType: .text,
+                       solveState: .solving,
+                       progressState: .init(text: "This is progress:\n\(imageText)",
+                                            font: .system(size: 16)),
+                       buttonText: "Solve me",
+                       action: {})
+            SolverView(solveType: .image,
+                       solveState: .solved(result: imageText),
+                       progressState: nil,
+                       buttonText: "Solve me",
+                       action: {})
         }
     }
 }

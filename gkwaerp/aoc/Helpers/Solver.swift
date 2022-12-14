@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 protocol TestableDay {
     func runTests()
@@ -15,11 +16,16 @@ class Solver: ObservableObject {
     private let year: Int
     private let day: Int
 
-    @Published private(set) var isReady: Bool = false
-    @Published private(set) var isSolvingPart1: Bool = false
-    @Published private(set) var isSolvingPart2: Bool = false
-    @Published private(set) var resultPart1: String?
-    @Published private(set) var resultPart2: String?
+    @Published private(set) final var isReady: Bool = false
+    @Published private(set) final var isSolvingPart1: Bool = false
+    @Published private(set) final var isSolvingPart2: Bool = false
+    @Published private(set) final var resultPart1: String?
+    @Published private(set) final var resultPart2: String?
+
+    @Published private(set) final var progressPart1: String?
+    @Published private(set) final var progressPart2: String?
+    @Published private(set) final var progressFont1: Font?
+    @Published private(set) final var progressFont2: Font?
 
     required init(year: Int, day: Int) {
         self.year = year
@@ -57,6 +63,22 @@ class Solver: ObservableObject {
 extension Solver {
     final var navigationTitle: String {
         day.toDayString()
+    }
+
+    final var progressState1: ProgressState? {
+        guard let progressPart1 else {
+            return nil
+        }
+
+        return ProgressState(text: progressPart1, font: progressFont1)
+    }
+
+    final var progressState2: ProgressState? {
+        guard let progressPart2 else {
+            return nil
+        }
+
+        return ProgressState(text: progressPart2, font: progressFont1)
     }
 
     final func prepareForSolve() {
@@ -145,6 +167,20 @@ extension Solver {
         String(format: "Test%@_%@", defaultInputFileString, suffix)
     }
 
+    final func visualizeCurrentPart(text: String?, font: Font? = nil) {
+        guard isSolvingPart1 || isSolvingPart2 else {
+            return
+        }
+        DispatchQueue.main.async {
+            if self.isSolvingPart1 {
+                self.progressPart1 = text
+                self.progressFont1 = font
+            } else {
+                self.progressPart2 = text
+                self.progressFont2 = font
+            }
+        }
+    }
     final var solveState1: SolveState {
         if let result = resultPart1 {
             return .solved(result: result)
