@@ -38,6 +38,7 @@ impl Map {
 }
 
 fn main() {
+    // Can I ping torvald using the Interno bot?
     let input = include_str!("input.txt");
     let sand_start = [500, 0];
     let rock_ranges: Vec<Vec<[usize; 2]>> = input.lines().map(|l| parse(l).unwrap().1).collect();
