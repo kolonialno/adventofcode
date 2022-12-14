@@ -40,8 +40,53 @@ dependencies = [
 ]
 
 [[package]]
-name = "day1"
+name = "day01"
 version = "0.1.0"
+
+[[package]]
+name = "day02"
+version = "0.1.0"
+
+[[package]]
+name = "day03"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day04"
+version = "0.1.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
+name = "day05"
+version = "0.1.0"
+
+[[package]]
+name = "day06"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day07"
+version = "0.1.0"
+
+[[package]]
+name = "day08"
+version = "0.1.0"
+
+[[package]]
+name = "day09"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+ "regex",
+]
 
 [[package]]
 name = "day10"
@@ -74,49 +119,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "day2"
+name = "day14"
 version = "0.1.0"
-
-[[package]]
-name = "day3"
-version = "0.1.0"
-dependencies = [
- "itertools",
-]
-
-[[package]]
-name = "day4"
-version = "0.1.0"
-dependencies = [
- "regex",
-]
-
-[[package]]
-name = "day5"
-version = "0.1.0"
-
-[[package]]
-name = "day6"
-version = "0.1.0"
-dependencies = [
- "itertools",
-]
-
-[[package]]
-name = "day7"
-version = "0.1.0"
-
-[[package]]
-name = "day8"
-version = "0.1.0"
-
-[[package]]
-name = "day9"
-version = "0.1.0"
-dependencies = [
- "itertools",
- "regex",
-]
 
 [[package]]
 name = "either"
