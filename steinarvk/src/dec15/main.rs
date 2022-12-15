@@ -3,6 +3,8 @@ use std::ops::RangeInclusive;
 
 type Result<T> = std::result::Result<T, anyhow::Error>;
 
+type Point = (i64, i64);
+
 fn merge_into_sorted_disjoint_set(
     sorted_disjoint_intervals: Vec<RangeInclusive<i64>>,
     addition: RangeInclusive<i64>,
@@ -30,7 +32,7 @@ fn merge_into_sorted_disjoint_set(
 }
 
 fn blocked_positions_on_line(
-    lines: &[((i64, i64), (i64, i64))],
+    lines: &[(Point, Point)],
     line_y: i64,
     exclude_current_beacon: bool,
 ) -> Vec<RangeInclusive<i64>> {
@@ -109,7 +111,7 @@ fn tuning_frequency(x: i64, y: i64) -> i64 {
 fn main() -> Result<()> {
     let re = Regex::new(r"Sensor at x=(?P<sensor_x>[0-9-]+), y=(?P<sensor_y>[0-9-]+): closest beacon is at x=(?P<beacon_x>[0-9-]+), y=(?P<beacon_y>[0-9-]+)").unwrap();
 
-    let parsed_lines: Vec<((i64, i64), (i64, i64))> = std::io::stdin()
+    let parsed_lines: Vec<(Point, Point)> = std::io::stdin()
         .lines()
         .map(|line| {
             let line = line.unwrap();
