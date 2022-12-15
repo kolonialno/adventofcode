@@ -20,19 +20,6 @@ impl Coordinate {
 }
 
 #[derive(Debug)]
-struct Diamond {
-    center: Coordinate,
-    radius: usize,
-}
-
-impl Diamond {
-    // Returns true if this diamond overlaps with another diamond
-    fn overlaps(&self, other: &Diamond) -> bool {
-        self.center.distance(&other.center) < self.radius + other.radius
-    }
-}
-
-#[derive(Debug)]
 struct Sensor {
     position: Coordinate,
     closest_beacon: Coordinate,
@@ -74,10 +61,6 @@ impl Sensor {
         let distance: isize = self.distance as isize - line.abs_diff(self.position.y) as isize;
 
         Some((x - distance)..=(x + distance))
-    }
-
-    fn covers(&self, coordinate: &Coordinate) -> bool {
-        self.position.distance(&coordinate) <= self.distance
     }
 }
 
@@ -161,29 +144,6 @@ mod tests {
 
         let a = Coordinate { x: 14, y: 11 };
         assert_eq!(a.tuning_frequency(), 56000011);
-    }
-
-    #[test]
-    fn test_diamond_overlap() {
-        let a = Diamond {
-            center: Coordinate { x: 5, y: 5 },
-            radius: 3,
-        };
-        let b = Diamond {
-            center: Coordinate { x: 2, y: 3 },
-            radius: 2,
-        };
-        let c = Diamond {
-            center: Coordinate { x: 3, y: 8 },
-            radius: 3,
-        };
-
-        assert!(!a.overlaps(&b));
-        assert!(!b.overlaps(&a));
-        assert!(a.overlaps(&c));
-        assert!(c.overlaps(&a));
-        assert!(!b.overlaps(&c));
-        assert!(!c.overlaps(&b));
     }
 
     #[test]
