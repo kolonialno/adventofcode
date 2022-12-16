@@ -160,7 +160,7 @@ class Solver_2022_16: Solver {
                     let humanSet = humanPath.key
                     for elephantPath in validPaths {
                         let elephantSet = elephantPath.key
-                        if humanSet.intersection(elephantSet).isEmpty {
+                        if humanSet.isDisjoint(with: elephantSet) {
                             best = max(best, humanPath.value + elephantPath.value)
                         }
                     }
