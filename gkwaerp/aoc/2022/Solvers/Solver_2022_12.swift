@@ -8,7 +8,7 @@
 import Foundation
 
 class Solver_2022_12: Solver {
-    private var aStar: IntAStar!
+    private var aStar: IntAStar<IntPoint>!
 
     private func getElevation(for string: String) -> Int {
         if string == "S" {

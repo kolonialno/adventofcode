@@ -169,26 +169,26 @@ extension AdventGrid {
     typealias CostBlock = (IntPoint, IntPoint) -> Int
     func createAStarNodes(walkableBlock isWalkable: WalkableBlock,
                           allowedDirections: [Direction] = Direction.allCases,
-                          costBlock: CostBlock) -> [IntPoint: AStarNode] where GridValue: Hashable {
-        var nodes: [IntPoint: AStarNode] = [:]
+                          costBlock: CostBlock) -> [IntPoint: AStarNode<IntPoint>] where GridValue: Hashable {
+        var nodes: [IntPoint: AStarNode<IntPoint>] = [:]
         for point in gridPoints {
             guard let gridValue = getValue(at: point) else {
                 continue
             }
 
             if isWalkable(gridValue) {
-                nodes[point] = AStarNode(position: point)
+                nodes[point] = AStarNode(identifier: point)
             }
         }
 
         for node in nodes.values {
             for direction in allowedDirections {
-                let newPosition = node.position + direction.movementVector
+                let newPosition = node.identifier + direction.movementVector
                 guard let newValue = getValue(at: newPosition), isWalkable(newValue) else {
                     continue
                 }
 
-                let cost = costBlock(node.position, newPosition)
+                let cost = costBlock(node.identifier, newPosition)
                 guard cost < .max else {
                     continue
                 }

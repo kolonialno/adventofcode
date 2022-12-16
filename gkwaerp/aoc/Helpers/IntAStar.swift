@@ -7,11 +7,11 @@
 
 import Foundation
 
-class AStarEdge {
-    var to: AStarNode
+class AStarEdge<T> where T: Hashable, T:Equatable {
+    var to: AStarNode<T>
     var cost: Int
 
-    init(to: AStarNode, cost: Int) {
+    init(to: AStarNode<T>, cost: Int) {
         self.to = to
         self.cost = cost
     }
@@ -29,50 +29,50 @@ extension AStarEdge: Hashable, Equatable {
     }
 }
 
-class AStarNode: Hashable, Equatable {
-    let position: IntPoint
-    var edges: Set<AStarEdge>
+class AStarNode<T>: Hashable, Equatable where T: Hashable, T: Equatable {
+    let identifier: T
+    var edges: Set<AStarEdge<T>>
 
-    init(position: IntPoint, edges: Set<AStarEdge> = []) {
-        self.position = position
+    init(identifier: T, edges: Set<AStarEdge<T>> = []) {
+        self.identifier = identifier
         self.edges = edges
     }
 
     static func == (lhs: AStarNode, rhs: AStarNode) -> Bool {
-        lhs.position == rhs.position &&
+        lhs.identifier == rhs.identifier &&
         lhs.edges == rhs.edges
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(position)
+        hasher.combine(identifier)
     }
 }
 
-class IntAStar {
-    typealias Heuristic = (AStarNode, AStarNode) -> Int
+class IntAStar<T> where T: Hashable, T: Equatable {
+    typealias Heuristic = (AStarNode<T>, AStarNode<T>) -> Int
 
     struct Visit {
-        let position: IntPoint
+        let position: T
         let cost: Int
     }
 
     enum Result {
         struct Path {
-            let positions: [IntPoint]
+            let positions: [T]
             let cost: Int
         }
 
         case path(Path)
 
         /// IntPoint --> cheapest path cost from `startNode`
-        case gScores([IntPoint: Int])
+        case gScores([T: Int])
     }
 
     enum Mode {
-        case findShortestPathToGoal(AStarNode, Heuristic)
+        case findShortestPathToGoal(AStarNode<T>, Heuristic)
         case findShortestPathsToAll
 
-        func getFScore(for node: AStarNode) -> Int {
+        func getFScore(for node: AStarNode<T>) -> Int {
             switch self {
             case .findShortestPathToGoal(let endNode, let heuristic):
                 return heuristic(node, endNode)
@@ -82,26 +82,26 @@ class IntAStar {
         }
     }
 
-    static func calculate(startNode: AStarNode, mode: Mode) -> Result {
+    static func calculate(startNode: AStarNode<T>, mode: Mode) -> Result {
         /// IntPoint --> current cheapest path cost from `startNode`
-        var gScores: [IntPoint: Int]  = [:]
+        var gScores: [T: Int]  = [:]
 
         /// Node --> Current best guess at cheapest path cost from `startNode` to `endNode`, if path includes this node
-        var fScores: [AStarNode: Int] = [:]
+        var fScores: [AStarNode<T>: Int] = [:]
 
         /// IntPoint --> Previous visit (with lowest cost)
-        var history: [IntPoint: Visit] = [:]
+        var history: [T: Visit] = [:]
 
-        gScores[startNode.position] = 0
+        gScores[startNode.identifier] = 0
         fScores[startNode] = mode.getFScore(for: startNode)
 
-        var open: PriorityQueue<AStarNode> = .init(sort: { fScores[$0] ?? .max < fScores[$1] ?? .max } )
+        var open: PriorityQueue<AStarNode<T>> = .init(sort: { fScores[$0] ?? .max < fScores[$1] ?? .max } )
         open.enqueue(startNode)
 
         while let current = open.dequeue() {
-            if case let .findShortestPathToGoal(endNode, _) = mode, current.position == endNode.position {
+            if case let .findShortestPathToGoal(endNode, _) = mode, current.identifier == endNode.identifier {
                 var cost = 0
-                var path: [IntPoint] = [current.position]
+                var path: [T] = [current.identifier]
                 while let before = history[path.first!] {
                     path.insert(before.position, at: 0)
                     cost += before.cost
@@ -112,10 +112,10 @@ class IntAStar {
 
 
             current.edges.forEach { edge in
-                let gScore = gScores[current.position]! + edge.cost
-                if gScore < gScores[edge.to.position, default: .max] {
-                    history[edge.to.position] = Visit(position: current.position, cost: edge.cost)
-                    gScores[edge.to.position] = gScore
+                let gScore = gScores[current.identifier]! + edge.cost
+                if gScore < gScores[edge.to.identifier, default: .max] {
+                    history[edge.to.identifier] = Visit(position: current.identifier, cost: edge.cost)
+                    gScores[edge.to.identifier] = gScore
                     fScores[edge.to] = gScore + mode.getFScore(for: edge.to)
 
                     if !open.contains(node: edge.to) {
@@ -134,9 +134,9 @@ class IntAStar {
 }
 
 extension IntAStar {
-    static func defaultHeuristic() -> Heuristic {
+    static func defaultHeuristic() -> Heuristic where T: IntPoint {
         return { (from, to) in
-            return from.position.manhattanDistance(to: to.position)
+            return from.identifier.manhattanDistance(to: to.identifier)
         }
     }
 }
