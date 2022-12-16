@@ -11,9 +11,10 @@ const MAX_NUMBER_OF_MINUTES: usize = 30;
 struct Node {
     paths: Vec<usize>,
     rate: i64,
+    valve_index: Option<usize>,
 }
 
-type ValveStates = [bool; MAX_NODES];
+type ValveStates = u16;
 type CachedScores = [Option<i64>; MAX_NUMBER_OF_MINUTES];
 
 struct ScoreMemo {
@@ -30,7 +31,7 @@ impl ScoreMemo {
     fn update(&mut self, state: &State) -> bool {
         let (p0, p1) = state.positions;
         let canonical_pos = (p0.min(p1), p0.max(p1));
-        let key = (canonical_pos, state.on);
+        let key = (canonical_pos, state.encoded_on);
 
         let value: &mut [Option<i64>; MAX_NUMBER_OF_MINUTES] = self
             .memo
@@ -52,7 +53,7 @@ impl ScoreMemo {
 struct State {
     time: usize,
     positions: (usize, usize),
-    on: ValveStates,
+    encoded_on: ValveStates,
     score: i64,
     use_elephant: bool,
 }
@@ -62,7 +63,7 @@ impl State {
         State {
             time: if use_elephant { 4 } else { 0 },
             positions: (starting_position, starting_position),
-            on: [false; MAX_NODES],
+            encoded_on: 0,
             score: 0,
             use_elephant,
         }
@@ -70,31 +71,40 @@ impl State {
 
     fn move_is_pointless(
         &self,
+        nodes: &[Node],
         distances: &[Vec<Option<i32>>],
         before: usize,
         after: usize,
         time_left: usize,
     ) -> bool {
         // This optimization doesn't actually seem to matter much.
-        !self
-            .on
-            .iter()
-            .enumerate()
-            .filter_map(|(i, v)| {
-                if !v && i < distances.len() {
-                    Some(i)
-                } else {
-                    None
+        !nodes.iter().enumerate().any(|(i, node)| {
+            if let Some(valve_index) = node.valve_index {
+                let bit = (1 as ValveStates) << valve_index;
+                if (self.encoded_on & bit) != 0 {
+                    return false;
                 }
-            })
-            .any(|i| {
+
                 let distance_before = distances[before][i].unwrap();
                 let distance_after = distances[after][i].unwrap();
                 let progress = distance_before - distance_after;
                 let max_steps_left = time_left - 1; // Also need 1min to toggle.
                 let has_enough_time = distance_before <= max_steps_left.try_into().unwrap();
                 progress > 0 && has_enough_time
-            })
+            } else {
+                false
+            }
+        })
+    }
+
+    fn get_valve_on_at(&self, nodes: &[Node], node_index: usize) -> bool {
+        match nodes[node_index].valve_index {
+            None => false,
+            Some(i) => {
+                let bit = (1 as ValveStates) << i;
+                (self.encoded_on & bit) != 0
+            }
+        }
     }
 
     fn minutes_left(&self) -> usize {
@@ -104,12 +114,17 @@ impl State {
     fn upper_bound_for_score(&self, nodes: &[Node], distance_matrix: &[Vec<Option<i32>>]) -> i64 {
         let minutes_left: i64 = self.minutes_left() as i64;
 
-        let upper_bound_extra_score = self
-            .on
+        let upper_bound_extra_score = nodes
             .iter()
             .enumerate()
-            .filter_map(|(i, on)| {
-                if *on || i >= nodes.len() || nodes[i].rate == 0 {
+            .filter_map(|(i, node)| {
+                if node.valve_index.is_none() {
+                    return None;
+                }
+
+                let valve_index = node.valve_index.unwrap();
+                let bit: ValveStates = 1 << valve_index;
+                if (bit & self.encoded_on) != 0 {
                     return None;
                 }
 
@@ -147,6 +162,7 @@ impl State {
 
         for my_next_node in &my_node.paths {
             let pointless = self.move_is_pointless(
+                nodes,
                 distance_matrix,
                 self.positions.0,
                 *my_next_node,
@@ -159,6 +175,7 @@ impl State {
 
         for its_next_node in &its_node.paths {
             let pointless = self.move_is_pointless(
+                nodes,
                 distance_matrix,
                 self.positions.1,
                 *its_next_node,
@@ -178,12 +195,12 @@ impl State {
             its_possible_actions.push((self.positions.1, 0));
         }
 
-        if my_node.rate > 0 && !self.on[self.positions.0] {
+        if my_node.rate > 0 && !self.get_valve_on_at(nodes, self.positions.0) {
             let extra_score = my_node.rate * (minutes_left_to_flow_after_current_turn as i64);
             my_possible_actions.push((self.positions.0, extra_score));
         }
 
-        if its_node.rate > 0 && !self.on[self.positions.1] {
+        if its_node.rate > 0 && !self.get_valve_on_at(nodes, self.positions.1) {
             let extra_score = its_node.rate * (minutes_left_to_flow_after_current_turn as i64);
             its_possible_actions.push((self.positions.1, extra_score));
         }
@@ -202,20 +219,26 @@ impl State {
                     continue;
                 }
 
-                let mut new_on = self.on;
+                let mut new_on = self.encoded_on;
 
                 if *my_extra_score > 0 {
-                    new_on[self.positions.0] = true;
+                    let bit = (1 as ValveStates) << my_node.valve_index.unwrap();
+                    assert!((new_on & bit) == 0);
+                    new_on |= bit;
+                    assert!((new_on & bit) != 0);
                 }
 
                 if *its_extra_score > 0 {
-                    new_on[self.positions.1] = true;
+                    let bit = (1 as ValveStates) << its_node.valve_index.unwrap();
+                    assert!((new_on & bit) == 0);
+                    new_on |= bit;
+                    assert!((new_on & bit) != 0);
                 }
 
                 rv.push(State {
                     time: self.time + 1,
                     positions: (p0, p1),
-                    on: new_on,
+                    encoded_on: new_on,
                     score: self.score + my_extra_score + its_extra_score,
                     use_elephant: self.use_elephant,
                 });
@@ -254,14 +277,13 @@ fn solve(nodes: &[Node], starting_position: usize, use_elephant: bool) -> Result
 
         if iteration_count % 100_000 == 0 {
             eprintln!(
-                "Iteration {}; queue size {}, time {}, cur score {}, upper-bound: {}, max score {}; oncount {}",
+                "Iteration {}; queue size {}, time {}, cur score {}, upper-bound: {}, max score {}",
                 iteration_count,
                 q.len(),
                 state.time,
                 state.score,
                 score_upper_bound,
                 max_observed_score,
-                state.on.iter().filter(|x| **x).count(),
             );
         }
 
@@ -297,14 +319,11 @@ fn distances_from(nodes: &[Node], start: usize) -> Vec<Option<i32>> {
     visited[start] = true;
 
     while let Some((distance, index)) = q.pop_front() {
-        rv[index] = match rv[index] {
-            Some(old_distance) => Some(old_distance.min(distance)),
-            None => Some(distance),
-        };
-        visited[index] = true;
+        rv[index] = Some(distance);
 
         for next_index in &nodes[index].paths {
             if !visited[*next_index] {
+                visited[*next_index] = true;
                 q.push_back((distance + 1, *next_index));
             }
         }
@@ -340,6 +359,8 @@ fn parse_scenario(s: String) -> Result<(Vec<Node>, usize)> {
         nodes.push((rate, out));
     }
 
+    let mut current_valve_index: usize = 0;
+
     let nodes: Vec<Node> = nodes
         .iter()
         .map(|(rate, out_names)| {
@@ -348,7 +369,19 @@ fn parse_scenario(s: String) -> Result<(Vec<Node>, usize)> {
                 .iter()
                 .map(|name| *name_to_index.get(name).unwrap())
                 .collect();
-            Node { paths, rate }
+            let valve_index = if rate > 0 {
+                let vi = current_valve_index;
+                assert!(vi <= 15);
+                current_valve_index += 1;
+                Some(vi)
+            } else {
+                None
+            };
+            Node {
+                paths,
+                rate,
+                valve_index,
+            }
         })
         .collect();
 
@@ -537,6 +570,28 @@ Valve WC has flow rate=0; tunnels lead to valves OE, AA
     fn real_input_part_two() {
         // This one can be kind of slow.
         assert_eq!(run_test(REAL_INPUT, true).unwrap(), 2474);
+    }
+
+    #[test]
+    fn test_distance_map() {
+        let (nodes, _) = parse_scenario(REAL_INPUT.to_string()).unwrap();
+        let distances = distance_matrix(&nodes);
+        let n = nodes.len();
+
+        for i in 0..n {
+            assert_eq!(distances[i][i], Some(0));
+
+            for j in 0..n {
+                assert_eq!(distances[i][j], distances[j][i]);
+
+                for k in 0..n {
+                    assert!(
+                        distances[i][k].unwrap() + distances[k][j].unwrap()
+                            >= distances[i][j].unwrap()
+                    );
+                }
+            }
+        }
     }
 }
 
