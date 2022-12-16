@@ -1,6 +1,5 @@
 use regex::Regex;
 use std::collections::HashMap;
-use std::collections::HashSet;
 use std::collections::VecDeque;
 use std::io::Read;
 
@@ -193,25 +192,10 @@ impl State {
             its_possible_actions = vec![(0, 0)];
         }
 
-        let mut position_pairs: HashSet<(usize, usize)> = HashSet::new();
-
-        for (my_next_pos, _) in &my_possible_actions {
-            for (its_next_pos, _) in &its_possible_actions {
-                let p0: usize = *my_next_pos;
-                let p1: usize = *its_next_pos;
-
-                position_pairs.insert((p0, p1));
-            }
-        }
-
         for (my_next_pos, my_extra_score) in &my_possible_actions {
             for (its_next_pos, its_extra_score) in &its_possible_actions {
                 let p0: usize = *my_next_pos;
                 let p1: usize = *its_next_pos;
-
-                if p1 > p0 && position_pairs.contains(&(p1, p0)) {
-                    continue;
-                }
 
                 if p0 == p1 && *my_extra_score > 0 && *its_extra_score > 0 {
                     // We can't both flip the same valve.
@@ -259,7 +243,7 @@ fn solve(nodes: &[Node], starting_position: usize, use_elephant: bool) -> Result
     while !q.is_empty() {
         iteration_count += 1;
 
-        let state = q.pop_front().unwrap();
+        let state = q.pop_back().unwrap();
 
         max_observed_score = state.score.max(max_observed_score);
 
@@ -335,7 +319,7 @@ fn distance_matrix(nodes: &[Node]) -> Vec<Vec<Option<i32>>> {
 
 fn parse_scenario(s: String) -> Result<(Vec<Node>, usize)> {
     let re = Regex::new(
-        r"Valve (?P<name>[A-Z]+) has flow rate=(?P<rate>[0-9]+); tunnels? leads? to valves? (?P<out>[A-Z, ]+)",
+        r"Valve (?P<name>[A-Z0-9]+) has flow rate=(?P<rate>[0-9]+); tunnels? leads? to valves? (?P<out>[A-Z0-9, ]+)",
     )?;
 
     let lines: Vec<String> = s.trim().split('\n').map(|line| line.to_string()).collect();
