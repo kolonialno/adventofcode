@@ -2,6 +2,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
+use std::io::Read;
 
 type Result<T> = std::result::Result<T, anyhow::Error>;
 
@@ -13,8 +14,11 @@ struct Node {
     rate: i64,
 }
 
+type ValveStates = [bool; MAX_NODES];
+type CachedScores = [Option<i64>; MAX_NUMBER_OF_MINUTES];
+
 struct ScoreMemo {
-    memo: HashMap<((usize, usize), [bool; MAX_NODES]), [Option<i64>; MAX_NUMBER_OF_MINUTES]>,
+    memo: HashMap<((usize, usize), ValveStates), CachedScores>,
 }
 
 impl ScoreMemo {
@@ -24,7 +28,7 @@ impl ScoreMemo {
         }
     }
 
-    fn update_with_elephant(&mut self, state: &StateWithElephant) -> bool {
+    fn update(&mut self, state: &State) -> bool {
         let (p0, p1) = state.positions;
         let canonical_pos = (p0.min(p1), p0.max(p1));
         let key = (canonical_pos, state.on);
@@ -34,31 +38,9 @@ impl ScoreMemo {
             .entry(key)
             .or_insert_with(|| [None; MAX_NUMBER_OF_MINUTES]);
 
-        for t in 0..=state.time {
-            if let Some(previous_score) = value[t] {
-                if previous_score >= state.score {
-                    return false;
-                }
-            }
-        }
-
-        value[state.time] = Some(state.score);
-        true
-    }
-
-    fn update(&mut self, state: &State) -> bool {
-        let key = ((state.position, 0), state.on);
-
-        let value: &mut [Option<i64>; MAX_NUMBER_OF_MINUTES] = self
-            .memo
-            .entry(key)
-            .or_insert_with(|| [None; MAX_NUMBER_OF_MINUTES]);
-
-        for t in 0..=state.time {
-            if let Some(previous_score) = value[t] {
-                if previous_score >= state.score {
-                    return false;
-                }
+        for previous_score in value.iter().take(state.time + 1).flatten() {
+            if *previous_score >= state.score {
+                return false;
             }
         }
 
@@ -70,26 +52,20 @@ impl ScoreMemo {
 #[derive(Debug)]
 struct State {
     time: usize,
-    position: usize,
-    on: [bool; MAX_NODES],
-    score: i64,
-}
-
-#[derive(Debug)]
-struct StateWithElephant {
-    time: usize,
     positions: (usize, usize),
-    on: [bool; MAX_NODES],
+    on: ValveStates,
     score: i64,
+    use_elephant: bool,
 }
 
-impl StateWithElephant {
-    fn initial_state(starting_position: usize) -> StateWithElephant {
-        StateWithElephant {
-            time: 0,
+impl State {
+    fn initial_state(starting_position: usize, use_elephant: bool) -> State {
+        State {
+            time: if use_elephant { 4 } else { 0 },
             positions: (starting_position, starting_position),
             on: [false; MAX_NODES],
             score: 0,
+            use_elephant,
         }
     }
 
@@ -101,7 +77,7 @@ impl StateWithElephant {
         time_left: usize,
     ) -> bool {
         // This optimization doesn't actually seem to matter much.
-        let conclusion = self
+        !self
             .on
             .iter()
             .enumerate()
@@ -112,21 +88,18 @@ impl StateWithElephant {
                     None
                 }
             })
-            .filter(|i| {
-                let distance_before = distances[before][*i].unwrap();
-                let distance_after = distances[after][*i].unwrap();
+            .any(|i| {
+                let distance_before = distances[before][i].unwrap();
+                let distance_after = distances[after][i].unwrap();
                 let progress = distance_before - distance_after;
                 let max_steps_left = time_left - 1; // Also need 1min to toggle.
                 let has_enough_time = distance_before <= max_steps_left.try_into().unwrap();
                 progress > 0 && has_enough_time
             })
-            .next()
-            .is_none();
-        conclusion
     }
 
     fn minutes_left(&self) -> usize {
-        MAX_NUMBER_OF_MINUTES - (self.time + 1) - 4
+        MAX_NUMBER_OF_MINUTES - (self.time + 1)
     }
 
     fn upper_bound_for_score(&self, nodes: &[Node], distance_matrix: &[Vec<Option<i32>>]) -> i64 {
@@ -159,20 +132,16 @@ impl StateWithElephant {
         upper_bound_extra_score + self.score
     }
 
-    fn next_states(
-        &self,
-        nodes: &[Node],
-        distance_matrix: &[Vec<Option<i32>>],
-    ) -> Vec<StateWithElephant> {
+    fn next_states(&self, nodes: &[Node], distance_matrix: &[Vec<Option<i32>>]) -> Vec<State> {
         assert!(nodes.len() <= MAX_NODES);
         assert!(self.time < MAX_NUMBER_OF_MINUTES);
 
         let my_node = &nodes[self.positions.0];
         let its_node = &nodes[self.positions.1];
 
-        let minutes_left_to_flow_after_current_turn = MAX_NUMBER_OF_MINUTES - (self.time + 1) - 4;
+        let minutes_left_to_flow_after_current_turn = MAX_NUMBER_OF_MINUTES - (self.time + 1);
 
-        let mut rv: Vec<StateWithElephant> = Vec::new();
+        let mut rv: Vec<State> = Vec::new();
 
         let mut my_possible_actions: Vec<(usize, i64)> = Vec::new();
         let mut its_possible_actions: Vec<(usize, i64)> = Vec::new();
@@ -220,6 +189,10 @@ impl StateWithElephant {
             its_possible_actions.push((self.positions.1, extra_score));
         }
 
+        if !self.use_elephant {
+            its_possible_actions = vec![(0, 0)];
+        }
+
         let mut position_pairs: HashSet<(usize, usize)> = HashSet::new();
 
         for (my_next_pos, _) in &my_possible_actions {
@@ -255,11 +228,12 @@ impl StateWithElephant {
                     new_on[self.positions.1] = true;
                 }
 
-                rv.push(StateWithElephant {
+                rv.push(State {
                     time: self.time + 1,
                     positions: (p0, p1),
                     on: new_on,
                     score: self.score + my_extra_score + its_extra_score,
+                    use_elephant: self.use_elephant,
                 });
             }
         }
@@ -268,91 +242,7 @@ impl StateWithElephant {
     }
 }
 
-impl State {
-    fn initial_state(starting_position: usize) -> State {
-        State {
-            time: 0,
-            position: starting_position,
-            on: [false; MAX_NODES],
-            score: 0,
-        }
-    }
-
-    fn next_states(&self, nodes: &[Node]) -> Vec<State> {
-        assert!(nodes.len() <= MAX_NODES);
-        assert!(self.time < MAX_NUMBER_OF_MINUTES);
-
-        let node = &nodes[self.position];
-
-        let mut rv: Vec<State> = Vec::new();
-
-        // Move
-        for next_node in &node.paths {
-            rv.push(State {
-                time: self.time + 1,
-                position: *next_node,
-                on: self.on,
-                score: self.score,
-            });
-        }
-
-        if node.rate > 0 && !self.on[self.position] {
-            // Turn on
-            let mut new_on = self.on;
-            new_on[self.position] = true;
-
-            let minutes_left = MAX_NUMBER_OF_MINUTES - (self.time + 1);
-            let extra_score = node.rate * (minutes_left as i64);
-
-            rv.push(State {
-                time: self.time + 1,
-                position: self.position,
-                on: new_on,
-                score: self.score + extra_score,
-            });
-        }
-
-        rv
-    }
-}
-
-fn solve_part_one(nodes: &[Node], starting_position: usize, time_limit: usize) -> Result<i64> {
-    let mut iteration_count: u64 = 0;
-
-    let mut max_score: i64 = 0;
-
-    let mut memo = ScoreMemo::new();
-
-    let mut q = VecDeque::new();
-    q.push_back(State::initial_state(starting_position));
-
-    while !q.is_empty() {
-        iteration_count += 1;
-
-        let state = q.pop_front().unwrap();
-        max_score = state.score.max(max_score);
-
-        if state.time >= (time_limit - 1) {
-            continue;
-        }
-
-        for new_state in state.next_states(nodes) {
-            if memo.update(&new_state) {
-                q.push_back(new_state);
-            }
-        }
-    }
-
-    println!("Done after {} iterations.", iteration_count);
-    println!(
-        "Max score (without elephant) after {} minutes: {}",
-        time_limit, max_score
-    );
-
-    Ok(max_score)
-}
-
-fn solve_part_two(nodes: &[Node], starting_position: usize, time_limit: usize) -> Result<i64> {
+fn solve(nodes: &[Node], starting_position: usize, use_elephant: bool) -> Result<i64> {
     let distances = distance_matrix(nodes);
 
     let mut iteration_count: u64 = 0;
@@ -362,7 +252,9 @@ fn solve_part_two(nodes: &[Node], starting_position: usize, time_limit: usize) -
     let mut memo = ScoreMemo::new();
 
     let mut q = VecDeque::new();
-    q.push_back(StateWithElephant::initial_state(starting_position));
+    q.push_back(State::initial_state(starting_position, use_elephant));
+
+    let starting_time = q[0].time;
 
     while !q.is_empty() {
         iteration_count += 1;
@@ -389,21 +281,23 @@ fn solve_part_two(nodes: &[Node], starting_position: usize, time_limit: usize) -
             );
         }
 
-        if state.time >= (time_limit - 1) {
+        if state.time >= (MAX_NUMBER_OF_MINUTES - 1) {
             continue;
         }
 
         for new_state in state.next_states(nodes, &distances) {
-            if memo.update_with_elephant(&new_state) {
+            if memo.update(&new_state) {
                 q.push_back(new_state);
             }
         }
     }
 
-    println!("Done after {} iterations.", iteration_count);
-    println!(
-        "Max score (with elephant) after {} minutes: {}",
-        time_limit, max_observed_score
+    eprintln!("Done after {} iterations.", iteration_count);
+    eprintln!(
+        "Max score (with elephant? {}) after {} minutes: {}",
+        use_elephant,
+        MAX_NUMBER_OF_MINUTES - starting_time,
+        max_observed_score
     );
 
     Ok(max_observed_score)
@@ -439,16 +333,17 @@ fn distance_matrix(nodes: &[Node]) -> Vec<Vec<Option<i32>>> {
     (0..nodes.len()).map(|i| distances_from(nodes, i)).collect()
 }
 
-fn main() -> Result<()> {
+fn parse_scenario(s: String) -> Result<(Vec<Node>, usize)> {
     let re = Regex::new(
         r"Valve (?P<name>[A-Z]+) has flow rate=(?P<rate>[0-9]+); tunnels? leads? to valves? (?P<out>[A-Z, ]+)",
     )?;
 
+    let lines: Vec<String> = s.trim().split('\n').map(|line| line.to_string()).collect();
+
     let mut name_to_index: HashMap<String, usize> = HashMap::new();
     let mut nodes: Vec<(i64, Vec<String>)> = Vec::new();
 
-    for line in std::io::stdin().lines() {
-        let line = line?;
+    for line in lines {
         let captures = re.captures(line.trim()).unwrap();
         let name: String = captures["name"].to_string();
         let rate: i64 = captures["rate"].parse().unwrap();
@@ -475,11 +370,206 @@ fn main() -> Result<()> {
 
     let starting_position: usize = name_to_index["AA"];
 
-    println!("AA = {}", starting_position);
+    Ok((nodes, starting_position))
+}
 
-    solve_part_one(&nodes, starting_position, 30)?;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    solve_part_two(&nodes, starting_position, 26)?;
+    fn run_test(s: &str, with_elephant: bool) -> Result<i64> {
+        let (nodes, starting_position) = parse_scenario(s.to_string())?;
+        solve(&nodes, starting_position, with_elephant)
+    }
+
+    #[test]
+    fn simple_scenario_with_elephants() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=10; tunnels lead to valves BB, CC
+Valve BB has flow rate=100; tunnels lead to valves AA
+Valve CC has flow rate=100; tunnels lead to valves AA
+"#,
+                true
+            )
+            .unwrap(),
+            5020,
+        );
+    }
+
+    #[test]
+    fn simple_scenario_without_elephants() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=10; tunnels lead to valves BB, CC
+Valve BB has flow rate=100; tunnels lead to valves AA
+Valve CC has flow rate=100; tunnels lead to valves AA
+"#,
+                false
+            )
+            .unwrap(),
+            5530,
+        );
+    }
+
+    #[test]
+    fn trivial_scenario() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=1; tunnels lead to valves BB
+Valve BB has flow rate=0; tunnels lead to valves AA
+"#,
+                false
+            )
+            .unwrap(),
+            29,
+        );
+    }
+
+    #[test]
+    fn trivial_scenario_with_elephant() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=1; tunnels lead to valves BB
+Valve BB has flow rate=0; tunnels lead to valves AA
+"#,
+                true
+            )
+            .unwrap(),
+            25,
+        );
+    }
+
+    #[test]
+    fn scenario_from_question_text_part_one() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+Valve BB has flow rate=13; tunnels lead to valves CC, AA
+Valve CC has flow rate=2; tunnels lead to valves DD, BB
+Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+Valve EE has flow rate=3; tunnels lead to valves FF, DD
+Valve FF has flow rate=0; tunnels lead to valves EE, GG
+Valve GG has flow rate=0; tunnels lead to valves FF, HH
+Valve HH has flow rate=22; tunnel leads to valve GG
+Valve II has flow rate=0; tunnels lead to valves AA, JJ
+Valve JJ has flow rate=21; tunnel leads to valve II
+"#,
+                false
+            )
+            .unwrap(),
+            1651,
+        );
+    }
+
+    #[test]
+    fn scenario_from_question_text_part_two() {
+        assert_eq!(
+            run_test(
+                r#"
+Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+Valve BB has flow rate=13; tunnels lead to valves CC, AA
+Valve CC has flow rate=2; tunnels lead to valves DD, BB
+Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+Valve EE has flow rate=3; tunnels lead to valves FF, DD
+Valve FF has flow rate=0; tunnels lead to valves EE, GG
+Valve GG has flow rate=0; tunnels lead to valves FF, HH
+Valve HH has flow rate=22; tunnel leads to valve GG
+Valve II has flow rate=0; tunnels lead to valves AA, JJ
+Valve JJ has flow rate=21; tunnel leads to valve II
+"#,
+                true
+            )
+            .unwrap(),
+            1707,
+        );
+    }
+
+    const REAL_INPUT: &str = r#"
+Valve JC has flow rate=0; tunnels lead to valves XS, XK
+Valve TK has flow rate=0; tunnels lead to valves AA, RA
+Valve PY has flow rate=0; tunnels lead to valves UB, MW
+Valve XK has flow rate=15; tunnels lead to valves CD, JC, TP, UE
+Valve EI has flow rate=6; tunnels lead to valves UB, HD
+Valve OV has flow rate=0; tunnels lead to valves QC, WK
+Valve CX has flow rate=3; tunnels lead to valves ZN, AM, OE, YS, QE
+Valve YS has flow rate=0; tunnels lead to valves QC, CX
+Valve DC has flow rate=0; tunnels lead to valves UE, NM
+Valve EA has flow rate=5; tunnels lead to valves QE, XO, GX
+Valve VE has flow rate=0; tunnels lead to valves YH, NM
+Valve RN has flow rate=0; tunnels lead to valves WK, NU
+Valve VJ has flow rate=0; tunnels lead to valves QC, CS
+Valve HD has flow rate=0; tunnels lead to valves JI, EI
+Valve UB has flow rate=0; tunnels lead to valves EI, PY
+Valve XS has flow rate=17; tunnels lead to valves JC, CE
+Valve AM has flow rate=0; tunnels lead to valves NU, CX
+Valve GX has flow rate=0; tunnels lead to valves EA, RA
+Valve UI has flow rate=0; tunnels lead to valves NC, ZG
+Valve NM has flow rate=22; tunnels lead to valves DC, VE, DX
+Valve CE has flow rate=0; tunnels lead to valves XS, WD
+Valve NC has flow rate=25; tunnels lead to valves UI, VQ
+Valve TP has flow rate=0; tunnels lead to valves XK, RA
+Valve ZN has flow rate=0; tunnels lead to valves CX, XI
+Valve CS has flow rate=0; tunnels lead to valves AA, VJ
+Valve MW has flow rate=23; tunnel leads to valve PY
+Valve AA has flow rate=0; tunnels lead to valves TK, WC, CS, AL, MS
+Valve RA has flow rate=4; tunnels lead to valves WD, TP, TK, GX, JI
+Valve NU has flow rate=10; tunnels lead to valves DU, AM, RN, HS, AL
+Valve QE has flow rate=0; tunnels lead to valves CX, EA
+Valve AH has flow rate=0; tunnels lead to valves WK, MS
+Valve YH has flow rate=20; tunnels lead to valves VE, CD
+Valve SH has flow rate=0; tunnels lead to valves DU, ZG
+Valve OE has flow rate=0; tunnels lead to valves WC, CX
+Valve XO has flow rate=0; tunnels lead to valves EA, ZG
+Valve JI has flow rate=0; tunnels lead to valves RA, HD
+Valve XI has flow rate=0; tunnels lead to valves WK, ZN
+Valve HS has flow rate=0; tunnels lead to valves QC, NU
+Valve VQ has flow rate=0; tunnels lead to valves WK, NC
+Valve UE has flow rate=0; tunnels lead to valves XK, DC
+Valve YP has flow rate=19; tunnel leads to valve DX
+Valve WD has flow rate=0; tunnels lead to valves CE, RA
+Valve DX has flow rate=0; tunnels lead to valves NM, YP
+Valve ZG has flow rate=11; tunnels lead to valves UI, SH, XO
+Valve MS has flow rate=0; tunnels lead to valves AA, AH
+Valve QC has flow rate=9; tunnels lead to valves HS, VJ, OV, YS
+Valve DU has flow rate=0; tunnels lead to valves NU, SH
+Valve WK has flow rate=12; tunnels lead to valves RN, XI, VQ, OV, AH
+Valve CD has flow rate=0; tunnels lead to valves YH, XK
+Valve AL has flow rate=0; tunnels lead to valves AA, NU
+Valve WC has flow rate=0; tunnels lead to valves OE, AA
+"#;
+
+    #[test]
+    fn real_input_part_one() {
+        assert_eq!(run_test(REAL_INPUT, false).unwrap(), 1754);
+    }
+
+    #[test]
+    fn real_input_part_two() {
+        // This one can be kind of slow.
+        assert_eq!(run_test(REAL_INPUT, true).unwrap(), 2474);
+    }
+}
+
+fn main() -> Result<()> {
+    let mut s = String::new();
+    std::io::stdin().read_to_string(&mut s)?;
+
+    let (nodes, starting_position) = parse_scenario(s)?;
+
+    println!(
+        "Answer to first question: {}",
+        solve(&nodes, starting_position, false)?
+    );
+    println!(
+        "Answer to second question: {}",
+        solve(&nodes, starting_position, true)?
+    );
 
     Ok(())
 }
