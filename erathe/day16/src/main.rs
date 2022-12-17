@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet, VecDeque},
-    str::FromStr,
-};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 use regex::{Captures, Regex};
 
@@ -13,6 +10,73 @@ lazy_static! {
 }
 
 fn main() {
+    println!("part 1: {:?}", part1());
+    println!("part 2: {:?}", part2());
+}
+
+fn part2() -> i32 {
+    let mut cave = Cave::default();
+    include_str!("../input.txt")
+        .lines()
+        .for_each(|l| parse_valve(l, &mut cave));
+
+    let start = cave.get_or_insert(String::from("AA"));
+
+    // precalc all paths between rooms with valves;
+    cave.generate_distances(start);
+
+    let mut all: Vec<(i32, HashSet<usize>)> = Vec::new();
+    let visited: HashSet<usize> = HashSet::new();
+    dfs_2(&mut cave, start, 0, 26, visited, &mut all);
+    let mut b_pairs = vec![];
+    println!("{:?}", all.len());
+    for (idx, (steam, set)) in all.clone().iter().enumerate() {
+        if idx % 100 == 0 {
+            println!("{idx}");
+        }
+        let mut best_pair = 0;
+        all.iter().for_each(|(steam2, set2)| {
+            if set.is_disjoint(set2) {
+                best_pair = best_pair.max(steam + steam2);
+            }
+        });
+        b_pairs.push(best_pair);
+    }
+
+    b_pairs.into_iter().max().unwrap()
+}
+
+fn dfs_2(
+    cave: &Cave,
+    point: usize,
+    mut steam: i32,
+    mut m_left: i32,
+    mut visited: HashSet<usize>,
+    all: &mut Vec<(i32, HashSet<usize>)>,
+) {
+    // out of time push and quit.
+    if m_left <= 0 {
+        all.push((steam, visited));
+        return;
+    }
+
+    if cave.rooms_with_flow.contains(&point) {
+        visited.insert(point);
+        m_left -= 1;
+        steam += m_left * cave.arena[point].flow_rate;
+        if cave.all_valves_activated(&visited) {
+            all.push((steam, visited));
+            return;
+        }
+    }
+
+    for target in cave.valid_targets(&visited) {
+        let path = cave.distances.get(&(point, target)).unwrap();
+        dfs_2(cave, target, steam, m_left - path, visited.clone(), all);
+    }
+}
+
+fn part1() -> i32 {
     let mut cave = Cave::default();
     include_str!("../input-test.txt")
         .lines()
@@ -26,16 +90,16 @@ fn main() {
     let mut all: Vec<i32> = Vec::new();
     let visited: HashSet<usize> = HashSet::new();
     dfs(&mut cave, start, 0, 30, visited, &mut all);
-    println!("part 1: {:?}", all.iter().max().unwrap());
+    all.into_iter().max().unwrap()
 }
 
-fn dfs<'a>(
+fn dfs(
     cave: &Cave,
     point: usize,
     mut steam: i32,
     mut m_left: i32,
     mut visited: HashSet<usize>,
-    all: &'a mut Vec<i32>,
+    all: &mut Vec<i32>,
 ) {
     // out of time push and quit.
     if m_left <= 0 {
