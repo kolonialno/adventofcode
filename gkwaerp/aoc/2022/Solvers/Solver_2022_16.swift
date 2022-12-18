@@ -39,9 +39,6 @@ class Solver_2022_16: Solver {
     }
 
     class PressureSolver {
-        /// For progress % visualization
-        private let solver: Solver?
-
         /// Valve name --> Travel cost
         typealias PathDistanceMap = [String: Int]
 
@@ -52,7 +49,7 @@ class Solver_2022_16: Solver {
         /// `Set` because we don't really care about the order, just that the valves visited don't overlap between human and elephant
         private var validPaths: [Set<Valve>: Int] = [:]
 
-        init(strings: [String], solver: Solver? = nil) {
+        init(strings: [String]) {
             let valves = strings.map { Valve(string: $0) }
 
             let nodes: [AStarNode<String>] = valves.map { AStarNode(identifier: $0.name) }
@@ -76,7 +73,6 @@ class Solver_2022_16: Solver {
                 pathMap[valve.name] = pathDistanceMap
             }
 
-            self.solver = solver
             self.valves = valves
             self.pathMap = pathMap
         }
@@ -152,20 +148,16 @@ class Solver_2022_16: Solver {
 
             if withElephantAssistance {
                 var best = 0
-                for (index, humanPath) in validPaths.enumerated() {
-                    if index.isMultiple(of: 100) {
-                        solver?.visualizeCurrentPart(text: "\(index * 100 / validPaths.count) %")
-                    }
-
+                for humanPath in validPaths {
                     let humanSet = humanPath.key
                     for elephantPath in validPaths {
                         let elephantSet = elephantPath.key
-                        if humanSet.isDisjoint(with: elephantSet) {
-                            best = max(best, humanPath.value + elephantPath.value)
+                        let totalScore = humanPath.value + elephantPath.value
+                        if best < totalScore, humanSet.isDisjoint(with: elephantSet) {
+                            best = totalScore
                         }
                     }
                 }
-                solver?.visualizeCurrentPart(text: "🐘🐘🐘 100 % 🐘🐘🐘")
                 return best
             } else {
                 return dfsResult
@@ -176,7 +168,7 @@ class Solver_2022_16: Solver {
     private var pressureSolver: PressureSolver!
     override func didLoadFunction() {
         let input = defaultInputFileString.loadAsTextStringArray()
-        pressureSolver = PressureSolver(strings: input, solver: self)
+        pressureSolver = PressureSolver(strings: input)
     }
 
     override func solveFunction1() -> String {
