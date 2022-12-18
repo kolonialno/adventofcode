@@ -1,52 +1,65 @@
-with open("input.txt") as f:
-    data = [
-        tuple([int(c) for c in l.strip().split(",")]) for l in f.read().splitlines()
+from typing_extensions import TypeAlias
+from operator import add
+
+
+Cube: TypeAlias = tuple[int, int, int]
+
+
+RELATIVE_NEIGHBOUR_CUBES = [
+    (1, 0, 0),
+    (-1, 0, 0),
+    (0, 1, 0),
+    (0, -1, 0),
+    (0, 0, 1),
+    (0, 0, -1),
+]
+
+LOWER_BOUND = -1
+UPPER_BOUND = 21
+
+
+def get_neighbouring_cubes(cube: Cube) -> list[Cube]:
+    return [
+        c
+        for c in [tuple(map(add, cube, rnc)) for rnc in RELATIVE_NEIGHBOUR_CUBES]
+        if (max(c) <= UPPER_BOUND and min(c) >= LOWER_BOUND)
     ]
 
 
-def get_neighbouring_cubes(cube):
-
-    neighbour_cubes = []
-    for x, y, z in [
-        (1, 0, 0),
-        (-1, 0, 0),
-        (0, 1, 0),
-        (0, -1, 0),
-        (0, 0, 1),
-        (0, 0, -1),
-    ]:
-        neighbour_cube = tuple([cube[0] + x, cube[1] + y, cube[2] + z])
-        neighbour_cubes.append(neighbour_cube)
-
-    return neighbour_cubes
+def get_sides_covered(cubes: set[Cube], cube: Cube) -> int:
+    return sum([1 for nc in get_neighbouring_cubes(cube) if nc in cubes])
 
 
-total_sides_exposed = 0
-for cube in data:
-    sides_covered = 0
-    neighbour_cubes = get_neighbouring_cubes(cube)
-    for neighbour_cube in neighbour_cubes:
-        if neighbour_cube in data:
-            sides_covered += 1
-    total_sides_exposed += 6 - sides_covered
+def get_total_sides_exposed(cubes: set[Cube]) -> int:
+    return sum([6 - get_sides_covered(cubes, cube) for cube in cubes])
 
 
-print(total_sides_exposed)
+def get_total_sides_exposed_to_air(cubes: set[Cube]) -> int:
 
-starting_point = (0, 0, 0)
-cubes_to_visit = set([starting_point])
-visited_cubes = set()
+    starting_point: Cube = (0, 0, 0)
+    cubes_to_visit: set[Cube] = set([starting_point])
+    cubes_visited: set[Cube] = set()
 
-total_exposed_sides = 0
-while len(cubes_to_visit) > 0:
-    cube = cubes_to_visit.pop()
-    visited_cubes.add(cube)
-    neighbour_cubes = get_neighbouring_cubes(cube)
-    for neighbour_cube in neighbour_cubes:
-        if max(neighbour_cube) <= 21 and min(neighbour_cube) >= -1:
-            if neighbour_cube in data:
-                total_exposed_sides += 1
-            elif not neighbour_cube in visited_cubes:
-                cubes_to_visit.add(neighbour_cube)
+    total_sides_exposed_to_air = 0
+    while len(cubes_to_visit) > 0:
+        cube = cubes_to_visit.pop()
+        cubes_visited.add(cube)
+        neighbour_cubes = get_neighbouring_cubes(cube)
+        total_sides_exposed_to_air += sum(
+            [
+                1
+                if (nc in cubes)
+                else (0 if nc in cubes_visited else int(bool(cubes_to_visit.add(nc))))
+                for nc in neighbour_cubes
+            ]
+        )
+    return total_sides_exposed_to_air
 
-print(total_exposed_sides)
+
+with open("input.txt") as f:
+    cubes: set[Cube] = set(
+        [tuple([int(c) for c in l.strip().split(",")]) for l in f.read().splitlines()]
+    )
+
+print(get_total_sides_exposed(cubes))
+print(get_total_sides_exposed_to_air(cubes))
