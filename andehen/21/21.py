@@ -39,9 +39,7 @@ with open("input.txt") as f:
 
 print(eval_monkey(monkeys, "root"))
 
-# Part two
 rhs, _, lhs = monkeys["root"].split()
-print(sympy.simplify(get_equation(monkeys, rhs)))
-print(sympy.simplify(get_equation(monkeys, lhs)))
-
-# Solved it manually :)
+rhs_eq = sympy.simplify(get_equation(monkeys, rhs))
+lhs_eq = sympy.simplify(get_equation(monkeys, lhs))
+print(sympy.solve(rhs_eq - lhs_eq)[0])
