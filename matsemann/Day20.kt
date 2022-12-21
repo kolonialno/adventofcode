@@ -11,8 +11,8 @@ fun day20_1(lines: List<String>): Any {
 
     nums.forEach { num ->
         val currentPos = result.indexOf(num)
-        var newPos = (num.second + currentPos) % (size -1)
-        while (newPos < 1) {
+        var newPos = (num.second + currentPos).mod(size - 1)
+        if (newPos < 1) {
             newPos += size - 1
         }
         result.removeAt(currentPos)
@@ -21,10 +21,7 @@ fun day20_1(lines: List<String>): Any {
     }
 
     val indexOfZero = result.indexOfFirst { it.second == 0 }
-
-    return (result[result.negativeIndex(indexOfZero+1000)].second
-            + result[result.negativeIndex(indexOfZero+2000)].second
-            + result[result.negativeIndex(indexOfZero+3000)].second)
+    return (0..3).sumOf { result.circular(indexOfZero + it*1000).second }
 
 }
 
@@ -37,23 +34,17 @@ fun day20_2(lines: List<String>): Any {
     repeat(10) {
         nums.forEach { num ->
             val currentPos = result.indexOf(num)
-            var newPos = (num.second + currentPos) % (size - 1)
-            while (newPos < 1) {
+            var newPos = (num.second + currentPos).mod(size - 1)
+            if (newPos < 1) {
                 newPos += size - 1
             }
             result.removeAt(currentPos)
-            result.add(newPos.toInt(), num)
-
+            result.add(newPos, num)
         }
     }
 
     val indexOfZero = result.indexOfFirst { it.second == 0L }
-
-
-    val second = result[result.negativeIndex(indexOfZero + 1000)].second
-    return (second
-            + result[result.negativeIndex(indexOfZero+2000)].second
-            + result[result.negativeIndex(indexOfZero+3000)].second)
+    return (0..3).sumOf { result.circular(indexOfZero + it*1000).second }
 }
 
 fun main() {
