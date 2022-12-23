@@ -103,13 +103,8 @@ fn drop_block(
 
         let mut is_blocked = false;
         block.indexed_for_each(|(dx, dy), v| {
-            if *v != '.' {
-                if match map.at((x + dx + ddx, y + dy + ddy)) {
-                    Some('.') => false,
-                    _ => true,
-                } {
-                    is_blocked = true;
-                }
+            if *v != '.' && !matches!(map.at((x + dx + ddx, y + dy + ddy)), Some('.')) {
+                is_blocked = true;
             }
         });
         if !is_blocked {
@@ -121,13 +116,8 @@ fn drop_block(
         let (ddx, ddy) = (0, 1);
         let mut is_blocked = false;
         block.indexed_for_each(|(dx, dy), v| {
-            if *v != '.' {
-                if match map.at((x + dx + ddx, y + dy + ddy)) {
-                    Some('.') => false,
-                    _ => true,
-                } {
-                    is_blocked = true;
-                }
+            if *v != '.' && !matches!(map.at((x + dx + ddx, y + dy + ddy)), Some('.')) {
+                is_blocked = true;
             }
         });
         if !is_blocked {
@@ -160,7 +150,7 @@ fn drop_block(
     let new_tower_height = map.number_of_rows - new_max_y;
     let new_tower_height = new_tower_height.max(tower_height);
 
-    return Ok((new_tower_height, full_row));
+    Ok((new_tower_height, full_row))
 }
 
 fn scan_top(map: &Map<char>, tower_height: i32) -> Option<(u128, bool)> {
@@ -218,7 +208,7 @@ fn main() -> Result<()> {
     std::io::stdin().read_to_string(&mut buffer)?;
     let jets: Vec<char> = buffer.trim().chars().collect();
 
-    for require_full_row in vec![true, false] {
+    for require_full_row in &[true, false] {
         let mut map: Map<char> = Map::new(7, 1_000_000, &'.');
         let mut tower_height = 0;
         let mut jet_index = 0;
@@ -236,7 +226,7 @@ fn main() -> Result<()> {
 
             let block = &blocks[(blocks_dropped as usize) % blocks.len()];
             let (new_tower_height, _) =
-                drop_block(&mut map, &block, &jets, &mut jet_index, tower_height)?;
+                drop_block(&mut map, block, &jets, &mut jet_index, tower_height)?;
             tower_height = new_tower_height;
 
             if tower_height > (map.number_of_rows - 5) {
@@ -254,7 +244,7 @@ fn main() -> Result<()> {
 
             if !found_answer_two {
                 if let Some((shape, has_full_row)) = scan_top(&map, tower_height) {
-                    if require_full_row && !has_full_row {
+                    if *require_full_row && !has_full_row {
                         continue;
                     }
 

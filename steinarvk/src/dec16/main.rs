@@ -118,9 +118,7 @@ impl State {
             .iter()
             .enumerate()
             .filter_map(|(i, node)| {
-                if node.valve_index.is_none() {
-                    return None;
-                }
+                node.valve_index?;
 
                 let valve_index = node.valve_index.unwrap();
                 let bit: ValveStates = 1 << valve_index;
