@@ -26,7 +26,7 @@ class IntPoint: Equatable, Hashable {
             fatalError("Invalid east/west, only 1 can be set.")
         }
 
-        self.x = east != 0 ? east : west
+        self.x = east != 0 ? east : -west
         self.y = north != 0 ? -north : south
     }
 
