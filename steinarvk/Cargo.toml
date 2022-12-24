@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.66"
 itertools = "0.10.5"
+priority-queue = "1.3.0"
 rand = "0.8.5"
 regex = "1.7.0"
 
@@ -102,3 +103,7 @@ path = "src/dec22/main.rs"
 [[bin]]
 name = "dec23"
 path = "src/dec23/main.rs"
+
+[[bin]]
+name = "dec24"
+path = "src/dec24/main.rs"
