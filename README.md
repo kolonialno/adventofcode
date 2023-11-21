@@ -1,25 +1,25 @@
 # Advent Of Code
 
-A free-for-all repository for anyone who wants to participate in the advent of code christmas
-calendar challenges.
+A free-for-all repository for anyone who wants to participate in the advent of
+code christmas calendar challenges.
 
-[Advent of Code](https://adventofcode.com) is an advent calendar for nerds where a programming
-puzzle is posted each day during December 1-25. All puzzles have some input that is
-personalized for each user, so you'll have to log in there using your public Github, Google,
-Twitter or Reddit account.
+[Advent of Code](https://adventofcode.com) is an advent calendar for nerds
+where a programming puzzle is posted each day during December 1-25. All puzzles
+have some input that is personalized for each user, so you'll have to log in
+there using your public Github, Google, Twitter or Reddit account.
 
 ## Access to this repo
 
-**NOTE:** This repo is (intentionally) public, so it is readable by anyone.
+The repo should be writable by anyone who is a member of the `kolonialno`
+github org. If you don't have access and believe you should have, please ask in
+the `#adventofcode` slack channel.
 
-- If you don't have write access to this repo already, then go
-  [here](https://github.com/orgs/kolonialno/teams/adventofcodeteam) and request access to the
-  adventofcode team
+**NOTE:** This repo is (intentionally) public, so it is readable by anyone.
 
 ## Setup
 
-- Make a top-level folder for yourself (or for your group if you've decided to try and solve as
-  a group)
+- Make a top-level folder for yourself (or for your group if you've decided to
+  try and solve as a group)
 - Do as you will in there
 
 ## Manifesto
@@ -45,6 +45,7 @@ Twitter or Reddit account.
 
 ## Suggestion
 
-- Mark your commit messages with something that might be useful for you if you want to easily
-  search them
-- Take a chance to learn that language you've wanted to dabble in this whole time :)
+- Mark your commit messages with something that might be useful for you if you
+  want to easily search them
+- Take a chance to learn that language you've wanted to dabble in this whole
+  time :)
