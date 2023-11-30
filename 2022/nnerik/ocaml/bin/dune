@@ -1,0 +1,4 @@
+(executable
+ (public_name advent_2022)
+ (name advent)
+ (libraries core lib stdio str))

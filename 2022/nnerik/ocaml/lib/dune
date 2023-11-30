@@ -1,0 +1,4 @@
+(library
+ (name lib)
+ (modules Solver Dummy_solver Day01 Day02)
+ (libraries core str))

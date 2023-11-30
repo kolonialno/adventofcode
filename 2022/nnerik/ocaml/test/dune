@@ -1,0 +1,5 @@
+(tests
+ (names test_day_01 test_day_02)
+ (deps
+  (glob_files samples/*))
+ (libraries core lib ounit2))
