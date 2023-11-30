@@ -1,0 +1,14 @@
+(lang dune 3.11)
+
+(name advent_2023)
+
+(generate_opam_files true)
+
+(authors "Erik Haugan")
+
+(package
+ (name advent_2023)
+ (synopsis "Advent of code 2023")
+ (depends ocaml dune))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
