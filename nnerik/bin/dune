@@ -1,4 +1,4 @@
 (executable
- (public_name advent_2022)
+ (public_name advent_2023)
  (name advent)
  (libraries core lib stdio str))
