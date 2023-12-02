@@ -15,22 +15,22 @@ let () = Arg.parse speclist (fun s -> input_file := s) usage_msg
 let day =
   if String.equal !input_file "" then (
     Stdio.print_endline "No input file specified!";
-    Stdlib.exit 0);
+    exit 0);
   try
     let _ = Str.search_forward (Str.regexp {|[0-9]+|}) !input_file 0 in
     Str.matched_group 0 !input_file
   with Stdlib.Not_found ->
     Stdio.print_endline "File name must conatin a day number!";
-    Stdlib.exit 0
+    exit 0
 
 (* Get the part number from arguments *)
 let part =
   if not (!part_1 || !part_2) then (
     Stdio.print_endline "No part specified!";
-    Stdlib.exit 0);
+    exit 0);
   if !part_1 && !part_2 then (
     Stdio.print_endline "Too many parts specified!";
-    Stdlib.exit 0);
+    exit 0);
   if !part_1 then 1 else 2
 
 (* Get the solver function *)
@@ -38,6 +38,7 @@ let solver =
   let (module S) : (module SolverType) =
     match day with
     | "01" -> (module Lib.Day01)
+    | "02" -> (module Lib.Day02)
     | _ -> (module Lib.Dummy_solver)
   in
   match part with
@@ -45,7 +46,7 @@ let solver =
   | _ -> S.solver2
 
 let () =
-  Stdlib.print_endline ("Day " ^ day ^ " part " ^ Int.to_string part);
+  Stdio.print_endline ("Day " ^ day ^ " part " ^ Int.to_string part);
   let input = In_channel.read_all !input_file in
   let start_time = Time_float.now () in
   let result = solver input in
