@@ -27,7 +27,7 @@ def findDigits1(s: String) =
 def findDigits2(s: String): IndexedSeq[Int] =
     s.scanRight("") { case (c, s) => c.toString + s}.flatMap(toDigit)
 
-@main def calories =
+@main def calibration =
     val input = Source.fromFile("input.txt").getLines.toVector
 
     val part1 = input.map(findDigits1)
