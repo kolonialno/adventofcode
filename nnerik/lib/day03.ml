@@ -36,14 +36,14 @@ let find_numbers input =
                   List.fold l ~init:0 ~f:(fun acc (c, _, _) ->
                       (acc * 10) + Char.to_int c - Char.to_int '0')
                 in
-                Number (n, Point (x1, y1), Point (x2, y2))))
+                Number (n, Point (x1 - 1, y1 - 1), Point (x2 + 1, y2 + 1))))
   |> List.concat
 
-let part_number_value symbols (Number (n, Point (x1, y1), Point (x2, y2))) =
-  match
-    List.exists symbols ~f:(fun (Symbol (_, Point (x, y))) ->
-        x >= x1 - 1 && x <= x2 + 1 && y >= y1 - 1 && y <= y2 + 1)
-  with
+let within (Point (x1, y1), Point (x2, y2)) (Point (x, y)) =
+  x >= x1 && x <= x2 && y >= y1 && y <= y2
+
+let part_number_value symbols (Number (n, p1, p2)) =
+  match List.exists symbols ~f:(fun (Symbol (_, p)) -> within (p1, p2) p) with
   | true -> n
   | false -> 0
 
@@ -54,9 +54,8 @@ let solver1 input =
   |> List.fold ~init:0 ~f:( + )
   |> Int.to_string
 
-let get_part_numbers numbers (Symbol (_, Point (x, y))) =
-  List.filter numbers ~f:(fun (Number (_, Point (x1, y1), Point (x2, y2))) ->
-      x >= x1 - 1 && x <= x2 + 1 && y >= y1 - 1 && y <= y2 + 1)
+let get_part_numbers numbers (Symbol (_, p)) =
+  List.filter numbers ~f:(fun (Number (_, p1, p2)) -> within (p1, p2) p)
 
 let gear_ratio = function
   | [ Number (n1, _, _); Number (n2, _, _) ] -> n1 * n2
