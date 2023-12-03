@@ -4,12 +4,16 @@ import ren.iamka.aoc23.readLines
 
 fun main() {
     parse {
-        getValidNumbers()
+        println(getValidNumbersPart1())
+    }
+
+    parse(part2 = true) {
+        println(getGearRatiosPart2())
     }
 }
 
 
-private fun parse(operation: List<EngineSchematicLine>.() -> Unit) {
+private fun parse(part2: Boolean = false, operation: List<EngineSchematicLine>.() -> Unit) {
     return "/day3/data.txt".readLines {
         map { line ->
             var currentNumberString = ""
@@ -27,7 +31,7 @@ private fun parse(operation: List<EngineSchematicLine>.() -> Unit) {
                     currentNumberString = ""
                 }
                 // symbol found
-                if (char.isSymbol()) {
+                if ((!part2 && char.isSymbol() || (part2 && char.isGear()))) {
                     symbols.add(i)
                 }
             }
@@ -42,8 +46,9 @@ private fun parse(operation: List<EngineSchematicLine>.() -> Unit) {
 
 private fun Char.isDot() = this == '.'
 private fun Char.isSymbol() = !isDot() && !isDigit()
+private fun Char.isGear() = this == '*'
 
-private fun List<EngineSchematicLine>.getValidNumbers() {
+private fun List<EngineSchematicLine>.getValidNumbersPart1() : Int {
     var sum = 0
     this.forEachIndexed { i, line ->
         line.numbers.forEach { (j, number) ->
@@ -69,7 +74,48 @@ private fun List<EngineSchematicLine>.getValidNumbers() {
             }
         }
     }
-    println(sum)
+    return sum
+}
+
+private fun List<EngineSchematicLine>.getGearRatiosPart2(): Int {
+    var sum = 0
+    this.forEachIndexed { i, line ->
+        line.symbols.forEach {
+            val adjacentNumbers = mutableListOf<String>()
+            // find adjacent numbers to gear symbol
+            val validRange = (it - 1..it + 1).toSet()
+            // check previous line
+            if (i > 0) {
+                this[i - 1].numbers.forEach { (j, number) ->
+                    val numberRange = (j until j + (number.length)).toSet()
+                    if (validRange.intersect(numberRange).isNotEmpty()){
+                        adjacentNumbers.add(number)
+                    }
+                }
+            }
+            // check current line
+            this[i].numbers.forEach { (j, number) ->
+                val numberRange = (j until j + (number.length)).toSet()
+                if (validRange.intersect(numberRange).isNotEmpty()){
+                    adjacentNumbers.add(number)
+                }
+            }
+            // check next line
+            if (i < this.lastIndex) {
+                this[i + 1].numbers.forEach { (j, number) ->
+                    val numberRange = (j until j + (number.length)).toSet()
+                    if (validRange.intersect(numberRange).isNotEmpty()){
+                        adjacentNumbers.add(number)
+                    }
+                }
+            }
+
+            if (adjacentNumbers.size == 2){
+                sum += adjacentNumbers[0].toInt() * adjacentNumbers[1].toInt()
+            }
+        }
+    }
+    return sum
 }
 
 
