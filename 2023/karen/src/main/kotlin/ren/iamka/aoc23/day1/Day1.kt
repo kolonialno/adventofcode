@@ -1,21 +1,20 @@
 package ren.iamka.aoc23.day1
 
 import ren.iamka.aoc23.readLines
-import java.net.URL
 
-fun main(args: Array<String>) {
-    val sumPart1 = processLines(Day1(part2 = false))
-    val sumPart2 = processLines(Day1(part2 = true))
-
-    println("Part 1: $sumPart1")
-    println("Part 2: $sumPart2")
+fun main() {
+    println("Part 1")
+    processLines(Day1(part2 = false))
+    println("Part 2")
+    processLines(Day1(part2 = true))
 }
 
-private fun processLines(day1: Day1): Int {
-    return "/day1/testdata.txt".readLines {
-        map { line ->
+private fun processLines(day1: Day1) {
+    "/day1/testdata.txt".readLines {
+        val sum = map { line ->
             day1.findTwoDigitNumber(line)
         }.sum()
+        println(sum)
     }
 }
 

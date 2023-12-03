@@ -3,16 +3,20 @@ package ren.iamka.aoc23.day2
 import ren.iamka.aoc23.readLines
 
 
-fun main(args: Array<String>) {
-    val part1 = parse().filter { it.isValid() }.sumOf { it.id }
-    println(part1)
+fun main() {
+    parse {
+        val part1 = filter { it.isValid() }.sumOf { it.id }
+        println(part1)
+    }
 
-    val part2 = parse().sumOf { it.getProduct() }
-    println(part2)
+    parse {
+        val part2 = sumOf { it.getProduct() }
+        println(part2)
+    }
 }
 
-private fun parse(): List<Game> {
-    return "/day2/data.txt".readLines {
+private fun parse(operation: Sequence<Game>.() -> Unit) {
+    "/day2/data.txt".readLines {
         map { line ->
             val (gameId, setString) = line.split(":")
             val id = gameId.split(" ")[1].toInt()
@@ -27,7 +31,7 @@ private fun parse(): List<Game> {
                 GameSet(cubes = map)
             }
             Game(id = id, sets = gameSets)
-        }.toList()
+        }.operation()
     }
 }
 
@@ -53,7 +57,7 @@ private fun Game.isValid(): Boolean {
 }
 
 private fun Game.getProduct(): Int {
-val map = mutableMapOf("red" to 0, "green" to 0, "blue" to 0)
+    val map = mutableMapOf("red" to 0, "green" to 0, "blue" to 0)
 
     sets.forEach { set ->
         set.cubes.forEach { (color, amount) ->
