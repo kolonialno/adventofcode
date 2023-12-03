@@ -39,6 +39,7 @@ let solver =
     match day with
     | "01" -> (module Lib.Day01)
     | "02" -> (module Lib.Day02)
+    | "03" -> (module Lib.Day03)
     | _ -> (module Lib.Dummy_solver)
   in
   match part with
