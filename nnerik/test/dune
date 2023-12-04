@@ -1,5 +1,5 @@
 (tests
- (names test_day_01 test_day_02 test_day_03)
+ (names test_day_01 test_day_02 test_day_03 test_day_04)
  (deps
   (glob_files samples/*))
  (libraries core lib ounit2))
