@@ -2,9 +2,8 @@ import scala.io.Source
 import collection.mutable.ArrayBuffer
 
 case class Card(id: Int, numbers: Set[Int], winning: Set[Int]):
-    val wins = numbers.intersect(winning)
-    val score = if wins.isEmpty then 0 else Math.pow(2, wins.size - 1).toInt
-    override def toString = s"""Card $id: Wins=${wins.mkString(" ")}, Score=$score"""
+    val wins = numbers.intersect(winning).size
+    val score = if wins == 0 then 0 else Math.pow(2, wins - 1).toInt
 
 def findNums(s: String) = "\\d+".r.findAllIn(s).map(_.toInt).toSet
 
@@ -20,13 +19,12 @@ def parse(lines: Seq[String]): Seq[Card] =
 @main def scratchcards =
     val input = Source.fromFile("input.txt").getLines.toVector
     val cards = parse(input)
-    for card <- cards do println(card)
 
     println(s"Part 1: " + cards.map(_.score).sum)
 
     val numCards = ArrayBuffer.fill(cards.length)(1)
     for (c, i) <- cards.zipWithIndex
-        j <- 1 to c.wins.size
+        j <- 1 to c.wins
         if i + j < numCards.size
     do
         numCards(i+j) += numCards(i)
