@@ -41,6 +41,7 @@ let solver =
     | "02" -> (module Lib.Day02)
     | "03" -> (module Lib.Day03)
     | "04" -> (module Lib.Day04)
+    | "05" -> (module Lib.Day05)
     | _ -> (module Lib.Dummy_solver)
   in
   match part with
