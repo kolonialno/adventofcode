@@ -27,18 +27,19 @@ case class Translation(from: String, to: String, mappings: Seq[Mapping]):
     def translate(pos: Long) =
         mappings.find(_.range contains pos).map(pos + _.diff) getOrElse pos
     def translate(range: Range): Seq[Range] =
-        var result = Vector[Range]()
-        var remainder = Vector(range)
+        var translated = Vector[Range]()
+        var remaining = Vector(range)
         for m <- mappings do
-            var newRemainder = Vector[Range]()
-            for r <- remainder do
-                val before = if r.start >= m.range.start then None else Some(Range(r.start, Math.min(r.end, m.range.start - 1)))
-                val intersect = r.intersect(m.range)
-                val after = if r.end <= m.range.end then None else Some(Range(Math.max(r.start, m.range.end + 1), r.end))
-                result ++= intersect.map(r => Range(r.start + m.diff, r.end + m.diff)).toVector
-                newRemainder ++= (before.toVector ++ after.toVector)
-            remainder = mergeRanges(newRemainder.sortBy(_.start))
-        result ++ remainder
+            var newRemaining = Vector[Range]()
+            for r <- remaining do
+                for i <- r.intersect(m.range) do
+                    translated :+= Range(i.start + m.diff, i.end + m.diff)
+                if r.start < m.range.start then
+                    newRemaining :+= Range(r.start, Math.min(r.end, m.range.start - 1))
+                if r.end > m.range.end then
+                    newRemaining :+= Range(Math.max(r.start, m.range.end + 1), r.end)
+            remaining = mergeRanges(newRemaining.sortBy(_.start))
+        translated ++ remaining
 
 def parse(section: Seq[String]): Translation =
     val Array(from, _, to) = section.head.split(" ")(0).split("-")
