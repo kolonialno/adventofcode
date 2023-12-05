@@ -1,10 +1,15 @@
 package ren.iamka.aoc23.day5
 
 import ren.iamka.aoc23.readLines
+import kotlin.math.max
+import kotlin.math.min
 
 fun main() {
     parseAlmanac {
-       this.seedsToLocation()
+        this.seedsToLocationPart1()
+    }
+    parseAlmanac {
+        this.seedsToLocationPart2()
     }
 }
 
@@ -47,20 +52,58 @@ private fun parseAlmanac(operation: Almanac.() -> Unit) {
     }
 }
 
-private fun Almanac.seedsToLocation() {
-    this.seeds.minOfOrNull { seed ->
+private fun Almanac.seedsToLocationPart1() {
+    seeds.minOfOrNull { seed ->
         this.maps.fold(initial = seed) { acc, map ->
             acc.mapSourceToDest(map)
         }
-    }.apply { println(this) }
+    }.apply { println("part 1: $this") }
+}
+
+private fun Almanac.seedsToLocationPart2() {
+    val seedRanges = seeds.chunked(2).map { (start, length) ->
+        (start until start + length)
+    }
+    seedRanges.minOfOrNull { range ->
+        val result = maps.fold(listOf(range)) { acc, map ->
+            acc.map { it.mapSourceToDest(map) }.flatten()
+        }
+        result.minBy { it.first }.first
+    }.apply { println("part 2: $this") }
 }
 
 private fun Long.mapSourceToDest(map: CategoryMap): Long {
     map.categoryMapEntries.forEach {
         if (this in it.sourceRangeStart until it.sourceRangeStart + it.rangeLength) {
-           return it.destinationRangeStart + (this - it.sourceRangeStart)
+            return it.destinationRangeStart + (this - it.sourceRangeStart)
         }
     }
     // Nothing found, return as-is
     return this
+}
+
+private fun LongRange.mapSourceToDest(map: CategoryMap): List<LongRange> {
+    val destRanges = mutableListOf<LongRange>()
+    val sorted = map.categoryMapEntries.sortedBy { it.sourceRangeStart }
+
+    var currentValue = this.first
+
+    sorted.forEach { entry ->
+        val srcRange = entry.sourceRangeStart until entry.sourceRangeStart + entry.rangeLength
+        val srcToDest = -(entry.sourceRangeStart - entry.destinationRangeStart)
+        if (this.overlaps(srcRange)) {
+            val newRangeStart = max(this.first, srcRange.first)
+            destRanges.add(currentValue until newRangeStart)
+            val newRangeEnd = min(this.last, srcRange.last)
+            destRanges.add(newRangeStart + srcToDest..newRangeEnd + srcToDest)
+            currentValue = newRangeEnd + 1
+        }
+    }
+
+    destRanges.add(currentValue..this.last)
+    return destRanges.filter { !it.isEmpty() }.ifEmpty { listOf(this) }
+}
+
+private fun LongRange.overlaps(other: LongRange): Boolean {
+    return !(this.last < other.first || this.first > other.last)
 }
