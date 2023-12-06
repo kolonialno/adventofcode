@@ -4,11 +4,12 @@ import ren.iamka.aoc23.readLines
 import ren.iamka.aoc23.toInts
 
 fun main() {
-    parse()
+    parsePart1()
+    parsePart2()
 }
 
 
-private fun parse() {
+private fun parsePart1() {
     return "/day6/data.txt".readLines {
         val (times, distances) = this.toList().map { it.toInts() }
         val timesToDistances = times.zip(distances)
@@ -20,5 +21,14 @@ private fun parse() {
         }.reduce { acc, i ->
             acc * i
         }.apply { println(this) }
+    }
+}
+
+private fun parsePart2() {
+    return "/day6/data.txt".readLines {
+        val (time, distance) = this.toList().map { it.filter { char -> char.isDigit() }.toLong() }
+        (0..time).map { charging ->
+            charging * (time - charging)
+        }.count { it > distance }.apply { println(this) }
     }
 }
