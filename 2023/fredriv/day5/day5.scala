@@ -44,11 +44,12 @@ case class Translation(from: String, to: String, mappings: Seq[Mapping]):
 def parse(section: Seq[String]): Translation =
     val Array(from, _, to) = section.head.split(" ")(0).split("-")
 
-    val mappings = for m <- section.tail
-        Array(destStart, srcStart, length) = m.split(" ").map(_.toLong)
-        range = Range(srcStart, srcStart + length - 1)
-        diff = destStart - srcStart
-    yield Mapping(range, diff)
+    val mappings =
+        for m <- section.tail
+            Array(destStart, srcStart, length) = m.split(" ").map(_.toLong)
+            range = Range(srcStart, srcStart + length - 1)
+            diff = destStart - srcStart
+        yield Mapping(range, diff)
 
     Translation(from, to, mappings.sortBy(_.range.start))
 
