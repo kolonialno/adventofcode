@@ -5,7 +5,8 @@
   test_day_03
   test_day_04
   test_day_05
-  test_day_06)
+  test_day_06
+  test_day_07)
  (deps
   (glob_files samples/*))
  (libraries core lib ounit2))
