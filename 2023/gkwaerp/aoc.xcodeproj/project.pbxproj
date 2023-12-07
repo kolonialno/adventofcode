@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04075D132B21EBFB0062ADC7 /* Input_2023_07.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04075D122B21EBFB0062ADC7 /* Input_2023_07.txt */; };
+		04075D152B21EC100062ADC7 /* Solver_2023_07.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04075D142B21EC0F0062ADC7 /* Solver_2023_07.swift */; };
+		04075D172B220EDC0062ADC7 /* Collection+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04075D162B220EDC0062ADC7 /* Collection+Ext.swift */; };
 		0436986C2B0188EE003E30D5 /* YearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0436986B2B0188EE003E30D5 /* YearView.swift */; };
 		0436986E2B018F47003E30D5 /* DeferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0436986D2B018F47003E30D5 /* DeferView.swift */; };
 		043C93CB2939D59000C6A447 /* Input_2022_01.txt in Resources */ = {isa = PBXBuildFile; fileRef = 043C93CA2939D59000C6A447 /* Input_2022_01.txt */; };
@@ -145,6 +148,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04075D122B21EBFB0062ADC7 /* Input_2023_07.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Input_2023_07.txt; path = ../../../../../../../Downloads/Input_2023_07.txt; sourceTree = "<group>"; };
+		04075D142B21EC0F0062ADC7 /* Solver_2023_07.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver_2023_07.swift; sourceTree = "<group>"; };
+		04075D162B220EDC0062ADC7 /* Collection+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Ext.swift"; sourceTree = "<group>"; };
 		0436986B2B0188EE003E30D5 /* YearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearView.swift; sourceTree = "<group>"; };
 		0436986D2B018F47003E30D5 /* DeferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeferView.swift; sourceTree = "<group>"; };
 		043C93CA2939D59000C6A447 /* Input_2022_01.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input_2022_01.txt; sourceTree = "<group>"; };
@@ -437,6 +443,7 @@
 				0471F2852936B84700D4B978 /* String+Ext.swift */,
 				478D1B98294787A3004B9D95 /* Heap+Ext.swift */,
 				478D1B9A294787F8004B9D95 /* PriorityQueue+Ext.swift */,
+				04075D162B220EDC0062ADC7 /* Collection+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -548,6 +555,7 @@
 				04D8C8532B1DC445006FF7B5 /* Input_2023_04.txt */,
 				04D8C8572B1F407B006FF7B5 /* Input_2023_05.txt */,
 				04D8C85B2B209C18006FF7B5 /* Input_2023_06.txt */,
+				04075D122B21EBFB0062ADC7 /* Input_2023_07.txt */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -561,6 +569,7 @@
 				04FD24E52B1D712E00EEDAEB /* Solver_2023_04.swift */,
 				04D8C8552B1F3B84006FF7B5 /* Solver_2023_05.swift */,
 				04D8C8592B209BE7006FF7B5 /* Solver_2023_06.swift */,
+				04075D142B21EC0F0062ADC7 /* Solver_2023_07.swift */,
 			);
 			path = Solvers;
 			sourceTree = "<group>";
@@ -655,6 +664,7 @@
 				478D1B912945D387004B9D95 /* Input_2022_11.txt in Resources */,
 				04E53FC32B13DF09001BFABF /* Input_2017_13.txt in Resources */,
 				043C93CF2939DA4500C6A447 /* Input_2022_02.txt in Resources */,
+				04075D132B21EBFB0062ADC7 /* Input_2023_07.txt in Resources */,
 				04FD24E42B1C436100EEDAEB /* Input_2023_03.txt in Resources */,
 				47802051294F4FA0004D0D9D /* Input_2022_18.txt in Resources */,
 				4780AEC9295862B500C86D2A /* Input_2022_25.txt in Resources */,
@@ -731,6 +741,7 @@
 				04FD24DA2B194EC500EEDAEB /* Solver_2023_01.swift in Sources */,
 				4780204B294F4F06004D0D9D /* Solver_2022_18.swift in Sources */,
 				04FD24B92B13E94F00EEDAEB /* Solver_2017_14.swift in Sources */,
+				04075D152B21EC100062ADC7 /* Solver_2023_07.swift in Sources */,
 				478D1B99294787A3004B9D95 /* Heap+Ext.swift in Sources */,
 				04FD24BB2B13EA4D00EEDAEB /* Common_2017.swift in Sources */,
 				4780AEAD29547E7100C86D2A /* Solver_2022_22.swift in Sources */,
@@ -767,6 +778,7 @@
 				04D8C8562B1F3B84006FF7B5 /* Solver_2023_05.swift in Sources */,
 				4780AEB32955C1FC00C86D2A /* Solver_2022_23.swift in Sources */,
 				4790A013294852BB007DBA6B /* Solver_2022_13.swift in Sources */,
+				04075D172B220EDC0062ADC7 /* Collection+Ext.swift in Sources */,
 				0471F2572936B1A200D4B978 /* Solver.swift in Sources */,
 				0471F28C2936D6D400D4B978 /* SolveState.swift in Sources */,
 				0471F2802936B80200D4B978 /* TravellingSalesmanHelper.swift in Sources */,
