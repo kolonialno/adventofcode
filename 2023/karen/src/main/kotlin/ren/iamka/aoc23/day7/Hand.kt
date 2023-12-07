@@ -1,7 +1,5 @@
 package ren.iamka.aoc23.day7
 
-import java.lang.IllegalArgumentException
-
 sealed class Hand(val value: Int) {
     abstract val cards: String
 
@@ -43,27 +41,27 @@ fun String.cardsToHand(): Hand {
         occurranceMap[char] = occurranceMap[char]!! + 1
     }
 
-    if (occurranceMap.values.contains(5)){
+    if (occurranceMap.values.contains(5)) {
         return Hand.FiveOfAKind(this)
     }
 
-    if (occurranceMap.values.contains(4)){
+    if (occurranceMap.values.contains(4)) {
         return Hand.FourOfAKind(this)
     }
 
-    if (occurranceMap.values.contains(3) && occurranceMap.values.contains(2)){
+    if (occurranceMap.values.contains(3) && occurranceMap.values.contains(2)) {
         return Hand.FullHouse(this)
     }
 
-    if (occurranceMap.values.contains(3)){
+    if (occurranceMap.values.contains(3)) {
         return Hand.ThreeOfAKind(this)
     }
 
-    if (occurranceMap.values.count { it == 2 } == 2){
+    if (occurranceMap.values.count { it == 2 } == 2) {
         return Hand.TwoPair(this)
     }
 
-    if (occurranceMap.values.count { it == 2 } == 1){
+    if (occurranceMap.values.count { it == 2 } == 1) {
         return Hand.OnePair(this)
     }
 
@@ -87,44 +85,31 @@ fun String.cardsToHandWithJoker(): Hand {
         }
     }
 
-    if (occurranceMap.values.contains(5 - numJokers)){
+    if (occurranceMap.values.contains(5 - numJokers)) {
         return Hand.FiveOfAKind(this)
     }
 
-    if (occurranceMap.values.contains(4 - numJokers)){
+    if (occurranceMap.values.contains(4 - numJokers)) {
         return Hand.FourOfAKind(this)
     }
 
-    // 2 jokers and a pair = full house
-    if (occurranceMap.values.count { it == 2 } == 1 && numJokers  == 2){
-        return Hand.FullHouse(this)
-    }
-    // 2 pair and 1 joker = full house
-    if (occurranceMap.values.count { it == 2 } == 2 && numJokers  == 1){
+    if (occurranceMap.values.count { it == 2 } == 3 - numJokers) {
         return Hand.FullHouse(this)
     }
 
-    if (occurranceMap.values.contains(3) && occurranceMap.values.contains(2)){
+    if (occurranceMap.values.contains(3) && occurranceMap.values.contains(2)) {
         return Hand.FullHouse(this)
     }
 
-    if (occurranceMap.values.contains(3 - numJokers)){
+    if (occurranceMap.values.contains(3 - numJokers)) {
         return Hand.ThreeOfAKind(this)
     }
 
-    if (occurranceMap.values.count { it == 2 } == 2){
+    if (occurranceMap.values.count { it == 2 } == 2 - numJokers) {
         return Hand.TwoPair(this)
     }
 
-    if (occurranceMap.values.count { it == 2 } == 1 && numJokers > 0){
-        return Hand.TwoPair(this)
-    }
-
-    if (occurranceMap.values.count { it == 2 } == 1){
-        return Hand.OnePair(this)
-    }
-
-    if (numJokers > 0) {
+    if (occurranceMap.values.count { it == 2 } == 1 - numJokers) {
         return Hand.OnePair(this)
     }
 
