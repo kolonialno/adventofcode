@@ -1,7 +1,7 @@
 package ren.iamka.aoc23.day6
 
 import ren.iamka.aoc23.readLines
-import ren.iamka.aoc23.toInts
+import ren.iamka.aoc23.toPositiveInts
 
 fun main() {
     parsePart1()
@@ -11,7 +11,7 @@ fun main() {
 
 private fun parsePart1() {
     return "/day6/data.txt".readLines {
-        val (times, distances) = this.toList().map { it.toInts() }
+        val (times, distances) = this.toList().map { it.toPositiveInts() }
         val timesToDistances = times.zip(distances)
         println(timesToDistances)
         timesToDistances.map { (time, distance) ->

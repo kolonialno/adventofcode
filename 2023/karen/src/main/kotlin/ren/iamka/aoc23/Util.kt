@@ -7,5 +7,9 @@ fun String.readLines(operation: Sequence<String>.() -> Unit) {
     return url.openStream().bufferedReader().useLines(operation)
 }
 
-fun String.toInts() =
+fun String.toPositiveInts() =
     split(" ").map { it.trim() }.filter { it.isNotEmpty() && it.all { char -> char.isDigit() } }.map { it.toInt() }
+
+fun String.toInts() =
+    split(" ").map { it.trim() }.filter { it.isNotEmpty() && it.all { char -> char.isDigit() || char == '-' } }
+        .map { it.toInt() }
