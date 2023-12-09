@@ -54,3 +54,13 @@ pub fn raw_as_strings(in: []const u8, allocator: Allocator) ![]const []const u8 
     }
     return list.toOwnedSlice();
 }
+
+pub fn line_as_numbers(comptime T: type, line: []const u8, allocator: std.mem.Allocator) ![]const T {
+    var it = std.mem.split(u8, line, " ");
+    var list = std.ArrayList(T).init(allocator);
+    while (it.next()) |number| {
+        const element = try std.fmt.parseInt(T, number, 10);
+        try list.append(element);
+    }
+    return list.toOwnedSlice();
+}
