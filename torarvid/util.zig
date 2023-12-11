@@ -64,3 +64,19 @@ pub fn line_as_numbers(comptime T: type, line: []const u8, allocator: std.mem.Al
     }
     return list.toOwnedSlice();
 }
+
+pub fn str_repeat(src: []const u8, copies: usize, allocator: std.mem.Allocator) ![]const u8 {
+    var list = std.ArrayList(u8).init(allocator);
+    for (copies) |_| {
+        try list.appendSlice(src);
+    }
+    return try list.toOwnedSlice();
+}
+
+pub fn str_splice(src: []const u8, split_point: usize, insert: []const u8, allocator: std.mem.Allocator) ![]const u8 {
+    var list = std.ArrayList(u8).init(allocator);
+    try list.appendSlice(src[0..split_point]);
+    try list.appendSlice(insert);
+    try list.appendSlice(src[split_point..]);
+    return try list.toOwnedSlice();
+}
