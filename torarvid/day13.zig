@@ -117,15 +117,11 @@ const SmudgeIterator = struct {
             return null;
         }
 
-        var new = std.ArrayList([]u8).init(self.allocator);
-        for (self.orig) |row| {
-            var row_copy = try std.mem.Allocator.dupe(self.allocator, u8, row);
-            try new.append(row_copy);
-        }
+        var new = try util.strings_to_mut(self.orig, self.allocator);
         if (self.orig[self.y][self.x] == '#') {
-            new.items[self.y][self.x] = '.';
+            new[self.y][self.x] = '.';
         } else {
-            new.items[self.y][self.x] = '#';
+            new[self.y][self.x] = '#';
         }
 
         self.x += 1;
@@ -134,6 +130,6 @@ const SmudgeIterator = struct {
             self.y += 1;
         }
 
-        return try new.toOwnedSlice();
+        return new;
     }
 };

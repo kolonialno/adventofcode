@@ -88,3 +88,11 @@ pub fn col_as_str(input: []const []const u8, col: usize, allocator: std.mem.Allo
     }
     return try list.toOwnedSlice();
 }
+
+pub fn strings_to_mut(in: []const []const u8, allocator: std.mem.Allocator) ![]const []u8 {
+    var list = std.ArrayList([]u8).init(allocator);
+    for (in) |line| {
+        try list.append(try std.mem.Allocator.dupe(allocator, u8, line));
+    }
+    return try list.toOwnedSlice();
+}
