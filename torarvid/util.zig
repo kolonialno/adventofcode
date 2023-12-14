@@ -80,3 +80,11 @@ pub fn str_splice(src: []const u8, split_point: usize, insert: []const u8, alloc
     try list.appendSlice(src[split_point..]);
     return try list.toOwnedSlice();
 }
+
+pub fn col_as_str(input: []const []const u8, col: usize, allocator: std.mem.Allocator) ![]const u8 {
+    var list = std.ArrayList(u8).init(allocator);
+    for (input) |line| {
+        try list.append(line[col]);
+    }
+    return try list.toOwnedSlice();
+}
