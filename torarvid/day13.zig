@@ -5,7 +5,6 @@ pub fn main() !void {
     var alloc = std.heap.GeneralPurposeAllocator(.{}){};
     var gpa = alloc.allocator();
     var lines = try util.file_as_strings("inputs/day13.txt", gpa);
-    // lines = try util.raw_as_strings(test_input, gpa);
 
     var start_of_map: usize = 0;
     var sum: usize = 0;
@@ -31,26 +30,18 @@ pub fn main() !void {
     for (maps.items, 1..) |map, i| {
         const cached_reflection = reflection_cache.get(i);
         if (cached_reflection == null) {
-            // std.debug.print("no cached reflection for {}\n", .{i});
+            std.debug.print("no cached reflection for {}\n", .{i});
             return error.Unreachable;
         }
-        // std.debug.print("----- (cached {any})\n", .{cached_reflection});
         var it = SmudgeIterator{ .orig = map, .allocator = gpa };
-        var counter: usize = 0;
         var found = false;
 
         while (try it.next()) |smudged| {
-            counter += 1;
-            // std.debug.print("smudged {d}\n", .{counter});
-            // for (smudged) |row| {
-            //     std.debug.print("{s}\n", .{row});
-            // }
-
-            const new_reflection = try findReflection(smudged, gpa);
+            const new_reflection = try findReflectionExcept(smudged, cached_reflection, gpa);
             if (new_reflection != 0 and new_reflection != cached_reflection) {
                 sum += new_reflection;
-                std.debug.print("new reflection for map {d}: {}\n", .{ i, new_reflection });
                 found = true;
+                std.debug.print("found new reflection for map {d}: {d}\n", .{ i, new_reflection });
                 break;
             }
         }
@@ -64,6 +55,10 @@ pub fn main() !void {
 }
 
 fn findReflection(map: []const []const u8, allocator: std.mem.Allocator) !usize {
+    return findReflectionExcept(map, null, allocator);
+}
+
+fn findReflectionExcept(map: []const []const u8, exclude: ?usize, allocator: std.mem.Allocator) !usize {
     for (1..map.len) |i| {
         var ai: usize = i - 1;
         var bi: usize = i;
@@ -82,8 +77,7 @@ fn findReflection(map: []const []const u8, allocator: std.mem.Allocator) !usize 
             bi += 1;
         }
 
-        if (is_reflection) {
-            // std.debug.print("found reflection at row {}\n", .{i});
+        if (is_reflection and exclude != 100 * i) {
             return 100 * i;
         }
     }
@@ -95,7 +89,6 @@ fn findReflection(map: []const []const u8, allocator: std.mem.Allocator) !usize 
         while (true) {
             const a = try util.col_as_str(map, ai, allocator);
             const b = try util.col_as_str(map, bi, allocator);
-            // std.debug.print("ai: {}, bi: {}, a: {s}, b: {s}\n", .{ ai, bi, a, b });
             if (!std.mem.eql(u8, a, b)) {
                 is_reflection = false;
                 break;
@@ -106,12 +99,10 @@ fn findReflection(map: []const []const u8, allocator: std.mem.Allocator) !usize 
             ai -= 1;
             bi += 1;
         }
-        if (is_reflection) {
-            // std.debug.print("found reflection at col {}\n", .{i});
+        if (is_reflection and exclude != i) {
             return i;
         }
     }
-    // std.debug.print("-----\n", .{});
     return 0;
 }
 
@@ -146,21 +137,3 @@ const SmudgeIterator = struct {
         return try new.toOwnedSlice();
     }
 };
-
-const test_input =
-    \\#.##..##.
-    \\..#.##.#.
-    \\##......#
-    \\##......#
-    \\..#.##.#.
-    \\..##..##.
-    \\#.#.##.#.
-    \\
-    \\#...##..#
-    \\#....#..#
-    \\..##..###
-    \\#####.##.
-    \\#####.##.
-    \\..##..###
-    \\#....#..#
-;
