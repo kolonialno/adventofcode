@@ -5,26 +5,51 @@ pub fn main() !void {
     var alloc = std.heap.GeneralPurposeAllocator(.{}){};
     var gpa = alloc.allocator();
     var lines = try util.file_as_strings("inputs/day14.txt", gpa);
-    // lines = try util.raw_as_strings(test_input, gpa);
 
     var map = try util.strings_to_mut(lines, gpa);
 
     north(map);
-
     std.debug.print("Part 1: {}\n", .{calc_load(map)});
 
     map = try util.strings_to_mut(lines, gpa);
 
-    for (0..1000000000) |i| {
+    var cache = std.StringHashMap(usize).init(gpa);
+    var key: []const u8 = undefined;
+    const repeats_at = for (0..1000000000) |i| {
         north(map);
         west(map);
         south(map);
         east(map);
-        if (i % 100000 == 0) {
-            std.debug.print("\ri = {}", .{i});
+
+        key = try cache_key(map, gpa);
+        if (cache.get(key)) |_| {
+            break i;
         }
+        try cache.put(key, i);
+    } else 0;
+    const cycle = repeats_at - cache.get(key).?;
+
+    const remaining = 1000000000 - repeats_at - 1;
+    const modulated = remaining % cycle;
+    for (0..modulated) |_| {
+        north(map);
+        west(map);
+        south(map);
+        east(map);
     }
     std.debug.print("Part 2: {}\n", .{calc_load(map)});
+}
+
+fn cache_key(map: []const []const u8, allocator: std.mem.Allocator) ![]const u8 {
+    var h = std.crypto.hash.Md5.init(.{});
+    var out: [16]u8 = undefined;
+    for (map) |line| {
+        h.update(line);
+    }
+    h.final(out[0..]);
+
+    const hex = std.fmt.fmtSliceHexLower(out[0..]);
+    return try std.fmt.allocPrint(allocator, "{s}", .{hex});
 }
 
 fn calc_load(map: []const []const u8) usize {
@@ -60,27 +85,6 @@ fn north(map: []const []u8) void {
     }
 }
 
-fn west(map: []const []u8) void {
-    for (0..map.len) |y| {
-        for (1..map[0].len) |x| {
-            var dest = x;
-            if (map[y][dest] == 'O') {
-                for (0..x) |_| {
-                    const candidate = map[y][dest - 1];
-                    if (candidate != '.') {
-                        break;
-                    }
-                    dest -= 1;
-                }
-                if (dest != x) {
-                    map[y][dest] = 'O';
-                    map[y][x] = '.';
-                }
-            }
-        }
-    }
-}
-
 fn south(map: []const []u8) void {
     for (0..map[0].len) |x| {
         for (1..map.len) |y| {
@@ -97,6 +101,27 @@ fn south(map: []const []u8) void {
                 if (dest != map.len - 1 - y) {
                     map[dest][x] = 'O';
                     line[x] = '.';
+                }
+            }
+        }
+    }
+}
+
+fn west(map: []const []u8) void {
+    for (0..map.len) |y| {
+        for (1..map[0].len) |x| {
+            var dest = x;
+            if (map[y][dest] == 'O') {
+                for (0..x) |_| {
+                    const candidate = map[y][dest - 1];
+                    if (candidate != '.') {
+                        break;
+                    }
+                    dest -= 1;
+                }
+                if (dest != x) {
+                    map[y][dest] = 'O';
+                    map[y][x] = '.';
                 }
             }
         }
@@ -123,23 +148,3 @@ fn east(map: []const []u8) void {
         }
     }
 }
-
-fn print(map: []const []u8) void {
-    for (map) |line| {
-        std.debug.print("{s}\n", .{line});
-    }
-    std.debug.print("\n", .{});
-}
-
-const test_input =
-    \\O....#....
-    \\O.OO#....#
-    \\.....##...
-    \\OO.#O....O
-    \\.O.....O#.
-    \\O.#..O.#.#
-    \\..O..#O..O
-    \\.......O..
-    \\#....###..
-    \\#OO..#....
-;
