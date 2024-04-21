@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day03.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day03.txt", gpa.allocator());
 
     var hash = std.StringHashMap(*u32).init(gpa.allocator());
 
@@ -14,7 +14,7 @@ pub fn main() !void {
                 if (num) |n| {
                     n.* = n.* * 10 + (c - '0');
                 } else {
-                    var n = try gpa.allocator().create(u32);
+                    const n = try gpa.allocator().create(u32);
                     n.* = c - '0';
                     num = n;
                 }

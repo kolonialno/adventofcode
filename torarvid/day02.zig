@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day02.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day02.txt", gpa.allocator());
     // lines = try util.raw_as_strings(test_input, gpa.allocator());
 
     const max_r = 12;

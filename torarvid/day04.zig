@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day04.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day04.txt", gpa.allocator());
 
     var sum: u64 = 0;
     for (lines) |card| {

@@ -14,7 +14,7 @@ pub fn main() !void {
         const name = it.next().?;
         const left = it.next().?;
         const right = it.next().?;
-        var node = try gpa.allocator().create(Node);
+        const node = try gpa.allocator().create(Node);
         node.* = .{ .name = name, .left = left, .right = right };
         try map.put(name, node);
     }
@@ -59,7 +59,7 @@ const NodeIterator = struct {
     var cmd_index: usize = 0;
 
     pub fn next(self: *NodeIterator) !?*Node {
-        var node: *Node = self.current orelse return null;
+        const node: *Node = self.current orelse return null;
         const cmd = self.commands[cmd_index];
         cmd_index += 1;
         if (cmd_index == self.commands.len) {

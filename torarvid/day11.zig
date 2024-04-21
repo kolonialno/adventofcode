@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var map = try util.file_as_strings("inputs/day11.txt", gpa.allocator());
+    const map = try util.file_as_strings("inputs/day11.txt", gpa.allocator());
 
     const sum1 = try run(map, 1, gpa.allocator());
     std.debug.print("Part 1: {}\n", .{sum1});
@@ -13,8 +13,8 @@ pub fn main() !void {
 }
 
 fn run(map: []const []const u8, scaling: usize, allocator: std.mem.Allocator) !usize {
-    var extra_rows = try extra(map, is_row_empty, scaling, allocator);
-    var extra_cols = try extra(map, is_col_empty, scaling, allocator);
+    const extra_rows = try extra(map, is_row_empty, scaling, allocator);
+    const extra_cols = try extra(map, is_col_empty, scaling, allocator);
 
     var galaxies = std.ArrayList([2]usize).init(allocator);
     for (map, 0..) |row, y| {

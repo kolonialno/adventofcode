@@ -4,7 +4,7 @@ const util = @import("util.zig");
 pub fn main() !void {
     var alloc = std.heap.GeneralPurposeAllocator(.{}){};
     var gpa = alloc.allocator();
-    var lines = try util.file_as_strings("inputs/day15.txt", gpa);
+    const lines = try util.file_as_strings("inputs/day15.txt", gpa);
 
     var it = std.mem.splitAny(u8, lines[0], ",");
 
@@ -16,7 +16,7 @@ pub fn main() !void {
 
     var boxes: [256]*std.ArrayList(Box) = undefined;
     for (0..256) |i| {
-        var list = try gpa.create(std.ArrayList(Box));
+        const list = try gpa.create(std.ArrayList(Box));
         list.* = std.ArrayList(Box).init(gpa);
         boxes[i] = list;
     }
@@ -34,7 +34,7 @@ pub fn main() !void {
         } else null;
 
         if (focal) |f| {
-            var focal_int = try std.fmt.parseInt(usize, f, 10);
+            const focal_int = try std.fmt.parseInt(usize, f, 10);
             if (existing_index) |i| {
                 list.items[i].focal = focal_int;
             } else {
@@ -47,7 +47,7 @@ pub fn main() !void {
 
     sum = 0;
     for (0..256) |i| {
-        var list = boxes[i];
+        const list = boxes[i];
         for (0..list.items.len) |j| {
             const bn = 1 + i;
             const slot = 1 + j;

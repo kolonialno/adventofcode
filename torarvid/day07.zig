@@ -3,11 +3,11 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day07.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day07.txt", gpa.allocator());
 
     var hands = std.ArrayList(Hand).init(gpa.allocator());
     for (lines) |line| {
-        var hand = try Hand.init(line[0..5], line[6..]);
+        const hand = try Hand.init(line[0..5], line[6..]);
         try hands.append(hand);
     }
     std.sort.pdq(Hand, hands.items, {}, Hand.compare);
@@ -20,7 +20,7 @@ pub fn main() !void {
 
     hands.clearRetainingCapacity();
     for (lines) |line| {
-        var hand = try Hand.initWithJokers(line[0..5], line[6..]);
+        const hand = try Hand.initWithJokers(line[0..5], line[6..]);
         try hands.append(hand);
     }
     std.sort.pdq(Hand, hands.items, {}, Hand.compare);
@@ -32,7 +32,7 @@ pub fn main() !void {
     std.debug.print("Part 2: {}\n", .{sum});
 }
 
-const Cards = std.ComptimeStringMap(u4, .{
+const Cards = std.StaticStringMap(u4).initComptime(.{
     .{ "A", 14 },
     .{ "K", 13 },
     .{ "Q", 12 },

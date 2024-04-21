@@ -3,8 +3,8 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var alloc = std.heap.GeneralPurposeAllocator(.{}){};
-    var gpa = alloc.allocator();
-    var lines = try util.file_as_strings("inputs/day14.txt", gpa);
+    const gpa = alloc.allocator();
+    const lines = try util.file_as_strings("inputs/day14.txt", gpa);
 
     var map = try util.strings_to_mut(lines, gpa);
 

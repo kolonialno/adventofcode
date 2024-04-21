@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day10.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day10.txt", gpa.allocator());
 
     var map = try Map.init(lines, gpa.allocator());
     const steps = try map.findFarthestNode();
@@ -22,7 +22,7 @@ const Map = struct {
             const line = map[y];
             for (0..line.len) |x| {
                 if (line[x] == 'S') {
-                    var set = std.StringHashMap(void).init(allocator);
+                    const set = std.StringHashMap(void).init(allocator);
                     var m: Map = .{ .map = map, .sx = x, .sy = y, .set = set, .allocator = allocator };
                     try m.mark(x, y);
                     return m;

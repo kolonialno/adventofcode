@@ -3,12 +3,12 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var lines = try util.file_as_strings("inputs/day09.txt", gpa.allocator());
+    const lines = try util.file_as_strings("inputs/day09.txt", gpa.allocator());
 
     var sum1: isize = 0;
     var sum2: isize = 0;
     for (lines) |line| {
-        var nums = try util.line_as_numbers(isize, line, gpa.allocator());
+        const nums = try util.line_as_numbers(isize, line, gpa.allocator());
         var deltas = std.ArrayList([]const isize).init(gpa.allocator());
         try deltas.append(nums);
         var depth: usize = 0;

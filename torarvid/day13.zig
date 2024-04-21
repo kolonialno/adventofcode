@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub fn main() !void {
     var alloc = std.heap.GeneralPurposeAllocator(.{}){};
-    var gpa = alloc.allocator();
+    const gpa = alloc.allocator();
     var lines = try util.file_as_strings("inputs/day13.txt", gpa);
 
     var start_of_map: usize = 0;
@@ -30,7 +30,6 @@ pub fn main() !void {
     for (maps.items, 1..) |map, i| {
         const cached_reflection = reflection_cache.get(i);
         if (cached_reflection == null) {
-            std.debug.print("no cached reflection for {}\n", .{i});
             return error.Unreachable;
         }
         var it = SmudgeIterator{ .orig = map, .allocator = gpa };
@@ -41,7 +40,6 @@ pub fn main() !void {
             if (new_reflection != 0 and new_reflection != cached_reflection) {
                 sum += new_reflection;
                 found = true;
-                std.debug.print("found new reflection for map {d}: {d}\n", .{ i, new_reflection });
                 break;
             }
         }
