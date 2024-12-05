@@ -1,5 +1,5 @@
-mod day_2;
+mod day_3;
 
 pub fn solve(){
-    day_2::__main__();
+    day_3::__main__();
 }
