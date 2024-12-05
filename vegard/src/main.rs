@@ -1,5 +1,5 @@
-use vegards_advent_2024::day_2;
+use vegards_advent_2024::solve;
 
 fn main() {
-    day_2();
+    solve();
 }
