@@ -7,7 +7,7 @@ import (
 
 func day02IsSafe(numbers []int) bool {
 	delta := numbers[1] - numbers[0]
-	adelta := abs(delta)
+	adelta := Abs(delta)
 	// fmt.Printf("numbers %v\n", numbers)
 	if adelta > 3 || adelta < 1 {
 		// fmt.Printf("adelta1 %v\n", adelta)
@@ -16,7 +16,7 @@ func day02IsSafe(numbers []int) bool {
 	safe := true
 	for i := range numbers[2:] {
 		d := numbers[i+2] - numbers[i+1]
-		ad := abs(d)
+		ad := Abs(d)
 		if ad > 3 || ad < 1 {
 			// fmt.Printf("adelta2 %v\n", adelta)
 			return false
@@ -39,7 +39,7 @@ func (adv Advent) Day02() {
 		numbers := make([]int, len(parts))
 		allNums[i] = numbers
 		for j, part := range parts {
-			numbers[j] = atoi[int](part)
+			numbers[j] = Atoi[int](part)
 		}
 		if day02IsSafe(numbers) {
 			safeCount++

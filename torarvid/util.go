@@ -37,36 +37,36 @@ func fileByIntLines(filename string) []int {
 	return ints
 }
 
-func min[T constraints.Ordered](a, b T) T {
+func Min[T constraints.Ordered](a, b T) T {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-func max[T constraints.Ordered](a, b T) T {
+func Max[T constraints.Ordered](a, b T) T {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func abs[T constraints.Signed | constraints.Float](a T) T {
+func Abs[T constraints.Signed | constraints.Float](a T) T {
 	if a < 0 {
 		return -a
 	}
 	return a
 }
 
-func chebyshevDist[T constraints.Signed | constraints.Float](a, b []T) T {
+func ChebyshevDist[T constraints.Signed | constraints.Float](a, b []T) T {
 	var dist T
 	for i := range a {
-		dist = max(dist, abs(a[i]-b[i]))
+		dist = Max(dist, Abs(a[i]-b[i]))
 	}
 	return dist
 }
 
-func atoi[T constraints.Integer](s string) T {
+func Atoi[T constraints.Integer](s string) T {
 	i, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		panic(err)

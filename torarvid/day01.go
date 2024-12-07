@@ -24,7 +24,7 @@ func (adv Advent) Day01() {
 	slices.Sort(b)
 	sum := 0
 	for i := range a {
-		sum += abs(a[i] - b[i])
+		sum += Abs(a[i] - b[i])
 	}
 	fmt.Printf("Part 1: %d\n", sum)
 
