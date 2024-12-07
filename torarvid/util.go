@@ -74,6 +74,14 @@ func Atoi[T constraints.Integer](s string) T {
 	return T(i)
 }
 
+func Aatoii[T constraints.Integer](s ...string) []T {
+	var a []T
+	for _, s := range s {
+		a = append(a, Atoi[T](s))
+	}
+	return a
+}
+
 func Map[T, U any](a []T, f func(T) U) []U {
 	b := make([]U, len(a))
 	for i, x := range a {
