@@ -1,6 +1,6 @@
-mod day_5;
+mod day_6;
 mod utils;
 
-pub fn solve(){
-    day_5::__main__();
+pub fn solve() {
+    day_6::__main__();
 }

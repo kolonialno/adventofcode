@@ -63,3 +63,13 @@ pub fn check_string_match_in_matrix(
 
     is_match
 }
+
+pub fn rotate_90(direction: &(i32, i32), clockwise: bool) -> (i32, i32) {
+    // Rotate a vector 90 degrees clockwise or counterclockwise
+    // The vector must be one of the four cardinal directions
+    let steps = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+
+    let offset: isize = if clockwise { 1 } else { -1 };
+    steps[(steps.iter().position(|step| step == direction).unwrap() as isize + offset).rem_euclid(4)
+        as usize]
+}
