@@ -95,16 +95,15 @@ func (adv Advent) Day06() {
 	fmt.Println("Part 1:", len(visited))
 
 	obstacleCount := 0
-	for obstY := range board {
-		for obstX := range board[0] {
-			if board[obstY][obstX] || obstY == origGuard.Pos[1] && obstX == origGuard.Pos[0] {
-				continue
-			}
-			boardCopy := day06CopyBoard(board)
-			boardCopy[obstY][obstX] = true
-			if day06IsLoop(boardCopy, origGuard.Copy()) {
-				obstacleCount++
-			}
+	for pos := range visited {
+		x, y := pos[0], pos[1]
+		if board[y][x] || y == origGuard.Pos[1] && x == origGuard.Pos[0] {
+			continue
+		}
+		boardCopy := day06CopyBoard(board)
+		boardCopy[y][x] = true
+		if day06IsLoop(boardCopy, origGuard.Copy()) {
+			obstacleCount++
 		}
 	}
 	fmt.Println("Part 2:", obstacleCount)
