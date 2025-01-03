@@ -1,6 +1,6 @@
-mod day_7;
+mod day_8;
 mod utils;
 
 pub fn solve() {
-    day_7::__main__();
+    day_8::__main__();
 }
