@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"maps"
+)
 
 type D10Point [2]int
 
@@ -25,9 +28,7 @@ type D10Visits map[D10Point]bool
 
 func (v D10Visits) Clone() D10Visits {
 	clone := make(D10Visits)
-	for k, v := range v {
-		clone[k] = v
-	}
+	maps.Copy(clone, v)
 	return clone
 }
 

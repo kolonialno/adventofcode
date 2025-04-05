@@ -35,7 +35,7 @@ func (m D9Map) Checksum1() int {
 		if head == tail {
 			num = Min(num, tailNum)
 		}
-		for i := 0; i < num; i++ {
+		for range num {
 			if isSpace {
 				if tailNum == 0 {
 					tail -= 2

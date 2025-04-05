@@ -65,7 +65,7 @@ func (adv Advent) Day11() {
 		}
 		prev = &e
 	}
-	for i := 0; i < 25; i++ {
+	for range 25 {
 		head.Blink()
 	}
 	fmt.Printf("Part 1: %d\n", head.Count())

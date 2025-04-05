@@ -12,7 +12,7 @@ type Op func(int, int) int
 func day07Calc(terms []int, target int, ops []Op) bool {
 	numOps := len(ops)
 	limit := int(math.Pow(float64(numOps), float64(len(terms)-1)))
-	for i := 0; i < limit; i++ {
+	for i := range limit {
 		acc := terms[0]
 		for j := 1; j < len(terms); j++ {
 			idiv := i
@@ -36,7 +36,7 @@ func (adv Advent) Day07() {
 	mul := func(a, b int) int { return a * b }
 	concat := func(a, b int) int {
 		strTerm := strconv.Itoa(b)
-		for k := 0; k < len(strTerm); k++ {
+		for k := range len(strTerm) {
 			a *= 10
 			a += int(strTerm[k] - '0')
 		}
