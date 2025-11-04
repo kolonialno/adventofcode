@@ -3,10 +3,10 @@
 A free-for-all repository for anyone who wants to participate in the advent of
 code christmas calendar challenges.
 
-[Advent of Code](https://adventofcode.com) is an advent calendar for nerds
-where a programming puzzle is posted each day during December 1-25. All puzzles
-have some input that is personalized for each user, so you'll have to log in
-there using your public Github, Google, Twitter or Reddit account.
+[Advent of Code](https://adventofcode.com) is an advent calendar for nerds where
+a programming puzzle is posted some days during December. All puzzles have some
+input that is personalized for each user, so you'll have to log in there using
+your public Github, Google, Twitter or Reddit account.
 
 ## Access to this repo
 
