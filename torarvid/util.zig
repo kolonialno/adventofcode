@@ -59,9 +59,7 @@ pub fn read_as_whatever(
         };
         reader.toss(1);
     } else |err| switch (err) {
-        error.EndOfStream => {
-            std.debug.print("End of stream\n", .{});
-        },
+        error.EndOfStream => {},
         else => return err,
     }
 
