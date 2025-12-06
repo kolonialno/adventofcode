@@ -97,3 +97,23 @@ data class Rectangle(val pos1: IntVec, val pos2: IntVec) {
     }
 
 }
+
+fun symbolToOp(symbol: String): (Int, Int) -> Int {
+    when (symbol) {
+        "*" -> return Int::times
+        "+" -> return Int::plus
+        "-" -> return Int::minus
+        "/" -> return Int::div
+        else -> throw Exception("wtf is $symbol")
+    }
+}
+
+fun symbolToLongOp(symbol: String): (Long, Long) -> Long {
+    when (symbol) {
+        "*" -> return Long::times
+        "+" -> return Long::plus
+        "-" -> return Long::minus
+        "/" -> return Long::div
+        else -> throw Exception("wtf is $symbol")
+    }
+}
