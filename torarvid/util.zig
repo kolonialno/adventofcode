@@ -1,18 +1,18 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-fn conv_string(comptime T: type, in: []const u8, allocator: Allocator) ![]const u8 {
+fn conv_string(comptime T: type, in: []const u8, allocator: Allocator) ![]u8 {
     _ = T;
     return try std.mem.Allocator.dupe(allocator, u8, in);
 }
 
-pub fn file_as_strings(filename: []const u8, allocator: Allocator) ![]const []const u8 {
+pub fn file_as_strings(filename: []const u8, allocator: Allocator) ![]const []u8 {
     var buffer: [1024 * 1024]u8 = undefined;
-    return file_as_whatever(filename, allocator, &buffer, []const u8, conv_string);
+    return file_as_whatever(filename, allocator, &buffer, []u8, conv_string);
 }
 
-pub fn read_as_strings(reader: *std.Io.Reader, allocator: Allocator) ![]const []const u8 {
-    return read_as_whatever(reader, allocator, []const u8, conv_string);
+pub fn read_as_strings(reader: *std.Io.Reader, allocator: Allocator) ![]const []u8 {
+    return read_as_whatever(reader, allocator, []u8, conv_string);
 }
 
 fn conv_number(comptime T: type, in: []const u8, allocator: Allocator) std.fmt.ParseIntError!T {
@@ -31,7 +31,7 @@ pub fn file_as_whatever(
     buffer: []u8,
     comptime T: type,
     conv_fn: fn (comptime T: type, in: []const u8, allocator: Allocator) anyerror!T,
-) ![]const T {
+) ![]T {
     const file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
     var readwrap = file.reader(buffer);
@@ -45,7 +45,7 @@ pub fn read_as_whatever(
     allocator: Allocator,
     comptime T: type,
     comptime conv_fn: fn (comptime T: type, in: []const u8, allocator: Allocator) anyerror!T,
-) ![]const T {
+) ![]T {
     var list = std.ArrayList(T){};
 
     while (reader.takeDelimiterExclusive('\n')) |line| {
