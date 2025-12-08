@@ -1,80 +1,73 @@
 package com.matsemann.adventofcode2025.utils
 
+import com.matsemann.adventofcode2025.utils.Direction.DOWN
+import com.matsemann.adventofcode2025.utils.Direction.DOWNLEFT
+import com.matsemann.adventofcode2025.utils.Direction.DOWNRIGHT
+import com.matsemann.adventofcode2025.utils.Direction.LEFT
+import com.matsemann.adventofcode2025.utils.Direction.RIGHT
+import com.matsemann.adventofcode2025.utils.Direction.UP
+import com.matsemann.adventofcode2025.utils.Direction.UPLEFT
+import com.matsemann.adventofcode2025.utils.Direction.UPRIGHT
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
-enum class Direction(var x: Int, var y: Int) {
-    RIGHT(1, 0),
-    DOWN(0, -1),
-    LEFT(-1, 0),
-    UP(0, 1);
+object Direction {
+    var RIGHT = IntVec(1, 0)
+    var DOWN = IntVec(0, -1)
+    var LEFT = IntVec(-1, 0)
+    var UP = IntVec(0, 1)
 
-    fun turnCw() =
-        when (this) {
-            RIGHT -> DOWN
-            DOWN -> LEFT
-            LEFT -> UP
-            UP -> RIGHT
+    var UPRIGHT = RIGHT + UP
+    var UPLEFT = LEFT + UP
+    var DOWNRIGHT = RIGHT + DOWN
+    var DOWNLEFT = LEFT + DOWN
+
+    fun fromNSEW(ch: Char) =
+        when (ch) {
+            'N' -> UP
+            'S' -> DOWN
+            'E' -> RIGHT
+            'W' -> LEFT
+            else -> throw Exception("unkown direction $ch")
         }
 
-    fun turnCcw() =
-        when (this) {
-            RIGHT -> UP
-            DOWN -> RIGHT
-            LEFT -> DOWN
-            UP -> LEFT
+    fun fromUDLR(str: String) =
+        when (str.uppercase()[0]) {
+            'U' -> UP
+            'D' -> DOWN
+            'R', 'F' -> RIGHT
+            'L' -> LEFT
+            else -> throw Exception("unkown direction $str")
         }
 
-    fun flip() =
-        when (this) {
-            RIGHT -> LEFT
-            LEFT -> RIGHT
-            UP -> DOWN
-            DOWN -> UP
+    fun fromArrows(char: Char) =
+        when (char) {
+            '^' -> UP
+            'v' -> DOWN
+            '>' -> RIGHT
+            '<' -> LEFT
+            else -> throw Exception("unkown direction $char")
         }
 
-    fun toVec() = IntVec(x, y)
+    /**
+     * When used in a grid context, where Y grows "down" when you print
+     * the list, makes it easier to reason about
+     */
+    fun setYDown() {
+        DOWN = IntVec(0, 1)
+        UP = IntVec(0, -1)
 
-    companion object {
-        fun fromNSEW(ch: Char) =
-            when (ch) {
-                'N' -> UP
-                'S' -> DOWN
-                'E' -> RIGHT
-                'W' -> LEFT
-                else -> throw Exception("unkown direction $ch")
-            }
-
-        fun fromUDLR(str: String) =
-            when (str.uppercase()[0]) {
-                'U' -> UP
-                'D' -> DOWN
-                'R', 'F' -> RIGHT
-                'L' -> LEFT
-                else -> throw Exception("unkown direction $str")
-            }
-
-        fun fromArrows(char: Char) =
-            when (char) {
-                '^' -> UP
-                'v' -> DOWN
-                '>' -> RIGHT
-                '<' -> LEFT
-                else -> throw Exception("unkown direction $char")
-            }
-
-        fun setYDown() {
-            DOWN.y = 1
-            UP.y = -1
-        }
+        UPRIGHT = RIGHT + UP
+        UPLEFT = LEFT + UP
+        DOWNRIGHT = RIGHT + DOWN
+        DOWNLEFT = LEFT + DOWN
     }
 }
 
 data class IntVec(val x: Int, val y: Int) {
     operator fun plus(other: IntVec) = IntVec(x + other.x, y + other.y)
-    operator fun plus(dir: Direction) = IntVec(x + dir.x, y + dir.y)
 
     operator fun minus(other: IntVec) = IntVec(x - other.x, y - other.y)
     operator fun unaryMinus() = IntVec(-x, -y)
@@ -91,23 +84,21 @@ data class IntVec(val x: Int, val y: Int) {
     fun mirrorX(axis: Int = 0) = IntVec(axis - (x - axis), y)
     fun mirrorY(axis: Int = 0) = IntVec(x, axis - (y - axis))
 
+    fun flip() = unaryMinus()
+
+    // Both handle both Y up/down
+    fun rotateClockwise() = IntVec(y, -x) * Direction.UP.y
+    fun rotateCounterClockwise() = IntVec(y, -x) * Direction.UP.y
+
     // Note, it is inclusive, so for indexing reduce with 1
     fun withinBounds(bounds: IntVec) = withinBounds(0, bounds.x, 0, bounds.y)
     fun withinBounds(minX: Int, maxX: Int, minY: Int, maxY: Int) =
         x in minX..maxX && y in minY..maxY
 
-    fun neighbors() = Direction.values().map { this + it }
-    fun neighbors(bounds: IntVec) = Direction.values().map { this + it }
-        .filter { it.withinBounds(bounds) }
+    fun neighbors() = listOf(UP, DOWN, LEFT, RIGHT).map { this + it }
+    fun neighbors(bounds: IntVec) = neighbors().filter { it.withinBounds(bounds) }
 
-    fun neighbors9() = (-1..1)
-        .flatMap { x ->
-            (-1..1)
-                .map { y -> IntVec(x, y) }
-        }
-        .filter { it.x != 0 || it.y != 0 }
-        .map { this + it }
-
+    fun neighbors9() = listOf(UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT).map { this + it }
     fun neighbors9(bounds: IntVec) =
         neighbors9().filter { it.withinBounds(bounds) }
 
